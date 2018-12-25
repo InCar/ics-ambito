@@ -7,8 +7,6 @@ import com.incarcloud.ambito.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author ThomasChan
@@ -34,7 +32,7 @@ public class UserController {
         }
     }
 
-
+    
     @PostMapping(value = "/save")
     public JsonMessage saveUser(@RequestBody UserBean user){
         try {
