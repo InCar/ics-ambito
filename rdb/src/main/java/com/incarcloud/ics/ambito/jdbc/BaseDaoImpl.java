@@ -1,5 +1,6 @@
 package com.incarcloud.ics.ambito.jdbc;
 
+import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.pojo.PageResult;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
@@ -118,6 +119,27 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         return jdbcTemplate.query(sql, rowMapper, paramsList.toArray());
     }
 
+    /**
+     *
+     * @param condition
+     * @param orderby
+     * @return
+     */
+    @Override
+    public List<T> query(Condition condition, LinkedHashMap<String, String> orderby) {
+        SqlEntity sqlEntity = condition.toSqlEntity();
+        return query(sqlEntity.getSql(), sqlEntity.getParams(), orderby);
+    }
+
+    /**
+     *
+     * @param condition
+     * @return
+     */
+    @Override
+    public List<T> query(Condition condition) {
+        return query(condition, new LinkedHashMap<>());
+    }
 
 
     /**
@@ -154,6 +176,31 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         return new PageResult<>(result, page);
     }
 
+    /**
+     *
+     * @param page
+     * @param condition
+     * @param orderby
+     * @return
+     */
+    @Override
+    public PageResult<T> queryPage(Page page, Condition condition, LinkedHashMap<String, String> orderby) {
+        SqlEntity sqlEntity = condition.toSqlEntity();
+        return queryPage(page, sqlEntity.getSql(), sqlEntity.getParams(), orderby);
+    }
+
+    /**
+     * 按条件分页查询，结果以id倒序排列
+     * @param page 分页参数对象
+     * @param condition 查询条件
+     * @return 分页结果集
+     */
+    @Override
+    public PageResult<T> queryPage(Page page, Condition condition) {
+        SqlEntity sqlEntity = condition.toSqlEntity();
+        return queryPage(page, sqlEntity.getSql(), sqlEntity.getParams(), new LinkedHashMap<>());
+    }
+
 
     /**
      * 查询
@@ -183,7 +230,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     /**
      * 查询
      * @param page 分页参数
-     * @return List<T>
+     * @return Page<T>
      */
     @Override
     public PageResult<T> queryPage(Page page) {
@@ -220,25 +267,20 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     /** 
      * 更新（通过模板更新，把符合template条件的数据都更新为value对象中的值） 
      * @param template 更新的对象
-     * @return int 更新的数量 
-     *   
-     *  
+     * @return int 更新的数量
      */  
     @Override  
     public int update(T value,T template) throws Exception{  
         SqlEntity sqlEntity = getUpdateSql(value,template);
         System.out.println(">>>>>> SQL: " + sqlEntity.getSql());
         System.out.println(">>>>>> PARAMS: " + Arrays.toString(sqlEntity.getParams().toArray()));
-        //System.out.println("=====update(T value,T template) sqlEntity.getSql()="+sqlEntity.getSql());  
-        return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());  
+        return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());
     }  
       
     /** 
      * 保存 
      * @param t 保存的对象 
-     * @return int 保存的数量 
-     *   
-     *  
+     * @return int 保存的数量
      */  
     @Override  
     public int save(T t) throws Exception{  
@@ -252,9 +294,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      * 保存 
      * @param sql 自定义保存sql 
      * @param params 查询条件对应的参数(List<Object>) 
-     * @return int 保存的数量 
-     *   
-     *  
+     * @return int 保存的数量
      */  
     @Override  
     public int save(String sql, List<Object> params) {
@@ -266,9 +306,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     /** 
      * 删除 
      * @param id 对象的id(Serializable) 
-     * @return int 删除的数量 
-     *   
-     *  
+     * @return int 删除的数量
      */  
     @Override  
     public int delete(Serializable id) {  
@@ -522,15 +560,6 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         }
 
         page.setTotalSize(getCount(whereSql, params.toArray()));
-//        if(page.isTotalSizeNew()){
-//            page.setTotalSize(getCount(whereSql, params.toArray()));
-//        }
-//        setPage(page);
     }
 
-//
-//    private void setPage(Page page){
-//        page.setTotalPages(page.getTotalSize()%page.getCurrentSize()==0?page.getTotalSize()/page.getCurrentSize():(page.getTotalSize()/page.getCurrentSize()+1));
-//        page.setCurrentPage(page.getOffSize()/page.getCurrentSize()+1);
-//    }
 }  

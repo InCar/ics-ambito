@@ -1,5 +1,6 @@
 package com.incarcloud.ics.ambito.jdbc;
 
+import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.pojo.PageResult;
 
@@ -12,14 +13,22 @@ public interface BaseDao<T> {
      T get(Serializable id);
       
      List<T> query();
-      
+
      List<T> query(String whereSql, List<Object> params);
       
      List<T> query(LinkedHashMap<String, String> orderby);
 
+     List<T> query(Condition condition, LinkedHashMap<String, String> orderby);
+
      List<T> query(String whereSql, List<Object> params, LinkedHashMap<String, String> orderby);
 
+     List<T> query(Condition condition);
+
      PageResult<T> queryPage(Page page);
+
+     PageResult<T> queryPage(Page page, Condition condition);
+
+     PageResult<T> queryPage(Page page, Condition condition, LinkedHashMap<String, String> orderby);
 
      PageResult<T> queryPage(Page page, String whereSql, List<Object> params);
 

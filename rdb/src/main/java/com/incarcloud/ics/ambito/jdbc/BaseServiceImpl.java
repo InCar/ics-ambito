@@ -1,6 +1,7 @@
 package com.incarcloud.ics.ambito.jdbc;
 
 
+import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.pojo.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,18 @@ public class BaseServiceImpl<T> implements BaseService<T> {
     @Override  
     public List<T> query() {
         return baseDao.query();  
-    }  
-  
+    }
+
+    /**
+     * 条件查询
+     * @param condition
+     * @return List<T>
+     */
+    @Override
+    public List<T> query(Condition condition) {
+        return baseDao.query(condition);
+    }
+
     /** 
      * 查询 
      * @param whereSql 查询条件（例:o.name=?）
@@ -103,6 +114,29 @@ public class BaseServiceImpl<T> implements BaseService<T> {
     @Override
     public PageResult<T> queryPage(Page page) {
         return baseDao.queryPage(page);
+    }
+
+    /**
+     * 条件分页查询
+     * @param page 分页条件
+     * @param condition 查询条件
+     * @return
+     */
+    @Override
+    public PageResult<T> queryPage(Page page, Condition condition) {
+        return baseDao.queryPage(page, condition);
+    }
+
+    /**
+     * 条件分页查询
+     * @param page 分页条件
+     * @param condition 查询条件
+     * @param orderby 排序属性
+     * @return
+     */
+    @Override
+    public PageResult<T> queryPage(Page page, Condition condition, LinkedHashMap<String, String> orderby) {
+        return baseDao.queryPage(page, condition, orderby);
     }
 
     /**
