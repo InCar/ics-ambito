@@ -355,7 +355,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         sql.append(getTableName());
         sql.append(" o where 1=1 ");  
         if(!StringUtils.isEmpty(whereSql)){  
-            sql.append(" and ").append(whereSql);
+            sql.append(whereSql);
         }  
         if(!CollectionUtils.isEmpty(orderby)){
             sql.append(" ORDER BY ");  

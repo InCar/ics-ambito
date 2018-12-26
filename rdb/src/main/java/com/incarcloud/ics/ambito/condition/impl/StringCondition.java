@@ -2,6 +2,7 @@ package com.incarcloud.ics.ambito.condition.impl;
 
 
 import com.incarcloud.ics.ambito.condition.Condition;
+import com.incarcloud.ics.ambito.converter.StringConditionConverter;
 import com.incarcloud.ics.ambito.jdbc.SqlEntity;
 
 import java.util.Arrays;
@@ -36,7 +37,7 @@ public class StringCondition extends Condition {
 
     @Override
     public SqlEntity toSqlEntity() {
-        return null;
+        return new StringConditionConverter().convert(this);
     }
 
     public enum Handler{
