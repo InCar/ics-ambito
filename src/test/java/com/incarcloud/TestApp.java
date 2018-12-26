@@ -24,7 +24,6 @@ public class TestApp {
         SpringApplication.run(TestApp.class);
     }
 
-
     @Bean
     public JdbcTemplate jdbcTemplate(){
         return new JdbcTemplate(dataSource());

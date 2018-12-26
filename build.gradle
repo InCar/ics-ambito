@@ -1,4 +1,4 @@
-group 'com.incarcloud.ics'
+group 'com.incarcloud.ambito'
 version '2.0-SNAPSHOT'
 
 apply plugin: 'java'
@@ -16,11 +16,12 @@ repositories {
 //    maven { url MAVEN_URL_SNAPSHOTS }
     mavenCentral()
     dependencies{
+        compile project("rdb")
         // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
         compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
         // https://mvnrepository.com/artifact/mysql/mysql-connector-java
         compile ("mysql:mysql-connector-java:6.0.6")
-//        compile("com.incarcloud.ics:ics-map-tracking:2.2-SNAPSHOT")
+//        compile("com.incarcloud.ambito:ambito-map-tracking:2.2-SNAPSHOT")
 
         compile ('org.springframework:spring-jdbc:5.1.3.RELEASE')
         compile ('org.springframework:spring-webmvc:5.1.3.RELEASE')

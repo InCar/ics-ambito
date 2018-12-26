@@ -1,7 +1,7 @@
 server:
   port: 8081
 ics:
-  prefix: /ics
+  prefix: /ambito
 spring.resources.chain.cache: false
 
 

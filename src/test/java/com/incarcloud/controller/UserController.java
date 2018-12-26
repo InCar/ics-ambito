@@ -1,8 +1,8 @@
 //package com.incarcloud.controller;
 //
-//import com.incarcloud.ambito.entity.UserBean;
-//import com.incarcloud.ambito.pojo.JsonMessage;
-//import com.incarcloud.ambito.service.UserService;
+//import UserBean;
+//import JsonMessage;
+//import UserService;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.jdbc.core.JdbcTemplate;
 //import org.springframework.web.bind.annotation.*;
