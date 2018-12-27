@@ -1,7 +1,10 @@
 package com.incarcloud.ics.ambito.controller;
 
+import com.incarcloud.ics.ambito.condition.Condition;
+import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.VehicleArchivesBean;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
+import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.VehicleArchivesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,24 +20,27 @@ public class VehicleArchivesController {
     private VehicleArchivesService vehicleArchivesService;
 
     @GetMapping
-    public JsonMessage getVehicleList(@RequestParam(value = "vinCode")String vinCode,
+    public JsonMessage getVehicleList(@RequestParam(value = "vinCode") String vinCode,
                                       @RequestParam(value = "plateNo") String plateNo,
-                                      @RequestParam(required = false)Integer pageNum,
-                                      @RequestParam(required = false)Integer pageSize){
+                                      @RequestParam(required = false) Integer pageNum,
+                                      @RequestParam(required = false) Integer pageSize) {
 
-        if(pageNum == null || pageSize == null){
-            return JsonMessage.success(vehicleArchivesService.query("o.vin_code like concat('%',?,'%') and o.plate_no like concat('%',?,'%')", vinCode,plateNo));
-        }else {
-            return JsonMessage.success(vehicleArchivesService.queryPage(new Page(pageNum, pageSize),"o.vin_code like concat('%',?,'%') and o.plate_no like concat('%',?,'%')", vinCode,plateNo));
+        Condition condition = Condition.and(new StringCondition("vin_code", vinCode, StringCondition.Handler.ALL_LIKE),
+                new StringCondition("plate_no", plateNo, StringCondition.Handler.ALL_LIKE));
+
+        if (pageNum == null || pageSize == null) {
+            return JsonMessage.success(vehicleArchivesService.query(condition));
+        } else {
+            return JsonMessage.success(vehicleArchivesService.queryPage(new Page(pageNum, pageSize), condition));
         }
     }
 
     @PostMapping(value = "/save")
-    public JsonMessage saveUser(@RequestBody VehicleArchivesBean vehicleArchivesBean){
+    public JsonMessage saveUser(@RequestBody VehicleArchivesBean vehicleArchivesBean) {
         try {
-            if(vehicleArchivesBean.getId() == null){
+            if (vehicleArchivesBean.getId() == null) {
                 vehicleArchivesService.save(vehicleArchivesBean);
-            }else {
+            } else {
                 vehicleArchivesService.update(vehicleArchivesBean);
             }
             return JsonMessage.success();
@@ -44,7 +50,7 @@ public class VehicleArchivesController {
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    public JsonMessage deleteUser(@PathVariable long id){
+    public JsonMessage deleteUser(@PathVariable long id) {
         vehicleArchivesService.delete(id);
         return JsonMessage.success();
     }
