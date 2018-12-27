@@ -20,7 +20,7 @@ repositories {
         // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
         compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
         // https://mvnrepository.com/artifact/mysql/mysql-connector-java
-        compile ("mysql:mysql-connector-java:6.0.6")
+        compile ("mysql:mysql-connector-java:8.0.11")
 //        compile("com.incarcloud.ambito:ambito-map-tracking:2.2-SNAPSHOT")
 
         compile ('org.springframework:spring-jdbc:5.1.3.RELEASE')

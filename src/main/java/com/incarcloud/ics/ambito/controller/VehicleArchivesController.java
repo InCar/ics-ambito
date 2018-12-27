@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Created by on 2018/12/26.
  */
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/vehicle")
 @RestController
 public class VehicleArchivesController {
 
     @Autowired
     private VehicleArchivesService vehicleArchivesService;
 
-    @GetMapping
+    @GetMapping(value = "/list")
     public JsonMessage getVehicleList(@RequestParam(value = "vinCode") String vinCode,
                                       @RequestParam(value = "plateNo") String plateNo,
                                       @RequestParam(required = false) Integer pageNum,
