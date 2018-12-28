@@ -17,7 +17,7 @@ public class Page {
     public Page(int currentPage, int pageSize) {
         super();
         if(currentPage < 1 || pageSize < 1){
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("invalid pageNo or pageSize");
         }
         this.offSize = (currentPage - 1) * pageSize;
         this.currentSize = pageSize;

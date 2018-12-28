@@ -3,6 +3,7 @@ package com.incarcloud.ics.ambito.converter;
 import com.incarcloud.ics.ambito.condition.impl.NullCondition;
 import com.incarcloud.ics.ambito.jdbc.SqlEntity;
 import com.incarcloud.ics.ambito.jdbc.WhereSqlEntity;
+import com.incarcloud.ics.ambito.utils.StringUtils;
 
 /**
  * @author ThomasChan
@@ -19,7 +20,7 @@ public class NullConditionConverter implements Converter<NullCondition, SqlEntit
             return sqlEntity;
         }
         sqlEntity.append("o.");
-        sqlEntity.append(condition.fieldName);
+        sqlEntity.append(StringUtils.camelToUnderline(condition.fieldName));
         NullCondition.Handler handler = condition.handler;
         switch (handler){
             case NULL: {

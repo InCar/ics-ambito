@@ -2,6 +2,9 @@ package com.incarcloud.ics.ambito.entity;
 
 import com.incarcloud.ics.ambito.jdbc.Table;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * @author ThomasChan
  * @version 1.0
@@ -9,9 +12,7 @@ import com.incarcloud.ics.ambito.jdbc.Table;
  * @date 2018/12/24
  */
 @Table(name = "t_sys_user")
-public class UserBean  {
-
-    private Long id;
+public class UserBean  extends BaseBean{
 
     private String username;
 
@@ -31,14 +32,6 @@ public class UserBean  {
 
     private String salt;
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
@@ -111,4 +104,5 @@ public class UserBean  {
     public void setSalt(String salt) {
         this.salt = salt;
     }
+
 }

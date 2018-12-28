@@ -1,6 +1,14 @@
 package com.incarcloud.ics.ambito.utils;
 
 
+import org.springframework.util.Assert;
+import sun.jvm.hotspot.runtime.Bytes;
+
+import javax.xml.stream.events.Characters;
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.Random;
+
 /**
  * @author ThomasChan
  * @version 1.0
@@ -10,6 +18,9 @@ package com.incarcloud.ics.ambito.utils;
 public class StringUtils {
 
     private StringUtils(){}
+
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final int DEFAULT_SECURE_SIZE = 4;
 
     public static String camelToUnderline(String str){
         if(!hasLength(str)){
@@ -77,9 +88,17 @@ public class StringUtils {
         return !isUpperLetter(c) && !isLowerLetter(c);
     }
 
-    public static boolean isEmpty(String whereSql) {
-        return whereSql == null || whereSql.isEmpty();
+    public static boolean isEmpty(String str) {
+        return str == null || str.isEmpty();
     }
 
+    public static boolean isNotEmpty(String str) {
+        return str != null && !str.isEmpty();
+    }
 
+    public static String getRandomSecureSalt(){
+        byte[] bytes = new byte[DEFAULT_SECURE_SIZE];
+        SECURE_RANDOM.nextBytes(bytes);
+        return Base64.getEncoder().encodeToString(bytes);
+    }
 }

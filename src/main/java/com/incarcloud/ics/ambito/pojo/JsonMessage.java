@@ -7,6 +7,7 @@ import java.io.Serializable;
  * @param <T>
  */
 public class JsonMessage<T> implements Serializable{
+
     private boolean result;
     private String message = "";
     private String error = "";

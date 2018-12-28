@@ -20,8 +20,20 @@ public class ConditionImplConverter implements Converter<ConditionImpl, WhereSql
         if(childrenList.isEmpty()){
             return sqlEntity;
         }
-
-        childrenList.stream().filter(e -> e.val != null && (!(e.val instanceof Collection) || !((Collection) e.val).isEmpty())).map(e->e.toSqlEntity()).forEach(e->sqlEntity.merge(e, condition.concatWay));
+        if(condition.concatWay.equals(ConditionImpl.ConcatWay.OR)){
+            sqlEntity = childrenList.stream()
+                    .map(e -> (WhereSqlEntity) e.toSqlEntity())
+                    .reduce((e1, e2) -> (WhereSqlEntity) e1.orMerge(e2))
+                    .orElse(sqlEntity);
+        }else if(condition.concatWay.equals(ConditionImpl.ConcatWay.AND)){
+            sqlEntity = childrenList.stream()
+                    .map(e -> (WhereSqlEntity) e.toSqlEntity())
+                    .reduce((e1, e2) -> (WhereSqlEntity) e1.andMerge(e2))
+                    .orElse(sqlEntity);
+        }else {
+            throw new UnsupportedOperationException("Not support concat way: "+ condition.concatWay);
+        }
         return sqlEntity;
     }
+
 }
