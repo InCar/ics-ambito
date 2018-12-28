@@ -3,6 +3,7 @@ package com.incarcloud.ics.ambito.converter;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.jdbc.SqlEntity;
 import com.incarcloud.ics.ambito.jdbc.WhereSqlEntity;
+import com.incarcloud.ics.ambito.utils.StringUtils;
 
 import static com.incarcloud.ics.ambito.converter.ConverterUtil.collectionAppend;
 
@@ -17,9 +18,12 @@ public class NumberConditionConverter implements Converter<NumberCondition,SqlEn
     @Override
     public SqlEntity convert(NumberCondition condition, Object... exts) {
         WhereSqlEntity sqlEntity = new WhereSqlEntity();
+        if(condition.val == null || StringUtils.isEmpty(condition.fieldName)){
+            return sqlEntity;
+        }
         sqlEntity.addParam(condition.val);
         sqlEntity.append("o.");
-        sqlEntity.append(condition.fieldName);
+        sqlEntity.append(StringUtils.camelToUnderline(condition.fieldName));
         NumberCondition.Handler handler = condition.handler;
         switch (handler){
             case EQUAL: {

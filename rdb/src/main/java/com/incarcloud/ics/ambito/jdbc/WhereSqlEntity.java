@@ -1,7 +1,6 @@
 package com.incarcloud.ics.ambito.jdbc;
 
 
-import com.incarcloud.ics.ambito.condition.impl.ConditionImpl;
 
 /**
  * @author ThomasChan
@@ -17,33 +16,31 @@ public class WhereSqlEntity extends SqlEntity {
         builder.append(s);
     }
 
+
     @Override
     public String getSql() {
+        if(isValid()){
+            builder.insert(0, "(");
+            builder.append(")");
+        }
         return builder.toString();
     }
 
-    public SqlEntity merge(SqlEntity sqlEntity, ConditionImpl.ConcatWay concatWay){
-        if(concatWay.equals(ConditionImpl.ConcatWay.AND)){
-            andMerge(sqlEntity);
-        }else if(concatWay.equals(ConditionImpl.ConcatWay.OR)){
-            orMerge(sqlEntity);
-        }else {
-            throw new RuntimeException("Not support this concatWay ["+concatWay+"]");
+    public SqlEntity andMerge(WhereSqlEntity sqlEntity){
+        if(sqlEntity.isValid()) {
+            builder.append(" and ");
+            mergeParams(sqlEntity);
+            mergeSql(sqlEntity);
         }
         return this;
     }
 
-    protected SqlEntity andMerge(SqlEntity sqlEntity){
-        builder.append(" and ");
-        mergeParams(sqlEntity);
-        mergeSql(sqlEntity);
-        return this;
-    }
-
-    protected SqlEntity orMerge(SqlEntity sqlEntity){
-        builder.append(" or ");
-        mergeParams(sqlEntity);
-        mergeSql(sqlEntity);
+    public SqlEntity orMerge(WhereSqlEntity sqlEntity){
+        if(sqlEntity.isValid()) {
+            builder.append(" or ");
+            mergeParams(sqlEntity);
+            mergeSql(sqlEntity);
+        }
         return this;
     }
 
@@ -59,5 +56,9 @@ public class WhereSqlEntity extends SqlEntity {
         if(builder.length() > 0) {
             builder.deleteCharAt(builder.length() - 1);
         }
+    }
+
+    private boolean isValid(){
+        return builder.length() > 0 || getParams().size() > 0;
     }
 }

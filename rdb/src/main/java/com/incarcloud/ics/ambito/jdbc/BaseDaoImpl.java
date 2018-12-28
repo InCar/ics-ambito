@@ -15,11 +15,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
+import java.util.logging.Logger;
 
 @SuppressWarnings({"unchecked","rawtypes"})
 public class BaseDaoImpl<T> implements BaseDao<T> {
       
-      
+    private static Logger LOGGER = Logger.getLogger(BaseDaoImpl.class.getName());
+
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -35,11 +37,6 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
             return StringUtils.camelToUnderline(entityClass.getSimpleName());
         }
     }
-
-    private String camalToUnderline(Field field){
-        return StringUtils.camelToUnderline(field.getName());
-    }
-
 
     private Object getEntityClass(Class<? extends BaseDaoImpl> aClass) {
         return ((ParameterizedType)aClass.getGenericSuperclass()).getActualTypeArguments()[0];
@@ -114,8 +111,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
             }
         }
         String sql = getSql(whereSql, orderby);
-        System.out.println(">>>>>> SQL: " + sql);
-        System.out.println(">>>>>> PARAMS: " + Arrays.toString(paramsList.toArray()));
+        log(sql, paramsList);
         return jdbcTemplate.query(sql, rowMapper, paramsList.toArray());
     }
 
@@ -171,8 +167,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
             paramsList.add(page.getCurrentSize());
         }
         List<T> result = jdbcTemplate.query(sql, rowMapper, paramsList.toArray());
-        System.out.println(">>>>>> SQL: " + sql);
-        System.out.println(">>>>>> PARAMS: " + Arrays.toString(paramsList.toArray()));
+        log(sql, paramsList);
         return new PageResult<>(result, page);
     }
 
@@ -238,103 +233,99 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     }
 
 
-    /** 
-     * 更新 
-     * @param sql 自定义更新sql 
-     * @param params 查询条件对应的参数(List<Object>) 
-     * @return int 更新的数量 
+    /**
+     * 更新
+     * @param sql 自定义更新sql
+     * @param params 查询条件对应的参数(List<Object>)
+     * @return int 更新的数量
      *
-     */  
-    @Override  
-    public int update(String sql, List<Object> params) {  
+     */
+    @Override
+    public int update(String sql, List<Object> params) {
         return jdbcTemplate.update(sql, params.toArray());
-    }  
-      
-    /** 
-     * 更新（先从数据库取出来再更新） 
-     * @param t 更新的对象 
-     * @return int 更新的数量 
+    }
+
+    /**
+     * 更新（先从数据库取出来再更新）
+     * @param t 更新的对象
+     * @return int 更新的数量
      *
-     */  
-    @Override  
-    public int update(T t) throws Exception{  
+     */
+    @Override
+    public int update(T t) throws Exception{
         SqlEntity sqlEntity = getUpdateSql(t);
-        System.out.println(">>>>>> SQL: " + sqlEntity.getSql());
-        System.out.println(">>>>>> PARAMS: " + Arrays.toString(sqlEntity.getParams().toArray()));
-        return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());  
-    }  
-      
-    /** 
-     * 更新（通过模板更新，把符合template条件的数据都更新为value对象中的值） 
+        log(sqlEntity.getSql(), sqlEntity.getParams());
+        return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());
+    }
+
+    /**
+     * 更新（通过模板更新，把符合template条件的数据都更新为value对象中的值）
      * @param template 更新的对象
      * @return int 更新的数量
-     */  
-    @Override  
-    public int update(T value,T template) throws Exception{  
+     */
+    @Override
+    public int update(T value,T template) throws Exception{
         SqlEntity sqlEntity = getUpdateSql(value,template);
-        System.out.println(">>>>>> SQL: " + sqlEntity.getSql());
-        System.out.println(">>>>>> PARAMS: " + Arrays.toString(sqlEntity.getParams().toArray()));
+        log(sqlEntity.getSql(), sqlEntity.getParams());
         return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());
-    }  
-      
-    /** 
-     * 保存 
-     * @param t 保存的对象 
-     * @return int 保存的数量
-     */  
-    @Override  
-    public int save(T t) throws Exception{  
-        SqlEntity sqlEntity = getSaveSql(t);
-        System.out.println(">>>>>> SQL: " + sqlEntity.getSql());
-        System.out.println(">>>>>> PARAMS: " + Arrays.toString(sqlEntity.getParams().toArray()));
-        return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());  
     }
-  
-    /** 
-     * 保存 
-     * @param sql 自定义保存sql 
-     * @param params 查询条件对应的参数(List<Object>) 
+
+    /**
+     * 保存
+     * @param t 保存的对象
      * @return int 保存的数量
-     */  
-    @Override  
+     */
+    @Override
+    public int save(T t) throws Exception{
+        SqlEntity sqlEntity = getSaveSql(t);
+        log(sqlEntity.getSql(), sqlEntity.getParams());
+        return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());
+    }
+
+    /**
+     * 保存
+     * @param sql 自定义保存sql
+     * @param params 查询条件对应的参数(List<Object>)
+     * @return int 保存的数量
+     */
+    @Override
     public int save(String sql, List<Object> params) {
-        System.out.println(">>>>>> SQL: " + sql);
-        System.out.println(">>>>>> PARAMS: " + Arrays.toString(params.toArray()));
+        log(sql, params);
         return jdbcTemplate.update(sql, params.toArray());
-    }  
-  
-    /** 
-     * 删除 
-     * @param id 对象的id(Serializable) 
+    }
+
+    /**
+     * 删除
+     * @param id 对象的id(Serializable)
      * @return int 删除的数量
-     */  
-    @Override  
-    public int delete(Serializable id) {  
+     */
+    @Override
+    public int delete(Serializable id) {
         String sql="delete from " + getTableName() + " where id=?";
-        System.out.println(">>>>>> SQL: " + sql);
-        System.out.println(">>>>>> PARAMS: id=" + id);
-        return jdbcTemplate.update(sql, id);  
-    }  
-      
+        log(sql, Collections.singletonList(id));
+        return jdbcTemplate.update(sql, id);
+    }
+
     @Override
     public int getCount(String whereSql, Object[] objects){
-        StringBuffer sql = new StringBuffer("select count(*) from ");  
+        StringBuilder sql = new StringBuilder("select count(*) from ");
         sql.append(getTableName());
         sql.append(" o ").append(whereSql);
+        log(sql.toString(), Arrays.asList(objects));
         int count = jdbcTemplate.queryForObject(sql.toString(), objects, Integer.class);
         return count;
     }
 
 
     protected String getSql(){
-        StringBuffer sql = new StringBuffer("select * from ");
+        StringBuilder sql = new StringBuilder("select * from ");
         sql.append(getTableName());
         sql.append(" o where 1=1 ");
         return sql.toString();
     }
 
     protected String getSql(String whereSql){
-        StringBuffer sql = new StringBuffer("select * from ");
+        StringBuilder sql = new StringBuilder("select * from ");
         sql.append(getTableName());
         sql.append(" o where 1=1 ");
         if(!StringUtils.isEmpty(whereSql)){
@@ -351,28 +342,29 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      * @return sql
      */
     protected String getSql(Page page, String whereSql, Map<String,String> orderby){
-        StringBuffer sql = new StringBuffer("select * from ");
+        StringBuilder sql = new StringBuilder("select * from ");
         sql.append(getTableName());
-        sql.append(" o where 1=1 ");  
-        if(!StringUtils.isEmpty(whereSql)){  
+        sql.append(" o where 1=1 ");
+        if(!StringUtils.isEmpty(whereSql)){
+            sql.append(" and ");
             sql.append(whereSql);
-        }  
+        }
         if(!CollectionUtils.isEmpty(orderby)){
-            sql.append(" ORDER BY ");  
-            for (String string : orderby.keySet()) {  
-                String value = orderby.get(string);  
-                if(StringUtils.isEmpty(value)){  
-                    value = "ASC";  
-                }  
-                sql.append("o.").append(string).append(" ").append(value.toUpperCase()).append(",");  
-            }  
-            if(sql.indexOf(",") > -1){  
-                sql.deleteCharAt(sql.length()-1);  
-            }  
-        }  
+            sql.append(" ORDER BY ");
+            for (String string : orderby.keySet()) {
+                String value = orderby.get(string);
+                if(StringUtils.isEmpty(value)){
+                    value = "ASC";
+                }
+                sql.append("o.").append(string).append(" ").append(value.toUpperCase()).append(",");
+            }
+            if(sql.indexOf(",") > -1){
+                sql.deleteCharAt(sql.length()-1);
+            }
+        }
         if(page != null && page.isValidPage()){
-            sql.append(" limit ?,? ");  
-        }  
+            sql.append(" limit ?,? ");
+        }
         return sql.toString();
     }
 
@@ -410,14 +402,14 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     }
 
 
-    private SqlEntity getUpdateSql(T t) throws Exception{  
+    private SqlEntity getUpdateSql(T t) throws Exception{
         SqlEntity sqlEntity = new SqlEntity();
         sqlEntity.setParams(new ArrayList<>());
-        Field[] fields = entityClass.getDeclaredFields();  
-        StringBuffer sql = new StringBuffer();
+        Field[] fields = entityClass.getDeclaredFields();
+        StringBuilder sql = new StringBuilder();
         sql.append("update ").append(getTableName()).append(" o set ");
         for (Field field : fields) {
-            StringBuffer methodName = new StringBuffer();
+            StringBuilder methodName = new StringBuilder();
             upperCaseFirstLetter(field, methodName);
             if(!field.isAnnotationPresent(Id.class)){
                 Method method = entityClass.getMethod(methodName.toString(), new Class[]{});
@@ -437,12 +429,12 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         Method idMethod = entityClass.getMethod("getId", new Class[]{});
         sqlEntity.getParams().add(idMethod.invoke(t, new Object[]{}));
         sqlEntity.setSql(sql.toString());
-//        System.out.println(sqlEntity.getSql());
-//        System.out.println(sqlEntity.getParams());
+//        LOGGER.info(sqlEntity.getSql());
+//        LOGGER.info(sqlEntity.getParams());
         return sqlEntity;
     }
 
-    private void upperCaseFirstLetter(Field field, StringBuffer methodName) {
+    private void upperCaseFirstLetter(Field field, StringBuilder methodName) {
         if(field.getType() == boolean.class){
             if(field.getName().contains("is")){
                 methodName.append(field.getName());
@@ -458,11 +450,11 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         SqlEntity sqlEntity = new SqlEntity();
         sqlEntity.setParams(new ArrayList<>());
         Field[] fields = entityClass.getDeclaredFields();
-        StringBuffer sql = new StringBuffer();
+        StringBuilder sql = new StringBuilder();
         sql.append("update ").append(getTableName()).append(" o set ");
-        StringBuffer whereSql = new StringBuffer(" where ");
+        StringBuilder whereSql = new StringBuilder(" where ");
         for (Field field : fields) {
-            StringBuffer methodName = new StringBuffer();
+            StringBuilder methodName = new StringBuilder();
             upperCaseFirstLetter(field, methodName);
             if(!field.isAnnotationPresent(Id.class)){
                 Method method = entityClass.getMethod(methodName.toString(), new Class[]{});
@@ -479,7 +471,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         }
 
         for (Field field : fields) {
-            StringBuffer methodName = new StringBuffer();
+            StringBuilder methodName = new StringBuilder();
             upperCaseFirstLetter(field, methodName);
             Method method = entityClass.getMethod(methodName.toString(), new Class[]{});
             Object objectValue = method.invoke(template, new Object[]{});
@@ -493,7 +485,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         }
         if(whereSql.indexOf("and") > -1){
             sql.append(whereSql.substring(0, whereSql.length()-3));
-            whereSql = new StringBuffer();
+            whereSql = new StringBuilder();
         }else{
             sql.append(whereSql);
         }
@@ -504,43 +496,43 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     private SqlEntity getSaveSql(T t) throws Exception{
         SqlEntity sqlEntity = new SqlEntity();
         Field[] fields = entityClass.getDeclaredFields();
-        StringBuffer sql = new StringBuffer();
+        StringBuilder sql = new StringBuilder();
         sql.append("insert into ").append(getTableName()).append(" ( ");
-        int paramLength = 0;  
-        for (Field field : fields) {  
-            StringBuffer methodName = new StringBuffer();
+        int paramLength = 0;
+        for (Field field : fields) {
+            StringBuilder methodName = new StringBuilder();
             upperCaseFirstLetter(field, methodName);
-            Method method = entityClass.getMethod(methodName.toString(), new Class[]{});  
-            Object value = method.invoke(t, new Object[]{});  
+            Method method = entityClass.getMethod(methodName.toString(), new Class[]{});
+            Object value = method.invoke(t, new Object[]{});
             if(!isEmpty(value)){
-                if(value instanceof Enum){  
-                    sqlEntity.getParams().add(((Enum) value).ordinal());  
-                }else{  
-                    sqlEntity.getParams().add(value);  
-                }  
+                if(value instanceof Enum){
+                    sqlEntity.getParams().add(((Enum) value).ordinal());
+                }else{
+                    sqlEntity.getParams().add(value);
+                }
                 sql.append("`").append(StringUtils.camelToUnderline(field.getName())).append("`").append(",");
-                paramLength ++;  
-            }  
-        }  
-        if(sql.indexOf(",") > -1){  
-            sql.deleteCharAt(sql.length() - 1);  
-        }  
-        sql.append(") values(");  
-        for (int i=0;i<paramLength;i++) {  
-            sql.append("?,");  
-        }  
-        if(sql.indexOf(",") > -1){  
-            sql.deleteCharAt(sql.length() - 1);  
-        }  
-        sql.append(")");  
-        //System.out.println("sql.toString()="+sql.toString());  
-        sqlEntity.setSql(sql.toString());  
-        return sqlEntity;  
-    }  
-      
+                paramLength ++;
+            }
+        }
+        if(sql.indexOf(",") > -1){
+            sql.deleteCharAt(sql.length() - 1);
+        }
+        sql.append(") values(");
+        for (int i=0;i<paramLength;i++) {
+            sql.append("?,");
+        }
+        if(sql.indexOf(",") > -1){
+            sql.deleteCharAt(sql.length() - 1);
+        }
+        sql.append(")");
+        //LOGGER.info("sql.toString()="+sql.toString());
+        sqlEntity.setSql(sql.toString());
+        return sqlEntity;
+    }
+
     private void dealPage(Page page, String sql, List<Object> params){
         String whereSql = "";
-//        System.out.println(sql);
+//        LOGGER.info(sql);
         if(sql != null && !sql.trim().equals("")){  
             int whereIndex = sql.toLowerCase().indexOf("where");  
             int orderIndex = sql.toLowerCase().indexOf("order");  
@@ -562,4 +554,8 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         page.setTotalSize(getCount(whereSql, params.toArray()));
     }
 
+    private void log(String sql, List<Object> params){
+        LOGGER.info("SQL: " + sql);
+        LOGGER.info("PARAMS: " + Arrays.toString(params.toArray()));
+    }
 }  

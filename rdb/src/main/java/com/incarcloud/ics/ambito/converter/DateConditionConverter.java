@@ -3,6 +3,7 @@ package com.incarcloud.ics.ambito.converter;
 import com.incarcloud.ics.ambito.condition.impl.DateCondition;
 import com.incarcloud.ics.ambito.jdbc.SqlEntity;
 import com.incarcloud.ics.ambito.jdbc.WhereSqlEntity;
+import com.incarcloud.ics.ambito.utils.StringUtils;
 
 /**
  * @author ThomasChan
@@ -20,7 +21,7 @@ public class DateConditionConverter implements Converter<DateCondition, SqlEntit
         }
         sqlEntity.addParam(condition.val);
         sqlEntity.append("o.");
-        sqlEntity.append(condition.fieldName);
+        sqlEntity.append(StringUtils.camelToUnderline(condition.fieldName));
         DateCondition.Handler handler = condition.handler;
         switch (handler){
             case EQUAL: {

@@ -3,6 +3,7 @@ package com.incarcloud.ics.ambito.converter;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.jdbc.SqlEntity;
 import com.incarcloud.ics.ambito.jdbc.WhereSqlEntity;
+import com.incarcloud.ics.ambito.utils.StringUtils;
 
 import static com.incarcloud.ics.ambito.converter.ConverterUtil.collectionAppend;
 
@@ -17,12 +18,12 @@ public class StringConditionConverter implements Converter<StringCondition, SqlE
     @Override
     public SqlEntity convert(StringCondition condition, Object... exts) {
         WhereSqlEntity sqlEntity = new WhereSqlEntity();
-        if(condition.fieldName == null || condition.val == null || condition.handler == null){
+        if(condition.fieldName == null || condition.val == null){
             return sqlEntity;
         }
         sqlEntity.addParam(condition.val);
         sqlEntity.append("o.");
-        sqlEntity.append(condition.fieldName);
+        sqlEntity.append(StringUtils.camelToUnderline(condition.fieldName));
         StringCondition.Handler handler = condition.handler;
         switch (handler){
             case EQUAL: {
@@ -34,15 +35,15 @@ public class StringConditionConverter implements Converter<StringCondition, SqlE
                 break;
             }
             case ALL_LIKE: {
-                sqlEntity.append(" like concat('%',?,'%') ");
+                sqlEntity.append(" like concat('%',?,'%')");
                 break;
             }
             case LEFT_LIKE: {
-                sqlEntity.append(" like concat('%',?) ");
+                sqlEntity.append(" like concat('%',?)");
                 break;
             }
             case RIGHT_LIKE: {
-                sqlEntity.append(" like concat(?,'%') ");
+                sqlEntity.append(" like concat(?,'%')");
                 break;
             }
             case IN: {
@@ -59,7 +60,6 @@ public class StringConditionConverter implements Converter<StringCondition, SqlE
         }
         return sqlEntity;
     }
-
 
 
 }

@@ -10,4 +10,5 @@ import com.incarcloud.ics.ambito.jdbc.BaseService;
  * @date 2018/12/24
  */
 public interface UserService extends BaseService<UserBean> {
+    UserBean register(UserBean user);
 }

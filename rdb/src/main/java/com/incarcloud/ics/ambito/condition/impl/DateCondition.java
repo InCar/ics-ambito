@@ -2,6 +2,7 @@ package com.incarcloud.ics.ambito.condition.impl;
 
 
 import com.incarcloud.ics.ambito.condition.Condition;
+import com.incarcloud.ics.ambito.converter.DateConditionConverter;
 import com.incarcloud.ics.ambito.jdbc.SqlEntity;
 
 import java.util.Arrays;
@@ -32,7 +33,7 @@ public class DateCondition extends Condition {
 
     @Override
     public SqlEntity toSqlEntity() {
-        return null;
+        return new DateConditionConverter().convert(this);
     }
 
     public enum Handler{

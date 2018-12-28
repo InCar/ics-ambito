@@ -14,7 +14,16 @@ public class CollectionUtils {
         return c == null || c.isEmpty();
     }
 
+
+    public static boolean isNotEmpty(Collection c){
+        return c != null && !c.isEmpty();
+    }
+
     public static boolean isEmpty(Map c){
         return c == null || c.isEmpty();
+    }
+
+    public static boolean isNotEmpty(Map c){
+        return c != null && !c.isEmpty();
     }
 }
