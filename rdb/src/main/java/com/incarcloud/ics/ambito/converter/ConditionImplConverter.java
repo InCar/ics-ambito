@@ -2,6 +2,7 @@ package com.incarcloud.ics.ambito.converter;
 
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.ConditionImpl;
+import com.incarcloud.ics.ambito.jdbc.SqlEntity;
 import com.incarcloud.ics.ambito.jdbc.WhereSqlEntity;
 
 import java.util.*;
@@ -25,15 +26,19 @@ public class ConditionImplConverter implements Converter<ConditionImpl, WhereSql
                     .map(e -> (WhereSqlEntity) e.toSqlEntity())
                     .reduce((e1, e2) -> (WhereSqlEntity) e1.orMerge(e2))
                     .orElse(sqlEntity);
+            sqlEntity.deleteFirstStr(WhereSqlEntity.OR);
         }else if(condition.concatWay.equals(ConditionImpl.ConcatWay.AND)){
             sqlEntity = childrenList.stream()
                     .map(e -> (WhereSqlEntity) e.toSqlEntity())
                     .reduce((e1, e2) -> (WhereSqlEntity) e1.andMerge(e2))
                     .orElse(sqlEntity);
+            sqlEntity.deleteFirstStr(WhereSqlEntity.AND);
         }else {
             throw new UnsupportedOperationException("Not support concat way: "+ condition.concatWay);
         }
+
         return sqlEntity;
     }
+
 
 }

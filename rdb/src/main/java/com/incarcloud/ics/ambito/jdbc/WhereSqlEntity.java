@@ -10,6 +10,9 @@ package com.incarcloud.ics.ambito.jdbc;
  */
 public class WhereSqlEntity extends SqlEntity {
 
+    public static final String OR = " or ";
+    public static final String AND = " and ";
+
     private StringBuilder builder = new StringBuilder();
 
     public void append(String s){
@@ -28,7 +31,7 @@ public class WhereSqlEntity extends SqlEntity {
 
     public SqlEntity andMerge(WhereSqlEntity sqlEntity){
         if(sqlEntity.isValid()) {
-            builder.append(" and ");
+            builder.append(AND);
             mergeParams(sqlEntity);
             mergeSql(sqlEntity);
         }
@@ -37,7 +40,7 @@ public class WhereSqlEntity extends SqlEntity {
 
     public SqlEntity orMerge(WhereSqlEntity sqlEntity){
         if(sqlEntity.isValid()) {
-            builder.append(" or ");
+            builder.append(OR);
             mergeParams(sqlEntity);
             mergeSql(sqlEntity);
         }
@@ -58,7 +61,21 @@ public class WhereSqlEntity extends SqlEntity {
         }
     }
 
+    public void deleteFirstStr(String str){
+        if(builder.length() > 0 && builder.toString().startsWith(str)) {
+            builder.delete(builder.indexOf(str), str.length());
+        }
+    }
+
     private boolean isValid(){
         return builder.length() > 0 || getParams().size() > 0;
+    }
+
+    public static void main(String[] args) {
+        WhereSqlEntity whereSqlEntity = new WhereSqlEntity();
+        whereSqlEntity.builder=new StringBuilder("andfasdfsfsdfand");
+        whereSqlEntity.deleteFirstStr("and");
+        System.out.println(whereSqlEntity.getSql());
+
     }
 }

@@ -51,6 +51,14 @@ public class UserController {
                 new StringCondition("realName", realName, StringCondition.Handler.ALL_LIKE),
                 new StringCondition("phone", phone, StringCondition.Handler.ALL_LIKE)
         );
+        cond = Condition.or(
+                cond,
+                new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
+                new StringCondition("username", username, StringCondition.Handler.ALL_LIKE),
+                new StringCondition("createUser", createUser, StringCondition.Handler.ALL_LIKE),
+                new StringCondition("realName", realName, StringCondition.Handler.ALL_LIKE),
+                new StringCondition("phone", phone, StringCondition.Handler.ALL_LIKE)
+        );
         if(page == null || pageSize == null){
             return JsonMessage.success(userService.query(cond));
         }else {

@@ -2,7 +2,6 @@ package com.incarcloud.ics.ambito.utils;
 
 
 import org.springframework.util.Assert;
-import sun.jvm.hotspot.runtime.Bytes;
 
 import javax.xml.stream.events.Characters;
 import java.security.SecureRandom;
