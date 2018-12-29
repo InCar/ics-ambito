@@ -17,3 +17,4 @@ CREATE TABLE IF NOT EXISTS `t_sys_resource` (
   `update_user` varchar(50) DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`)
 ) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='资源表';
+

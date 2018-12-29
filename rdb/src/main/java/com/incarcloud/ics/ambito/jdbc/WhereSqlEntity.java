@@ -71,11 +71,4 @@ public class WhereSqlEntity extends SqlEntity {
         return builder.length() > 0 || getParams().size() > 0;
     }
 
-    public static void main(String[] args) {
-        WhereSqlEntity whereSqlEntity = new WhereSqlEntity();
-        whereSqlEntity.builder=new StringBuilder("andfasdfsfsdfand");
-        whereSqlEntity.deleteFirstStr("and");
-        System.out.println(whereSqlEntity.getSql());
-
-    }
 }

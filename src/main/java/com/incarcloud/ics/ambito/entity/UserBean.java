@@ -4,6 +4,7 @@ import com.incarcloud.ics.ambito.jdbc.Table;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author ThomasChan
@@ -13,6 +14,8 @@ import java.util.Date;
  */
 @Table(name = "t_sys_user")
 public class UserBean  extends BaseBean{
+
+    private static final long serialVersionUID = 5952695047462635088L;
 
     private String username;
 
@@ -32,6 +35,7 @@ public class UserBean  extends BaseBean{
 
     private String salt;
 
+//    private List<RoleBean> roles;
 
     public String getUsername() {
         return username;
@@ -105,4 +109,11 @@ public class UserBean  extends BaseBean{
         this.salt = salt;
     }
 
+//    public List<RoleBean> getRoles() {
+//        return roles;
+//    }
+//
+//    public void setRoles(List<RoleBean> roles) {
+//        this.roles = roles;
+//    }
 }

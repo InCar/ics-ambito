@@ -500,6 +500,9 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         sql.append("insert into ").append(getTableName()).append(" ( ");
         int paramLength = 0;
         for (Field field : fields) {
+            if(field.getName().equals("serialVersionUID")){
+                continue;
+            }
             StringBuilder methodName = new StringBuilder();
             upperCaseFirstLetter(field, methodName);
             Method method = entityClass.getMethod(methodName.toString(), new Class[]{});

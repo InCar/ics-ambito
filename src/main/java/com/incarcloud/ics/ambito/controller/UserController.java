@@ -8,6 +8,7 @@ import com.incarcloud.ics.ambito.entity.UserBean;
 import com.incarcloud.ics.ambito.exception.AmbitoException;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
+import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RoleService roleService;
     /**
      * 查询用户信息
      * @param id id
@@ -74,15 +77,35 @@ public class UserController {
     }
 
 
-    @GetMapping(value = "/userDetail/{id}")
-    public JsonMessage getDetail(@PathVariable long id){
+
+    /**
+     * 获取用户角色
+     * @param userId
+     * @return
+     */
+    @GetMapping(value = "/roles")
+    public JsonMessage getRoles(@RequestParam Long userId){
         try {
-            UserBean userBean = userService.get(id);
-            return JsonMessage.success(userBean);
+            return JsonMessage.success(roleService.getRolesOfUser(userId));
         } catch (AmbitoException e) {
-            return JsonMessage.fail(e.getMessage());
+            return JsonMessage.fail(e.getMessage(), e.getCode());
         }
     }
+
+    /**
+     * 获取用户菜单
+     * @param userId
+     * @return
+     */
+    @GetMapping(value = "/menus")
+    public JsonMessage getUserResources(@RequestParam Long userId){
+        try {
+            return JsonMessage.success(userService.getUserMenus(userId));
+        } catch (AmbitoException e) {
+            return JsonMessage.fail(e.getMessage(), e.getCode());
+        }
+    }
+
 
 
     @PostMapping(value = "/update")

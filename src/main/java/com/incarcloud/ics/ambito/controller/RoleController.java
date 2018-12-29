@@ -3,12 +3,20 @@ package com.incarcloud.ics.ambito.controller;
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
+import com.incarcloud.ics.ambito.entity.ResourceBean;
 import com.incarcloud.ics.ambito.entity.RoleBean;
+import com.incarcloud.ics.ambito.entity.RoleResourceBean;
+import com.incarcloud.ics.ambito.exception.AmbitoException;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
+import com.incarcloud.ics.ambito.service.ResourceService;
+import com.incarcloud.ics.ambito.service.RoleResourceService;
 import com.incarcloud.ics.ambito.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -24,8 +32,14 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private RoleResourceService roleResourceService;
+
+    @Autowired
+    private ResourceService resourceService;
+
     /**
-     * 查询用户信息
+     * 查询角色列表信息
      * @param id id
      * @param page 当前页数
      * @param pageSize 每页记录数
@@ -78,4 +92,6 @@ public class RoleController {
         roleService.delete(id);
         return JsonMessage.success();
     }
+
+
 }
