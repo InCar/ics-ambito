@@ -32,8 +32,8 @@ public class TestApp {
     @Bean
     public DataSource dataSource(){
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-        dataSource.setUrl("jdbc:mysql://localhost:3306/test?characterEncoding=utf8&useSSL=false");
-        dataSource.setPassword("123456");
+        dataSource.setUrl("jdbc:mysql://47.98.211.203:3306/test?characterEncoding=utf8&useSSL=false");
+        dataSource.setPassword("maptracking");
         dataSource.setUsername("root");
         dataSource.setDriverClass(com.mysql.cj.jdbc.Driver.class);
         return dataSource;
