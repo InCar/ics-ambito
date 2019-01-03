@@ -107,7 +107,11 @@ public class UserController {
     }
 
 
-
+    /**
+     * 更新用户信息
+     * @param user
+     * @return
+     */
     @PostMapping(value = "/update")
     public JsonMessage updateUser(@RequestBody UserBean user){
         try {
@@ -118,7 +122,11 @@ public class UserController {
         }
     }
 
-
+    /**
+     * 删除用户
+     * @param id
+     * @return
+     */
     @DeleteMapping(value = "/delete/{id}")
     public JsonMessage deleteUser(@PathVariable long id){
         userService.delete(id);

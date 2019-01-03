@@ -1,8 +1,12 @@
 package com.incarcloud;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -22,18 +26,16 @@ public class TestApp {
         SpringApplication.run(TestApp.class);
     }
 
+
     @Bean
     public JdbcTemplate jdbcTemplate(){
-        return new JdbcTemplate(dataSource());
+        return new JdbcTemplate(newDataSource());
     }
 
     @Bean
-    public DataSource dataSource(){
-        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-        dataSource.setUrl("jdbc:mysql://47.98.211.203:3306/test?characterEncoding=utf8&useSSL=false");
-        dataSource.setPassword("maptracking");
-        dataSource.setUsername("root");
-        dataSource.setDriverClass(com.mysql.cj.jdbc.Driver.class);
-        return dataSource;
+    @ConfigurationProperties(prefix = "spring.datasource.hikari")
+    public DataSource newDataSource() {
+        return DataSourceBuilder.create().build();
     }
+
 }

@@ -7,8 +7,8 @@ spring.resources.chain.cache: false
 
 spring:
    datasource:
-     url: jdbc:mysql://47.98.211.203:3306/ambito?characterEncoding=utf8&useSSL=false
-     username: root
-     password: maptracking
      hikari:
-       driver-class-name: com.mysql.jdbc.Driver
+       username: root
+       password: maptracking
+       jdbcUrl: jdbc:mysql://47.98.211.203:3306/ambito?characterEncoding=utf8&useSSL=false
+       driver-class-name: com.mysql.cj.jdbc.Driver
