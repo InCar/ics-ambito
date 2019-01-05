@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `t_sys_resource` (
   `resource_icon` varchar(255) DEFAULT NULL COMMENT '资源图标，前台配置使用',
   `resource_code` varchar(255) DEFAULT NULL COMMENT '资源编码',
   `is_default` tinyint(4) DEFAULT 1 COMMENT '资源 0 默认不可操作， 1 可操作',
-  `resource_type` tinyint(4) DEFAULT 0 COMMENT '资源类型 0 菜单，1 按钮',
+  `resource_type` tinyint(4) DEFAULT 0 COMMENT '资源类型 0 菜单，1 权限',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',

@@ -1,5 +1,7 @@
 package com.incarcloud.ics.ambito.exception;
 
+import com.incarcloud.ics.ambito.common.ErrorDefine;
+
 /**
  * @author ThomasChan
  * @version 1.0

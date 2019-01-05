@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0
  * @create_date 2018/12/26
  */
-@RequestMapping(value = "/orgvehicle")
+@RequestMapping(value = "/ics/orgvehicle")
 @RestController
 public class SysOrgVehicleController {
 

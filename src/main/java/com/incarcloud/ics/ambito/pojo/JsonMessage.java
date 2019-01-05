@@ -1,5 +1,7 @@
 package com.incarcloud.ics.ambito.pojo;
 
+import com.incarcloud.ics.ambito.common.ErrorDefine;
+
 import java.io.Serializable;
 
 /**
@@ -68,6 +70,10 @@ public class JsonMessage<T> implements Serializable{
 
     public static <T> JsonMessage<T> fail(String message, String code) {
         return new JsonMessage<>(false, message,code);
+    }
+
+    public static <T> JsonMessage<T> fail(ErrorDefine errorDefine) {
+        return new JsonMessage<>(false, errorDefine.getMessage(), errorDefine.getCode());
     }
 
     public static <T> JsonMessage<T> fail(String message, String code, String error) {

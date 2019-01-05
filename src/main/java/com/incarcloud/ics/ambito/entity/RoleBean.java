@@ -20,6 +20,8 @@ public class RoleBean extends BaseBean{
 
     private String remark;
 
+    private String roleCode;
+
     public String getRoleName() {
         return roleName;
     }
@@ -34,5 +36,13 @@ public class RoleBean extends BaseBean{
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getRoleCode() {
+        return roleCode;
+    }
+
+    public void setRoleCode(String roleCode) {
+        this.roleCode = roleCode;
     }
 }

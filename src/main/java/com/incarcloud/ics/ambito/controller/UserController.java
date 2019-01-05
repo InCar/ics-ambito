@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  * @description
  * @date 2018/12/24
  */
-@RequestMapping(value = "/api/user")
+@RequestMapping(value = "/ics/user")
 @RestController
 public class UserController {
 

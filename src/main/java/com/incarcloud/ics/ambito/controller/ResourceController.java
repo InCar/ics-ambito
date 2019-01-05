@@ -6,6 +6,7 @@ import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.dao.ResourceDao;
 import com.incarcloud.ics.ambito.entity.ResourceBean;
 import com.incarcloud.ics.ambito.entity.RoleBean;
+import com.incarcloud.ics.ambito.exception.AmbitoException;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.ResourceService;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * @description
  * @date 2018/12/24
  */
-@RequestMapping(value = "/api/resource")
+@RequestMapping(value = "/ics/resource")
 @RestController
 public class ResourceController {
 
@@ -65,8 +66,8 @@ public class ResourceController {
                 resourceService.update(resourceBean);
             }
             return JsonMessage.success();
-        } catch (Exception e) {
-            return JsonMessage.fail(e.getMessage());
+        } catch (AmbitoException e) {
+            return JsonMessage.fail(e.getMessage(), e.getCode());
         }
     }
 

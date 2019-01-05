@@ -20,6 +20,10 @@ public class SqlEntity {
         return sql;
     }
 
+    public String getSql(boolean append) {
+        return sql;
+    }
+
     public void setSql(String sql) {
         this.sql = sql;
     }

@@ -22,7 +22,11 @@ public class WhereSqlEntity extends SqlEntity {
 
     @Override
     public String getSql() {
-        if(isValid()){
+        return getSql(true);
+    }
+
+    public String getSql(boolean append) {
+        if(isValid() && append){
             builder.insert(0, "(");
             builder.append(")");
         }

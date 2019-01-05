@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Created by on 2018/12/26.
  */
-@RequestMapping(value = "/vehicle")
+@RequestMapping(value = "/ics/vehicle")
 @RestController
 public class VehicleArchivesController {
 

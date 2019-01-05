@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS  `t_sys_role` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id 自增',
   `role_name` varchar(32) NOT NULL DEFAULT '' COMMENT '角色名称',
+  `role_code` varchar(32) NOT NULL DEFAULT '' COMMENT '角色编码',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',

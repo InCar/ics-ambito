@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2018/12/24
  */
 @Table(name = "t_sys_user")
-public class UserBean  extends BaseBean{
+public class UserBean  extends ExtendableBean{
 
     private static final long serialVersionUID = 5952695047462635088L;
 
@@ -34,8 +34,6 @@ public class UserBean  extends BaseBean{
     private Byte state;
 
     private String salt;
-
-//    private List<RoleBean> roles;
 
     public String getUsername() {
         return username;
@@ -109,11 +107,4 @@ public class UserBean  extends BaseBean{
         this.salt = salt;
     }
 
-//    public List<RoleBean> getRoles() {
-//        return roles;
-//    }
-//
-//    public void setRoles(List<RoleBean> roles) {
-//        this.roles = roles;
-//    }
 }

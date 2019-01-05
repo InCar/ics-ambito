@@ -3,7 +3,9 @@ package com.incarcloud.ics.ambito.entity;
 
 import com.incarcloud.ics.ambito.jdbc.Table;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author GuoKun
@@ -11,12 +13,24 @@ import java.util.Date;
  * @Date 2018-12-26 11:46:02
  */
 @Table(name = "t_sys_org")
-public class SysOrgBean {
+public class SysOrgBean extends ExtendableBean{
 
-    private Long id;
+    private static final long serialVersionUID = -5029982119320932787L;
 
-    // 父级id
-    private Long parentId;
+    /**
+     * 默认顺序
+     */
+    public  static final int DEFAULT_SORT = 50;
+
+    /**
+     * 根组织编号
+     */
+    public  static final String ROOT_CODE = "0";
+
+    /**
+     * 机构编码分隔符
+     */
+    public  static final String CODE_SPERATOR = ",";
 
     // 机构名称
     private String orgName;
@@ -24,36 +38,49 @@ public class SysOrgBean {
     // 机构编码
     private String orgCode;
 
+    //父级code
+    private String parentCode;
+
+    //所有父级code，以逗号拼接
+    private String parentCodes;
+
     // 0 系统默认不可操作，1 可操作
-    private Integer orgType=0;
+    private byte operateType;
 
-    // 更新用户id
-    private Long updateUserId;
+    //等级
+    private byte level;
 
-    // 创建用户id
-    private Long createUserId;
+    // 机构全称
+    private String fullName;
 
-    // 创建时间
-    private Date createTime;
+    // 负责人
+    private String leader;
 
-    // 更新时间
-    private Date updateTime;
+    // 电话
+    private String phone;
 
-    public Long getId() {
-        return id;
-    }
+    // 联系地址
+    private String address;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // 邮政编码
+    private String zipCode;
 
-    public Long getParentId() {
-        return parentId;
-    }
+    // 邮箱
+    private String email;
 
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
+    //状态
+    private byte status;
+
+    //备注
+    private String remark;
+
+    // 顺序
+    private int sort = DEFAULT_SORT;
+
+    //是否为叶子节点
+    private byte isLeaf;
+
+    private List<SysOrgBean> children = new ArrayList<>();
 
     public String getOrgName() {
         return orgName;
@@ -69,14 +96,6 @@ public class SysOrgBean {
 
     public void setOrgCode(String orgCode) {
         this.orgCode = orgCode;
-    }
-
-    public Integer getOrgType() {
-        return orgType;
-    }
-
-    public void setOrgType(Integer orgType) {
-        this.orgType = orgType;
     }
 
     public Long getUpdateUserId() {
@@ -111,18 +130,127 @@ public class SysOrgBean {
         this.updateTime = updateTime;
     }
 
-    @Override
-    public String toString() {
-        return "SysOrgBean{" +
-                "id=" + id +
-                ", parentId=" + parentId +
-                ", orgName='" + orgName + '\'' +
-                ", orgCode='" + orgCode + '\'' +
-                ", orgType=" + orgType +
-                ", updateUserId=" + updateUserId +
-                ", createUserId=" + createUserId +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                '}';
+    public List<SysOrgBean> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<SysOrgBean> children) {
+        this.children = children;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getLeader() {
+        return leader;
+    }
+
+    public void setLeader(String leader) {
+        this.leader = leader;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
+
+    public String getParentCode() {
+        return parentCode;
+    }
+
+    public void setParentCode(String parentCode) {
+        this.parentCode = parentCode;
+    }
+
+    public String getParentCodes() {
+        return parentCodes;
+    }
+
+    public void setParentCodes(String parentCodes) {
+        this.parentCodes = parentCodes;
+    }
+
+    public byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(byte status) {
+        this.status = status;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public byte getIsLeaf() {
+        return isLeaf;
+    }
+
+    public void setIsLeaf(byte isLeaf) {
+        this.isLeaf = isLeaf;
+    }
+
+    public byte getOperateType() {
+        return operateType;
+    }
+
+    public void setOperateType(byte operateType) {
+        this.operateType = operateType;
+    }
+
+    public byte getLevel() {
+        return level;
+    }
+
+    public void setLevel(byte level) {
+        this.level = level;
     }
 }

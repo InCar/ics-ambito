@@ -37,16 +37,17 @@ public interface BaseService<T> {
 
      PageResult<T> queryPage(Page page, String whereSql, List<Object> params, LinkedHashMap<String, String> orderby);
 
-
      int update(String sql, List<Object> params);
 
-     int update(T t) throws Exception;
+     int update(T t);
 
-     int update(T value, T template) throws Exception;
+     int update(T value, T template);
 
-     int save(T t) throws Exception;
+     int save(T t);
 
      int save(String sql, List<Object> params);
 
      int delete(Serializable id);
-}  
+
+     int delete(Condition condition);
+}

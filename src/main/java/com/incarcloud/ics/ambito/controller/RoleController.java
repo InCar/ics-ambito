@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @description
  * @date 2018/12/24
  */
-@RequestMapping(value = "/api/role")
+@RequestMapping(value = "/ics/role")
 @RestController
 public class RoleController {
 
