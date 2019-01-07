@@ -1,6 +1,8 @@
 package com.incarcloud.ics.ambito.common;
 
 import com.incarcloud.ics.ambito.exception.AmbitoException;
+import com.incarcloud.ics.ambito.pojo.JsonMessage;
+import com.incarcloud.ics.ambito.utils.logger.ExceptionUtils;
 
 /**
  * @author ThomasChan
@@ -20,15 +22,18 @@ public enum ErrorDefine {
 
     UNDELETABLE("无法删除","15"),
 
-    UNKNOWN_EXCEPTION("未知异常", "99"),
+    REPEATED_USERNAME("用户名重复","16"),
 
+    REPEATED_PHONE("手机号重复","17"),
+
+    UNKNOWN_EXCEPTION("其他异常", "999")
     ;
     private String code;
     private String message;
 
-    private ErrorDefine(String code, String message) {
-        this.code = code;
+    private ErrorDefine(String message, String code) {
         this.message = message;
+        this.code = code;
     }
 
     public String getCode() {
@@ -43,7 +48,22 @@ public enum ErrorDefine {
         return AmbitoException.getException(this.getMessage(), this.code);
     }
 
-    public AmbitoException toErrorMessage(){
-        return AmbitoException.getException(this.getMessage(), this.code);
+    public JsonMessage toErrorMessage(){
+        return JsonMessage.fail(this.getMessage(), this.getCode());
+    }
+
+    public JsonMessage toErrorMessage(String errorStack){
+        return JsonMessage.fail(this.getMessage(), this.getCode(), errorStack);
+    }
+
+    public static JsonMessage toErrorMessage(Exception e){
+        if(e instanceof AmbitoException){
+            for(ErrorDefine err : ErrorDefine.values()){
+                if(err.getCode().equals(((AmbitoException) e).getCode())){
+                    return err.toErrorMessage();
+                }
+            }
+        }
+        return UNKNOWN_EXCEPTION.toErrorMessage(ExceptionUtils.getStackTraceAsString(e));
     }
 }

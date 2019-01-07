@@ -37,16 +37,12 @@ public class VehicleArchivesController {
 
     @PostMapping(value = "/save")
     public JsonMessage saveUser(@RequestBody VehicleArchivesBean vehicleArchivesBean) {
-        try {
-            if (vehicleArchivesBean.getId() == null) {
-                vehicleArchivesService.save(vehicleArchivesBean);
-            } else {
-                vehicleArchivesService.update(vehicleArchivesBean);
-            }
-            return JsonMessage.success();
-        } catch (Exception e) {
-            return JsonMessage.fail(e.getMessage());
+        if (vehicleArchivesBean.getId() == null) {
+            vehicleArchivesService.save(vehicleArchivesBean);
+        } else {
+            vehicleArchivesService.update(vehicleArchivesBean);
         }
+        return JsonMessage.success();
     }
 
     @DeleteMapping(value = "/delete/{id}")

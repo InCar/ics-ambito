@@ -48,16 +48,12 @@ public class SysOrgUserController {
 
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody SysOrgUserBean sysOrgUserBean) {
-        try {
-            if (sysOrgUserBean.getId() == null) {
-                sysOrgUserService.save(sysOrgUserBean);
-            } else {
-                sysOrgUserService.update(sysOrgUserBean);
-            }
-            return JsonMessage.success();
-        } catch (Exception e) {
-            return JsonMessage.fail(e.getMessage());
+        if (sysOrgUserBean.getId() == null) {
+            sysOrgUserService.save(sysOrgUserBean);
+        } else {
+            sysOrgUserService.update(sysOrgUserBean);
         }
+        return JsonMessage.success();
     }
 
 

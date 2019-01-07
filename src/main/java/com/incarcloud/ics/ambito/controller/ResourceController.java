@@ -59,16 +59,12 @@ public class ResourceController {
      */
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody ResourceBean resourceBean){
-        try {
-            if(resourceBean.getId() == null){
-                resourceService.save(resourceBean);
-            }else {
-                resourceService.update(resourceBean);
-            }
-            return JsonMessage.success();
-        } catch (AmbitoException e) {
-            return JsonMessage.fail(e.getMessage(), e.getCode());
+        if(resourceBean.getId() == null){
+            resourceService.save(resourceBean);
+        }else {
+            resourceService.update(resourceBean);
         }
+        return JsonMessage.success();
     }
 
 

@@ -48,16 +48,12 @@ public class SysOrgVehicleController {
 
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody SysOrgVehicleBean sysOrgVehicleBean) {
-        try {
-            if (sysOrgVehicleBean.getId() == null) {
-                sysOrgVehicleService.save(sysOrgVehicleBean);
-            } else {
-                sysOrgVehicleService.update(sysOrgVehicleBean);
-            }
-            return JsonMessage.success();
-        } catch (Exception e) {
-            return JsonMessage.fail(e.getMessage());
+        if (sysOrgVehicleBean.getId() == null) {
+            sysOrgVehicleService.save(sysOrgVehicleBean);
+        } else {
+            sysOrgVehicleService.update(sysOrgVehicleBean);
         }
+        return JsonMessage.success();
     }
 
 

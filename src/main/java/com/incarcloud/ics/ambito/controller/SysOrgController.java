@@ -68,18 +68,12 @@ public class SysOrgController {
 
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody SysOrgBean sysOrgBean){
-        try {
-            if(sysOrgBean.getId() == null){
-                sysOrgService.save(sysOrgBean);
-            }else {
-                sysOrgService.update(sysOrgBean);
-            }
-            return JsonMessage.success();
-        } catch (AmbitoException e) {
-            return JsonMessage.fail(e.getMessage(),e.getCode());
-        } catch (Exception e){
-            return JsonMessage.fail(UNKNOWN_EXCEPTION);
+        if(sysOrgBean.getId() == null){
+            sysOrgService.save(sysOrgBean);
+        }else {
+            sysOrgService.update(sysOrgBean);
         }
+        return JsonMessage.success();
     }
 
 
@@ -99,29 +93,25 @@ public class SysOrgController {
      */
     @GetMapping(value = "/orgTree")
     public JsonMessage getOrgTree(@RequestParam Long id){
-        try {
-            SysOrgBean sysOrgBean = sysOrgService.get(id);
-            if(sysOrgBean == null){
-                return JsonMessage.success();
-            }
-            Map<String, SysOrgBean> sysOrgBeanMap = new HashMap<>();
+        SysOrgBean sysOrgBean = sysOrgService.get(id);
+        if(sysOrgBean == null){
+            return JsonMessage.success();
+        }
+        Map<String, SysOrgBean> sysOrgBeanMap = new HashMap<>();
 
-            sysOrgBeanMap.put(sysOrgBean.getOrgCode(), sysOrgBean);
-            List<SysOrgBean> sysOrgBeans = sysOrgService.query();
-            if(CollectionUtils.isNotEmpty(sysOrgBeans)){
-                sysOrgBeanMap.putAll(sysOrgBeans.stream().collect(Collectors.toMap(SysOrgBean::getOrgCode, e->e)));
-                for(SysOrgBean org : sysOrgBeans){
-                    SysOrgBean parent = sysOrgBeanMap.get(org.getParentCode());
-                    if(parent != null){
-                        parent.getChildren().add(org);
-                    }
+        sysOrgBeanMap.put(sysOrgBean.getOrgCode(), sysOrgBean);
+        List<SysOrgBean> sysOrgBeans = sysOrgService.query();
+        if(CollectionUtils.isNotEmpty(sysOrgBeans)){
+            sysOrgBeanMap.putAll(sysOrgBeans.stream().collect(Collectors.toMap(SysOrgBean::getOrgCode, e->e)));
+            for(SysOrgBean org : sysOrgBeans){
+                SysOrgBean parent = sysOrgBeanMap.get(org.getParentCode());
+                if(parent != null){
+                    parent.getChildren().add(org);
                 }
             }
-
-            return JsonMessage.success(sysOrgBeanMap.get(sysOrgBean.getOrgCode()));
-        } catch (Exception e) {
-            return JsonMessage.fail(UNKNOWN_EXCEPTION);
         }
+
+        return JsonMessage.success(sysOrgBeanMap.get(sysOrgBean.getOrgCode()));
     }
 
 
