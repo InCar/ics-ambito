@@ -1,6 +1,5 @@
 package com.incarcloud.ics.ambito.entity;
 
-import com.incarcloud.ics.ambito.jdbc.Id;
 import com.incarcloud.ics.ambito.jdbc.Table;
 
 import java.util.Date;

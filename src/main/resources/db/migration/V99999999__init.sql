@@ -1,6 +1,6 @@
 insert into t_sys_user (id,username,password,real_name,gender,email,phone,state,salt)
 values
-(1,'admin','LoiAWka1PI+uJwjCQvkvJg==','管理员',1,'1234@qq.com','18627720789',0,'1234');
+(1,'admin','LoiAWka1PI+uJwjCQvkvJg==','管理员',1,'','',0,'1234');
 
 
 INSERT INTO t_sys_role (id, role_name)

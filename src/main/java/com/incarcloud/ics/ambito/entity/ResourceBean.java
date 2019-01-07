@@ -17,21 +17,27 @@ public class ResourceBean extends BaseBean{
 
     private static final long serialVersionUID = -7946151979932000051L;
 
-    private Long parentId;
+    private String code;
+
+    private String parentCode;
+
+    private String parentCodes;
 
     private String resourceName;
 
-    private Byte resourceType;
+    private Byte type;
 
-    private Integer resourceSort;
+    private Integer sort;
 
     private String url;
 
-    private String resourceIcon;
+    private String icon;
 
     private Integer isDefault;
 
     private String remark;
+
+    private Byte isDisplay;
 
     private List<ResourceBean> resourceBeans;
 
@@ -43,13 +49,6 @@ public class ResourceBean extends BaseBean{
         this.remark = remark;
     }
 
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
 
     public String getResourceName() {
         return resourceName;
@@ -59,12 +58,44 @@ public class ResourceBean extends BaseBean{
         this.resourceName = resourceName;
     }
 
-    public Integer getResourceSort() {
-        return resourceSort;
+    public String getCode() {
+        return code;
     }
 
-    public void setResourceSort(Integer resourceSort) {
-        this.resourceSort = resourceSort;
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getParentCode() {
+        return parentCode;
+    }
+
+    public void setParentCode(String parentCode) {
+        this.parentCode = parentCode;
+    }
+
+    public String getParentCodes() {
+        return parentCodes;
+    }
+
+    public void setParentCodes(String parentCodes) {
+        this.parentCodes = parentCodes;
+    }
+
+    public Byte getType() {
+        return type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 
     public String getUrl() {
@@ -75,12 +106,12 @@ public class ResourceBean extends BaseBean{
         this.url = url;
     }
 
-    public String getResourceIcon() {
-        return resourceIcon;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setResourceIcon(String resourceIcon) {
-        this.resourceIcon = resourceIcon;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public Integer getIsDefault() {
@@ -91,12 +122,8 @@ public class ResourceBean extends BaseBean{
         this.isDefault = isDefault;
     }
 
-    public Byte getResourceType() {
-        return resourceType;
-    }
-
-    public void setResourceType(Byte resourceType) {
-        this.resourceType = resourceType;
+    public void setIsDisplay(Byte isDisplay) {
+        this.isDisplay = isDisplay;
     }
 
     public List<ResourceBean> getResourceBeans() {
@@ -105,5 +132,13 @@ public class ResourceBean extends BaseBean{
 
     public void setResourceBeans(List<ResourceBean> resourceBeans) {
         this.resourceBeans = resourceBeans;
+    }
+
+    public byte getIsDisplay() {
+        return isDisplay;
+    }
+
+    public void setIsDisplay(byte isDisplay) {
+        this.isDisplay = isDisplay;
     }
 }

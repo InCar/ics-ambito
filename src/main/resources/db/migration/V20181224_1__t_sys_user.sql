@@ -35,7 +35,9 @@ CREATE TABLE IF NOT EXISTS `t_sys_user` (
   `extend_d2` datetime COMMENT '扩展 Date 2',
   `extend_d3` datetime COMMENT '扩展 Date 3',
   `extend_d4` datetime COMMENT '扩展 Date 4',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  key(`username`),
+  key(`phone`)
   ) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 
