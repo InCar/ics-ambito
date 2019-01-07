@@ -26,7 +26,7 @@ public enum ErrorDefine {
 
     REPEATED_PHONE("手机号重复","17"),
 
-    UNKNOWN_EXCEPTION("其他异常", "999")
+    UNKNOWN_EXCEPTION("未知异常", "999")
     ;
     private String code;
     private String message;

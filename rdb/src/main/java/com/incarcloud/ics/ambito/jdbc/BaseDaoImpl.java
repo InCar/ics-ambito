@@ -11,10 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -436,6 +433,9 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         StringBuilder sql = new StringBuilder();
         sql.append("update ").append(getTableName()).append(" o set ");
         for (Field field : fields) {
+            if(isIgnoreField(field)){
+                continue;
+            }
             StringBuilder methodName = new StringBuilder();
             upperCaseFirstLetter(field, methodName);
             if(!field.isAnnotationPresent(Id.class)){
@@ -456,6 +456,16 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         sqlEntity.setSql(sql.toString());
         return sqlEntity;
     }
+
+    /**
+     * 忽略字段
+     * @param field
+     * @return
+     */
+    private boolean isIgnoreField(Field field){
+        return (field.getModifiers() & Modifier.STATIC) != 0 || Collection.class.isAssignableFrom(field.getType());
+    }
+
 
     private Object getObject(T t, StringBuilder methodName) {
         Method method = null;
@@ -502,6 +512,9 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         sql.append("update ").append(getTableName()).append(" o set ");
         StringBuilder whereSql = new StringBuilder(" where ");
         for (Field field : fields) {
+            if(isIgnoreField(field)){
+                continue;
+            }
             StringBuilder methodName = new StringBuilder();
             upperCaseFirstLetter(field, methodName);
             if(!field.isAnnotationPresent(Id.class)){
@@ -546,7 +559,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         sql.append("insert into ").append(getTableName()).append(" ( ");
         int paramLength = 0;
         for (Field field : fields) {
-            if(field.getName().equals("serialVersionUID")){
+            if(isIgnoreField(field)){
                 continue;
             }
             StringBuilder methodName = new StringBuilder();
@@ -556,11 +569,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
             try {
                 method = entityClass.getMethod(methodName.toString(), new Class[]{});
                 value = method.invoke(t, new Object[]{});
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
 

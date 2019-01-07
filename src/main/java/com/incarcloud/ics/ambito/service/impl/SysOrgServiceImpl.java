@@ -62,20 +62,19 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
         sysOrgBean.setIsLeaf((byte)1);
         //父节点设置为非叶子节点
         parent.setIsLeaf((byte)0);
-        super.save(parent);
+        super.update(parent);
         return super.save(sysOrgBean);
     }
 
     private String buildParentsCode(SysOrgBean parent){
         return parent.getParentCodes()
-                + SysOrgBean.CODE_SPERATOR
                 + parent.getOrgCode()
                 + SysOrgBean.CODE_SPERATOR;
     }
 
 
     private List<SysOrgBean> getOrgsByCode(String code) {
-        return super.query(new StringCondition("code", code, StringCondition.Handler.EQUAL));
+        return super.query(new StringCondition("orgCode", code, StringCondition.Handler.EQUAL));
     }
 
     private SysOrgBean getOrgByCode(String code) {

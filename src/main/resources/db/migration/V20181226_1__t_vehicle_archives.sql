@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS  `t_vehicle_archives` (
   `car_type` varchar(60) binary default null comment '车辆型号',
   `car_color` varchar(30) binary default null comment '车辆颜色',
   `plate_no` varchar(10) binary default null comment '车牌号码',
+  `control_no` varchar(20) binary default null comment '控制器号',
   `configuration` int(10) default null comment '配置 1:低配,2:标配,3:高配',
   `machine_no` varchar(80) default null comment '电机号',
   `gprs_no` varchar(80) binary default null comment 'gprs号',
@@ -50,7 +51,8 @@ CREATE TABLE IF NOT EXISTS  `t_vehicle_archives` (
   `extend_d2` datetime COMMENT '扩展 Date 2',
   `extend_d3` datetime COMMENT '扩展 Date 3',
   `extend_d4` datetime COMMENT '扩展 Date 4',
-  primary key (`id`)
+  primary key (`id`),
+  unique key (`vin_code`)
 ) engine=innodb auto_increment=1 default charset=utf8 comment='车辆档案表'
 
 

@@ -40,7 +40,7 @@ public class UserController {
      * @param username 用户名
      * @param phone 手机号
      * @param realName 真实姓名
-     * @param page 当前页数
+     * @param pageNum 当前页数
      * @param pageSize 每页记录数
      * @return
      */
@@ -50,7 +50,7 @@ public class UserController {
                                    @RequestParam(required = false)String phone,
                                    @RequestParam(required = false)String realName,
                                    @RequestParam(required = false)String createUser,
-                                   @RequestParam(required = false)Integer page,
+                                   @RequestParam(required = false)Integer pageNum,
                                    @RequestParam(required = false)Integer pageSize){
         Condition cond = Condition.and(
                 new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
@@ -59,10 +59,10 @@ public class UserController {
                 new StringCondition("realName", realName, StringCondition.Handler.ALL_LIKE),
                 new StringCondition("phone", phone, StringCondition.Handler.ALL_LIKE)
         );
-        if(page == null || pageSize == null){
+        if(pageNum == null || pageSize == null){
             return JsonMessage.success(userService.query(cond));
         }else {
-            return JsonMessage.success(userService.queryPage(new Page(page, pageSize), cond));
+            return JsonMessage.success(userService.queryPage(new Page(pageNum, pageSize), cond));
         }
     }
 

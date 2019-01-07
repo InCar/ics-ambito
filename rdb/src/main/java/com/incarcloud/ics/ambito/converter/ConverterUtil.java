@@ -4,6 +4,8 @@ import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.jdbc.SqlEntity;
 import com.incarcloud.ics.ambito.jdbc.WhereSqlEntity;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 

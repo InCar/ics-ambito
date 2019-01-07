@@ -7,4 +7,4 @@ INSERT IGNORE INTO t_sys_role (id, role_name)
 VALUES
 (1, '超级管理员');
 
- insert into t_sys_role_resource (role_id, resource_id)  select 1,id  from t_sys_resource;
+insert into t_sys_role_resource (role_id, resource_id)  select 1,id  from t_sys_resource;
