@@ -1,4 +1,4 @@
-create table `t_vehicle_archives` (
+CREATE TABLE IF NOT EXISTS  `t_vehicle_archives` (
   `id` bigint(32) not null auto_increment comment '主键',
   `vin_code` varchar(60) binary not null comment 'vin编码',
   `car_series` varchar(60) binary default null comment '车系',
