@@ -4,6 +4,7 @@ package com.incarcloud.ics.ambito.utils.sqlInit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.*;
 
@@ -27,7 +28,17 @@ public class InitSqlScript {
                 //初始化sql到数据库
                 String sqlStr = readFileByLines(file1.getPath());
                 if (sqlStr.length() > 0) {
-                    jdbcTemplate.execute(sqlStr);
+                    //处理一个sql文件里面包含有多个sql
+                    String[] split = sqlStr.split(";");
+                    if (split.length > 2) {
+                        for (String s : split) {
+                            if (!StringUtils.isEmpty(s)) {
+                                jdbcTemplate.execute(s);
+                            }
+                        }
+                    } else {
+                        jdbcTemplate.execute(sqlStr);
+                    }
                 }
             }
         }
