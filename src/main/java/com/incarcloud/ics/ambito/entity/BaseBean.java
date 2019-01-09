@@ -20,8 +20,10 @@ public class BaseBean implements Serializable {
     private Long id;
 
     public Date createTime;
+    public Long createTimeLong;
 
     public Date updateTime;
+    public Long updateTimeLong;
 
     public Long createUserId;
 
@@ -43,8 +45,19 @@ public class BaseBean implements Serializable {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+
+    public Long getCreateTimeLong() {
+        return createTime == null? null:createTime.getTime();
+    }
+
+
+
+    public Long getUpdateTimeLong() {
+        return updateTime == null ? null : updateTime.getTime();
+    }
+
+    public void setUpdateTimeLong(Long updateTimeLong) {
+        this.updateTimeLong = updateTimeLong;
     }
 
     public Long getCreateUserId() {
