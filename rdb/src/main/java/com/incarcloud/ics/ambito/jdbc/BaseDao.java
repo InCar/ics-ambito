@@ -38,17 +38,19 @@ public interface BaseDao<T> {
 
      int update(String sql, List<Object> params);  
       
-     int update(T t) throws Exception;  
+     int update(T t);
       
-     int update(T value, T template) throws Exception;
+     int update(T value, T template);
       
-     int save(T t) throws Exception;  
+     int save(T t);
       
      int save(String sql, List<Object> params);  
       
-     int delete(Serializable id);  
-      
-     int getCount(String whereSql, Object[] objects);
+     int delete(Serializable id);
+
+    int delete(Condition condition);
+
+    int getCount(String whereSql, Object[] objects);
 
 }  
  

@@ -11,9 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -252,7 +250,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      *
      */
     @Override
-    public int update(T t) throws Exception{
+    public int update(T t){
         SqlEntity sqlEntity = getUpdateSql(t);
         log(sqlEntity.getSql(), sqlEntity.getParams());
         return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());
@@ -264,7 +262,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      * @return int 更新的数量
      */
     @Override
-    public int update(T value,T template) throws Exception{
+    public int update(T value,T template){
         SqlEntity sqlEntity = getUpdateSql(value,template);
         log(sqlEntity.getSql(), sqlEntity.getParams());
         return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());
@@ -276,7 +274,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      * @return int 保存的数量
      */
     @Override
-    public int save(T t) throws Exception{
+    public int save(T t) {
         SqlEntity sqlEntity = getSaveSql(t);
         log(sqlEntity.getSql(), sqlEntity.getParams());
         return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());
@@ -305,6 +303,32 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         log(sql, Collections.singletonList(id));
         return jdbcTemplate.update(sql, id);
     }
+
+    /**
+     * 删除
+     * @param condition 删除条件
+     * @return int 删除的数量
+     */
+    @Override
+    public int delete(Condition condition) {
+        SqlEntity sqlEntity = condition.toSqlEntity();
+        StringBuilder builder = new StringBuilder("delete o from ");
+        builder.append(getTableName());
+        builder.append(" o where 1 = 1 ");
+        if(StringUtils.isNotEmpty(sqlEntity.getSql(false))){
+            builder.append("and ");
+            builder.append(sqlEntity.getSql());
+        }
+        List<Object[]> args = new ArrayList<>();
+
+        for(Object o : sqlEntity.getParams()){
+            args.add(new Object[]{o});
+        }
+        log(builder.toString(), sqlEntity.getParams());
+        return jdbcTemplate.batchUpdate(builder.toString(), args)[0];
+    }
+
+
 
     @Override
     public int getCount(String whereSql, Object[] objects){
@@ -402,18 +426,20 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     }
 
 
-    private SqlEntity getUpdateSql(T t) throws Exception{
+    private SqlEntity getUpdateSql(T t) {
         SqlEntity sqlEntity = new SqlEntity();
         sqlEntity.setParams(new ArrayList<>());
         Field[] fields = entityClass.getDeclaredFields();
         StringBuilder sql = new StringBuilder();
         sql.append("update ").append(getTableName()).append(" o set ");
         for (Field field : fields) {
+            if(isIgnoreField(field)){
+                continue;
+            }
             StringBuilder methodName = new StringBuilder();
             upperCaseFirstLetter(field, methodName);
             if(!field.isAnnotationPresent(Id.class)){
-                Method method = entityClass.getMethod(methodName.toString(), new Class[]{});
-                Object objectValue = method.invoke(t, new Object[]{});
+                Object objectValue = getObject(t, methodName);
                 if(objectValue instanceof Enum){
                     sqlEntity.getParams().add(((Enum)objectValue).ordinal());
                 }else{
@@ -426,12 +452,44 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
             sql.deleteCharAt(sql.length() - 1);
         }
         sql.append(" where o.id=?");
-        Method idMethod = entityClass.getMethod("getId", new Class[]{});
-        sqlEntity.getParams().add(idMethod.invoke(t, new Object[]{}));
+        sqlEntity.getParams().add(getParam(t));
         sqlEntity.setSql(sql.toString());
-//        LOGGER.info(sqlEntity.getSql());
-//        LOGGER.info(sqlEntity.getParams());
         return sqlEntity;
+    }
+
+    /**
+     * 忽略字段
+     * @param field
+     * @return
+     */
+    private boolean isIgnoreField(Field field){
+        return (field.getModifiers() & Modifier.STATIC) != 0 || Collection.class.isAssignableFrom(field.getType());
+    }
+
+
+    private Object getObject(T t, StringBuilder methodName) {
+        Method method = null;
+        try {
+            method = entityClass.getMethod(methodName.toString());
+            if(method != null){
+                return method.invoke(t);
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Object getParam(T t){
+        try {
+            Method m =  entityClass.getMethod("getId");
+            if(m != null){
+                return m.invoke(t);
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void upperCaseFirstLetter(Field field, StringBuilder methodName) {
@@ -446,7 +504,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         }
     }
 
-    private SqlEntity getUpdateSql(T value, T template) throws Exception{
+    private SqlEntity getUpdateSql(T value, T template){
         SqlEntity sqlEntity = new SqlEntity();
         sqlEntity.setParams(new ArrayList<>());
         Field[] fields = entityClass.getDeclaredFields();
@@ -454,11 +512,13 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         sql.append("update ").append(getTableName()).append(" o set ");
         StringBuilder whereSql = new StringBuilder(" where ");
         for (Field field : fields) {
+            if(isIgnoreField(field)){
+                continue;
+            }
             StringBuilder methodName = new StringBuilder();
             upperCaseFirstLetter(field, methodName);
             if(!field.isAnnotationPresent(Id.class)){
-                Method method = entityClass.getMethod(methodName.toString(), new Class[]{});
-                Object objectValue = method.invoke(value, new Object[]{});
+                Object objectValue = getObject(value, methodName);
                 if(!isEmpty(objectValue)){
                     if(objectValue instanceof Enum){
                         sqlEntity.getParams().add(((Enum)objectValue).ordinal());
@@ -473,8 +533,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         for (Field field : fields) {
             StringBuilder methodName = new StringBuilder();
             upperCaseFirstLetter(field, methodName);
-            Method method = entityClass.getMethod(methodName.toString(), new Class[]{});
-            Object objectValue = method.invoke(template, new Object[]{});
+            Object objectValue = getObject(template, methodName);
             if(!isEmpty(objectValue)){
                 sqlEntity.getParams().add(objectValue);
                 whereSql.append(" o.").append(StringUtils.camelToUnderline(field.getName())).append("= ? and");
@@ -493,20 +552,27 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         return sqlEntity;
     }
 
-    private SqlEntity getSaveSql(T t) throws Exception{
+    private SqlEntity getSaveSql(T t) {
         SqlEntity sqlEntity = new SqlEntity();
         Field[] fields = entityClass.getDeclaredFields();
         StringBuilder sql = new StringBuilder();
         sql.append("insert into ").append(getTableName()).append(" ( ");
         int paramLength = 0;
         for (Field field : fields) {
-            if(field.getName().equals("serialVersionUID")){
+            if(isIgnoreField(field)){
                 continue;
             }
             StringBuilder methodName = new StringBuilder();
             upperCaseFirstLetter(field, methodName);
-            Method method = entityClass.getMethod(methodName.toString(), new Class[]{});
-            Object value = method.invoke(t, new Object[]{});
+            Method method = null;
+            Object value = null;
+            try {
+                method = entityClass.getMethod(methodName.toString(), new Class[]{});
+                value = method.invoke(t, new Object[]{});
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+
             if(!isEmpty(value)){
                 if(value instanceof Enum){
                     sqlEntity.getParams().add(((Enum) value).ordinal());
@@ -528,15 +594,13 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
             sql.deleteCharAt(sql.length() - 1);
         }
         sql.append(")");
-        //LOGGER.info("sql.toString()="+sql.toString());
         sqlEntity.setSql(sql.toString());
         return sqlEntity;
     }
 
     private void dealPage(Page page, String sql, List<Object> params){
         String whereSql = "";
-//        LOGGER.info(sql);
-        if(sql != null && !sql.trim().equals("")){  
+        if(sql != null && !sql.trim().equals("")){
             int whereIndex = sql.toLowerCase().indexOf("where");  
             int orderIndex = sql.toLowerCase().indexOf("order");  
             int limitIndex = sql.toLowerCase().indexOf("limit");  

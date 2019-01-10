@@ -1,6 +1,7 @@
 package com.incarcloud.ics.ambito.controller;
 
 import com.incarcloud.ics.ambito.condition.Condition;
+import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.SysOrgVehicleBean;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
@@ -16,12 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * @author GuoKun
  * @version 1.0
  * @create_date 2018/12/26
  */
-@RequestMapping(value = "/orgvehicle")
+@RequestMapping(value = "/ics/orgvehicle")
 @RestController
 public class SysOrgVehicleController {
 
@@ -48,22 +53,45 @@ public class SysOrgVehicleController {
 
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody SysOrgVehicleBean sysOrgVehicleBean) {
-        try {
-            if (sysOrgVehicleBean.getId() == null) {
-                sysOrgVehicleService.save(sysOrgVehicleBean);
-            } else {
-                sysOrgVehicleService.update(sysOrgVehicleBean);
-            }
-            return JsonMessage.success();
-        } catch (Exception e) {
-            return JsonMessage.fail(e.getMessage());
+        if (sysOrgVehicleBean.getId() == null) {
+            sysOrgVehicleService.save(sysOrgVehicleBean);
+        } else {
+            sysOrgVehicleService.update(sysOrgVehicleBean);
         }
+        return JsonMessage.success();
+    }
+
+    /**
+     * 绑定车辆
+     * @param sysOrgVehicleBeans
+     * @return
+     */
+    @PostMapping(value = "/bind")
+    public JsonMessage bind(@RequestBody SysOrgVehicleBean[] sysOrgVehicleBeans) {
+        sysOrgVehicleService.bind(sysOrgVehicleBeans);
+        return JsonMessage.success();
     }
 
 
+    /**
+     * 删除车辆绑定关系
+     * @param id
+     * @return
+     */
     @DeleteMapping(value = "/delete/{id}")
     public JsonMessage delete(@PathVariable long id) {
         sysOrgVehicleService.delete(id);
+        return JsonMessage.success();
+    }
+
+    /**
+     * 解绑车辆
+     * @param ids
+     * @return
+     */
+    @DeleteMapping(value = "/unbind")
+    public JsonMessage delete(@RequestParam Long[] ids) {
+        sysOrgVehicleService.deleteBatch(ids);
         return JsonMessage.success();
     }
 }

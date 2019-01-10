@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0
  * @create_date 2018/12/26
  */
-@RequestMapping(value = "/org")
+@RequestMapping(value = "/ics/orgUser")
 @RestController
 public class SysOrgUserController {
 
@@ -48,16 +48,12 @@ public class SysOrgUserController {
 
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody SysOrgUserBean sysOrgUserBean) {
-        try {
-            if (sysOrgUserBean.getId() == null) {
-                sysOrgUserService.save(sysOrgUserBean);
-            } else {
-                sysOrgUserService.update(sysOrgUserBean);
-            }
-            return JsonMessage.success();
-        } catch (Exception e) {
-            return JsonMessage.fail(e.getMessage());
+        if (sysOrgUserBean.getId() == null) {
+            sysOrgUserService.save(sysOrgUserBean);
+        } else {
+            sysOrgUserService.update(sysOrgUserBean);
         }
+        return JsonMessage.success();
     }
 
 

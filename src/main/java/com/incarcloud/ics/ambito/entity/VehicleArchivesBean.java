@@ -1,6 +1,5 @@
 package com.incarcloud.ics.ambito.entity;
 
-import com.incarcloud.ics.ambito.jdbc.Id;
 import com.incarcloud.ics.ambito.jdbc.Table;
 
 import java.util.Date;
@@ -9,10 +8,10 @@ import java.util.Date;
  * Created by on 2018/12/26.
  */
 @Table(name = "t_vehicle_archives")
-public class VehicleArchivesBean {
+public class VehicleArchivesBean extends ExtendableBean{
 
-    @Id
-    private Long id;
+    private static final long serialVersionUID = 5885808001619406335L;
+
     private String vinCode; //vin编码
     private String carSeries; //车系
     private String carType; //车辆型号
@@ -38,20 +37,7 @@ public class VehicleArchivesBean {
     private String carProvince; //所属省
     private String carCity; //所属市
     private String remark; //备注
-    private Date createTime; //创建时间
-    private Date updateTime; //更新时间
-    private Long createUserId; //创建用户id
-    private Long updateUserId; //更新时间id
-    private String createUser; //创建人
-    private String updateUser; //更新人
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getVinCode() {
         return vinCode;
@@ -253,51 +239,4 @@ public class VehicleArchivesBean {
         this.remark = remark;
     }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Long getCreateUserId() {
-        return createUserId;
-    }
-
-    public void setCreateUserId(Long createUserId) {
-        this.createUserId = createUserId;
-    }
-
-    public Long getUpdateUserId() {
-        return updateUserId;
-    }
-
-    public void setUpdateUserId(Long updateUserId) {
-        this.updateUserId = updateUserId;
-    }
-
-    public String getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(String createUser) {
-        this.createUser = createUser;
-    }
-
-    public String getUpdateUser() {
-        return updateUser;
-    }
-
-    public void setUpdateUser(String updateUser) {
-        this.updateUser = updateUser;
-    }
 }

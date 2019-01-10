@@ -1,5 +1,6 @@
 package com.incarcloud.ics.ambito.controller;
 
+import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NullCondition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
@@ -13,6 +14,8 @@ import com.incarcloud.ics.ambito.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.logging.Logger;
+
 
 /**
  * @author ThomasChan
@@ -20,9 +23,11 @@ import org.springframework.web.bind.annotation.*;
  * @description
  * @date 2018/12/24
  */
-@RequestMapping(value = "/api/user")
+@RequestMapping(value = "/ics/user")
 @RestController
 public class UserController {
+
+    private Logger logger = Logger.getLogger(UserController.class.getName());
 
     @Autowired
     private UserService userService;
@@ -35,7 +40,7 @@ public class UserController {
      * @param username 用户名
      * @param phone 手机号
      * @param realName 真实姓名
-     * @param page 当前页数
+     * @param pageNum 当前页数
      * @param pageSize 每页记录数
      * @return
      */
@@ -45,7 +50,7 @@ public class UserController {
                                    @RequestParam(required = false)String phone,
                                    @RequestParam(required = false)String realName,
                                    @RequestParam(required = false)String createUser,
-                                   @RequestParam(required = false)Integer page,
+                                   @RequestParam(required = false)Integer pageNum,
                                    @RequestParam(required = false)Integer pageSize){
         Condition cond = Condition.and(
                 new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
@@ -54,10 +59,10 @@ public class UserController {
                 new StringCondition("realName", realName, StringCondition.Handler.ALL_LIKE),
                 new StringCondition("phone", phone, StringCondition.Handler.ALL_LIKE)
         );
-        if(page == null || pageSize == null){
+        if(pageNum == null || pageSize == null){
             return JsonMessage.success(userService.query(cond));
         }else {
-            return JsonMessage.success(userService.queryPage(new Page(page, pageSize), cond));
+            return JsonMessage.success(userService.queryPage(new Page(pageNum, pageSize), cond));
         }
     }
 
@@ -69,11 +74,7 @@ public class UserController {
      */
     @PostMapping(value = "/rigister")
     public JsonMessage reigsterUser(@RequestBody UserBean user){
-        try {
-            return JsonMessage.success(userService.register(user));
-        } catch (AmbitoException e) {
-            return JsonMessage.fail(e.getMessage(), e.getCode());
-        }
+        return JsonMessage.success(userService.register(user));
     }
 
 
@@ -85,11 +86,7 @@ public class UserController {
      */
     @GetMapping(value = "/roles")
     public JsonMessage getRoles(@RequestParam Long userId){
-        try {
-            return JsonMessage.success(roleService.getRolesOfUser(userId));
-        } catch (AmbitoException e) {
-            return JsonMessage.fail(e.getMessage(), e.getCode());
-        }
+        return JsonMessage.success(roleService.getRolesOfUser(userId));
     }
 
     /**
@@ -99,11 +96,7 @@ public class UserController {
      */
     @GetMapping(value = "/menus")
     public JsonMessage getUserResources(@RequestParam Long userId){
-        try {
-            return JsonMessage.success(userService.getUserMenus(userId));
-        } catch (AmbitoException e) {
-            return JsonMessage.fail(e.getMessage(), e.getCode());
-        }
+        return JsonMessage.success(userService.getUserMenus(userId));
     }
 
 
@@ -114,12 +107,8 @@ public class UserController {
      */
     @PostMapping(value = "/update")
     public JsonMessage updateUser(@RequestBody UserBean user){
-        try {
-            userService.update(user);
-            return JsonMessage.success();
-        } catch (Exception e) {
-            return JsonMessage.fail(e.getMessage());
-        }
+        userService.update(user);
+        return JsonMessage.success();
     }
 
     /**
@@ -132,4 +121,5 @@ public class UserController {
         userService.delete(id);
         return JsonMessage.success();
     }
+
 }

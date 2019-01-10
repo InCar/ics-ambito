@@ -23,9 +23,9 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      * 获取实体 
      * @param id 对象的id(Serializable) 
      * @return T 对象
-     */  
+     */
     @Transactional(isolation=Isolation.READ_COMMITTED,
-            readOnly=true)  
+            readOnly=true)
     @Override  
     public T get(Serializable id) {
         return baseDao.get(id);  
@@ -35,8 +35,8 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      * 查询 
      * @return List<T>
      */  
-    @Transactional(isolation=Isolation.READ_COMMITTED,readOnly=true)  
-    @Override  
+    @Transactional(isolation=Isolation.READ_COMMITTED,readOnly=true)
+    @Override
     public List<T> query() {
         return baseDao.query();  
     }
@@ -56,9 +56,9 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      * @param whereSql 查询条件（例:o.name=?）
      * @param params 查询条件对应的参数(List<Object>) 
      * @return List<T>
-     */  
-    @Transactional(isolation=Isolation.READ_COMMITTED,  
-            readOnly=true)  
+     */
+    @Transactional(isolation=Isolation.READ_COMMITTED,
+            readOnly=true)
     @Override  
     public List<T> query(String whereSql, List<Object> params) {
         return baseDao.query( whereSql, params);
@@ -82,9 +82,9 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      * 查询 
      * @param orderby 排序条件（LinkedHashMap<String, String>）
      * @return List<T>
-     */  
-    @Transactional(isolation=Isolation.READ_COMMITTED,  
-            readOnly=true)  
+     */
+    @Transactional(isolation=Isolation.READ_COMMITTED,
+            readOnly=true)
     @Override  
     public List<T> query(LinkedHashMap<String, String> orderby) {
         return baseDao.query(orderby);
@@ -96,9 +96,9 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      * @param params 查询条件对应的参数(List<Object>) 
      * @param orderby 排序条件（LinkedHashMap<String, String>） 
      * @return List<T>
-     */  
-    @Transactional(isolation=Isolation.READ_COMMITTED,  
-            readOnly=true)  
+     */
+    @Transactional(isolation=Isolation.READ_COMMITTED,
+            readOnly=true)
     @Override  
     public List<T> query(String whereSql, List<Object> params,
             LinkedHashMap<String, String> orderby) {  
@@ -211,7 +211,7 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      * @return int 更新的数量
      */  
     @Override  
-    public int update(T t) throws Exception {  
+    public int update(T t) {
         return baseDao.update(t);  
     }  
       
@@ -221,7 +221,7 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      * @return int 更新的数量
      */  
     @Override  
-    public int update(T value,T template) throws Exception{  
+    public int update(T value,T template) {
         return baseDao.update(value,template);  
     }  
   
@@ -231,7 +231,7 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      * @return int 保存的数量
      */  
     @Override  
-    public int save(T t) throws Exception {  
+    public int save(T t) {
         return baseDao.save(t);  
     }  
   
@@ -251,9 +251,15 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      * @param id 对象的id(Serializable) 
      * @return int 删除的数量
      */  
-    @Override  
+    @Override
     public int delete(Serializable id) {  
         return baseDao.delete(id);  
-    }  
-  
+    }
+
+
+    @Override
+    public int delete(Condition condition) {
+        return baseDao.delete(condition);
+    }
+
 }  

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @description
  * @date 2018/12/24
  */
-@RequestMapping(value = "/api/role")
+@RequestMapping(value = "/ics/role")
 @RestController
 public class RoleController {
 
@@ -69,16 +69,12 @@ public class RoleController {
      */
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody RoleBean roleBean){
-        try {
-            if(roleBean.getId() == null){
-                roleService.save(roleBean);
-            }else {
-                roleService.update(roleBean);
-            }
-            return JsonMessage.success();
-        } catch (Exception e) {
-            return JsonMessage.fail(e.getMessage());
+        if(roleBean.getId() == null){
+            roleService.save(roleBean);
+        }else {
+            roleService.update(roleBean);
         }
+        return JsonMessage.success();
     }
 
 

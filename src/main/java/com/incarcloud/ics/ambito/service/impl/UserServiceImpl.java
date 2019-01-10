@@ -1,5 +1,6 @@
 package com.incarcloud.ics.ambito.service.impl;
 
+import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.dao.UserDao;
@@ -42,20 +43,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         StringCondition username = new StringCondition("username", user.getUsername(), StringCondition.Handler.EQUAL);
         List<UserBean> userBeans = userDao.query(username);
         if(CollectionUtils.isNotEmpty(userBeans)){
-            throw new AmbitoException("用户名重复","1");
+            throw ErrorDefine.REPEATED_USERNAME.toAmbitoException();
         }
         userBeans  = userDao.query(new StringCondition("phone", user.getPhone(), StringCondition.Handler.EQUAL));
         if(CollectionUtils.isNotEmpty(userBeans)){
-            throw new AmbitoException("手机号重复","2");
+            throw ErrorDefine.REPEATED_PHONE.toAmbitoException();
         }
-        try {
-            String salt = StringUtils.getRandomSecureSalt();
-            user.setSalt(salt);
-            userDao.save(user);
-        } catch (Exception e) {
-            LOGGER.warning(e.getMessage());
-            throw new AmbitoException("注册失败","3");
-        }
+        String salt = StringUtils.getRandomSecureSalt();
+        user.setSalt(salt);
+        userDao.save(user);
         userBeans = query(username);
         return userBeans.get(0);
     }
@@ -67,11 +63,4 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         return resourceService.getResourcesOfRoles(roles);
     }
 
-//    @Override
-//    public UserBean detail(Long userId) {
-//        UserBean userBean = userDao.get(userId);
-//        List<RoleBean> rolesOfUser = roleService.getRolesOfUser(userId);
-////        userBean.setRoles(rolesOfUser);
-//        return userBean;
-//    }
 }

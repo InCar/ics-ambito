@@ -9,7 +9,9 @@ import com.incarcloud.ics.ambito.jdbc.Table;
  * @date 2018/12/24
  */
 @Table(name = "t_sys_user_role")
-public class UserRoleBean{
+public class UserRoleBean extends BaseBean{
+    private static final long serialVersionUID = -6743282472286010767L;
+    
     private Long userId;
     private Long roleId;
 

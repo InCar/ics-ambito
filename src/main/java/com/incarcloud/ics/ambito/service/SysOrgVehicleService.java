@@ -10,4 +10,7 @@ import com.incarcloud.ics.ambito.jdbc.BaseService;
  * @create_date 2018/12/26 14:24
  */
 public interface SysOrgVehicleService extends BaseService<SysOrgVehicleBean> {
+    void bind(SysOrgVehicleBean[] sysOrgVehicleBeans);
+
+    void deleteBatch(Long[] ids);
 }
