@@ -5,7 +5,7 @@ module.exports = {
   // mode: "production",
   entry: ['@babel/polyfill', "./src/main/resources/static/js/index.js"],
   output: {
-    path: __dirname + "/src/main/resources/static/js",
+    path: __dirname + "/src/main/resources/static/dist",
     filename: "testbundle.js"
   },
   resolve: {
@@ -24,16 +24,17 @@ module.exports = {
       { test: /\.tsx?$/, loader: "ts-loader" },
       {
         test: /\.js$/,
-        exclude: /node_modules/, 
          loader: "babel-loader"
       },
       {
         test:/\.css/,
-        exclude: /node_modules/, 
         use:[miniCssExtractPlugin.loader,"css-loader",{
             loader: "postcss-loader",
             options: {
-                plugins: () => [require('autoprefixer')]
+                plugins: () => [require('autoprefixer')],
+                getLocalIdent: (context, localIdentName, localName, options) => {
+                  return localName
+                }
             }
         }]
       },
@@ -58,15 +59,35 @@ module.exports = {
           }
         ]
       },
-      {test: /\.svg/, loader: 'svg-url-loader'},
       {
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: 'fonts/[name].[hash:7].[ext]'
-        }
-      }
+        test: /\.(otf|eot|svg|ttf|woff|woff2)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name].[ext]',// 打包后的文件名称
+              outputPath: '', // 默认是dist目录
+              publicPath: '../font/', // 图片的url前面追加'../font'
+              useRelativePath: true, // 使用相对路径
+              limit: 50000 // 表示小于1K的图片会被转化成base64格式
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[hash:3]_[name].[ext]',// 打包后的文件名称
+              outputPath: '',
+              publicPath: '../img/',
+              useRelativePath: true
+            }
+          }
+        ]
+      },
     ]
   }
 };
