@@ -32,7 +32,7 @@ public class InitSqlScript {
                     String[] split = sqlStr.split(";");
                     if (split.length > 2) {
                         for (String s : split) {
-                            if (!StringUtils.isEmpty(s)) {
+                            if (!StringUtils.isEmpty(s) && !s.equals(" ")) {
                                 jdbcTemplate.execute(s);
                             }
                         }
