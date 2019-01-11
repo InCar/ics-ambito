@@ -24,7 +24,7 @@ public class Config {
     }
 
     /**
-     * 是否递归删除组织，true表示递归删除所有组织及其子组织，false表示只删除本组织
+     * 是否递归删除组织，true表示递归删除�?有组织及其子组织，false表示只删除本组织
      */
     private boolean deleteOrgRecursion;
 

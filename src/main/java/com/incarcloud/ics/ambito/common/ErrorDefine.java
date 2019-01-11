@@ -22,9 +22,9 @@ public enum ErrorDefine {
 
     UNDELETABLE("无法删除","15"),
 
-    REPEATED_USERNAME("用户名重复","16"),
+    REPEATED_USERNAME("用户名重�?","16"),
 
-    REPEATED_PHONE("手机号重复","17"),
+    REPEATED_PHONE("手机号重�?","17"),
 
     UNKNOWN_EXCEPTION("未知异常", "999")
     ;
