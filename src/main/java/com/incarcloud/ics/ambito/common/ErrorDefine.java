@@ -3,6 +3,9 @@ package com.incarcloud.ics.ambito.common;
 import com.incarcloud.ics.ambito.exception.AmbitoException;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.utils.logger.ExceptionUtils;
+import com.incarcloud.ics.core.exception.AccountNotExistsException;
+import com.incarcloud.ics.core.exception.AuthException;
+import com.incarcloud.ics.core.exception.CredentialNotMatchException;
 
 /**
  * @author ThomasChan
@@ -25,6 +28,16 @@ public enum ErrorDefine {
     REPEATED_USERNAME("用户名重�?","16"),
 
     REPEATED_PHONE("手机号重�?","17"),
+
+    UN_AUTHENTICATED("认证失败","50"),
+
+    ACCOUNT_NOT_EXISTS("账号不存在","51"),
+
+    ACCOUNT_LOCKED("账号已锁定","52"),
+
+    PASSWORD_NOT_MATCH("密码错误","53"),
+
+    UN_AUTHORIZATION("无访问权限","61"),
 
     UNKNOWN_EXCEPTION("未知异常", "999")
     ;
@@ -64,6 +77,16 @@ public enum ErrorDefine {
                 }
             }
         }
+        if(e instanceof AuthException){
+            if(e instanceof AccountNotExistsException){
+                return ACCOUNT_NOT_EXISTS.toErrorMessage(ExceptionUtils.getStackTraceAsString(e));
+            }
+            if(e instanceof CredentialNotMatchException){
+                return PASSWORD_NOT_MATCH.toErrorMessage(ExceptionUtils.getStackTraceAsString(e));
+            }
+            return UN_AUTHENTICATED.toErrorMessage(ExceptionUtils.getStackTraceAsString(e));
+        }
+
         return UNKNOWN_EXCEPTION.toErrorMessage(ExceptionUtils.getStackTraceAsString(e));
     }
 }

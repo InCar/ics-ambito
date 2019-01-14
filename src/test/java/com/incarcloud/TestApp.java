@@ -35,4 +35,8 @@ public class TestApp {
         return DataSourceBuilder.create().build();
     }
 
+//    @Bean
+//    public ShiroFilter shiroFilter(){
+//        return new ShiroFilter();
+//    }
 }

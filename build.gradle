@@ -17,8 +17,10 @@ repositories {
     mavenCentral()
     dependencies{
         compile project("rdb")
+        compile project("auth")
         // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
-        compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+        compile ("javax.servlet:javax.servlet-api:4.0.1")
+
         // https://mvnrepository.com/artifact/mysql/mysql-connector-java
         compile ("mysql:mysql-connector-java:8.0.11")
 
