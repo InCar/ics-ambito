@@ -11,15 +11,11 @@ import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.core.authc.UsernamePasswordToken;
 import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.subject.Subject;
-import com.incarcloud.ics.core.utils.Asserts;
 import com.incarcloud.ics.core.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.logging.Logger;
 
 
@@ -156,11 +152,8 @@ public class UserController {
      */
     @GetMapping(value = "/login")
     public JsonMessage login(@RequestParam String username,
-                             @RequestParam String password,
-                             HttpServletRequest request,
-                             HttpServletResponse response){
-        Subject subject = SecurityUtils.getSubject(request, response);
-//        System.out.println(subject);
+                             @RequestParam String password){
+        Subject subject = SecurityUtils.getSubject();
         subject.login(new UsernamePasswordToken(username, password));
         Session session = subject.getSession();
         session.setAttribute("test", "123456");
@@ -175,9 +168,8 @@ public class UserController {
      * @return
      */
     @GetMapping(value = "/logout")
-    public JsonMessage logout(HttpServletRequest request,
-                             HttpServletResponse response){
-        Subject subject = SecurityUtils.getSubject(request, response);
+    public JsonMessage logout(){
+        Subject subject = SecurityUtils.getSubject();
         Assert.isTrue(subject.isAuthenticated(), "is not authenticated");
         subject.logout();
         Assert.isTrue(!subject.isAuthenticated(), "is authenticated");
@@ -192,10 +184,8 @@ public class UserController {
      * @return
      */
     @GetMapping(value = "/myInfo")
-    public JsonMessage myInfo(HttpServletRequest servletRequest,HttpServletResponse response){
-        Subject subject = SecurityUtils.getSubject(servletRequest, response);
-        Cookie[] cookies = servletRequest.getCookies();
-        Asserts.assertNotNull(cookies, "cookies is null");
+    public JsonMessage myInfo(){
+        Subject subject = SecurityUtils.getSubject();
         Assert.isTrue(subject.isAuthenticated(), "is not authenticated");
         Session session = subject.getSession();
         return JsonMessage.success(session.getAttribute("test"));
