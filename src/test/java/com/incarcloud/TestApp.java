@@ -1,6 +1,7 @@
 package com.incarcloud;
 
 
+import com.incarcloud.ics.core.filter.AmbitoFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -35,8 +36,8 @@ public class TestApp {
         return DataSourceBuilder.create().build();
     }
 
-//    @Bean
-//    public AmbitoFilter shiroFilter(){
-//        return new AmbitoFilter();
-//    }
+    @Bean
+    public AmbitoFilter shiroFilter(){
+        return new AmbitoFilter();
+    }
 }

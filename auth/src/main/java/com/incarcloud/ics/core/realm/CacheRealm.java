@@ -28,10 +28,8 @@ public abstract class CacheRealm implements Realm, LogoutAware {
 
     private String name;
     private CacheManager cacheManager;
-
     private boolean isCacheEnabled;
     private CredentialMatcher credentialMatcher;
-
 
     public CacheRealm() {
         this(new MD5PasswordMatcher());
@@ -84,7 +82,7 @@ public abstract class CacheRealm implements Realm, LogoutAware {
                 throw new AccountNotExistsException();
             }
         }
-        doAssertMatch(detail.getCredential(), authenticateToken);
+        doAssertMatch(detail, authenticateToken);
         return detail;
     }
 
@@ -95,9 +93,9 @@ public abstract class CacheRealm implements Realm, LogoutAware {
     }
 
 
-    protected void doAssertMatch(Object account, AuthenticateToken principal){
+    protected void doAssertMatch(Account account, AuthenticateToken token){
         ensureCredentialMatcher();
-        credentialMatcher.assertMatch(account, principal.getCredential());
+        credentialMatcher.assertMatch(account, token.getCredential());
     }
 
 

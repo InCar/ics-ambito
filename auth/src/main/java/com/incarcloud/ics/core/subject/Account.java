@@ -24,4 +24,5 @@ public interface Account extends Serializable {
     void setOrganizations(List<Organization> privileges);
     List<Privilege> getPrivileges();
     void setPrivileges(List<Privilege> privileges);
+    byte[] getCredentialsSalt();
 }

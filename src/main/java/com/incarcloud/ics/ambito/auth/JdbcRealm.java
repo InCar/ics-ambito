@@ -42,12 +42,11 @@ public class JdbcRealm extends SimpleAccountRealm {
         if(account == null){
             List<UserBean> users = userService.query(new StringCondition("username", userpasswordToken.getPrincipal(), StringCondition.Handler.EQUAL));
             if(users.isEmpty()){
-                throw new AccountNotExistsException();
+                throw new AccountNotExistsException("No account with username "+ token.getPrincipal());
             }
             UserBean userBean = users.get(0);
             SimplePrincipal simplePrincipal = new SimplePrincipal(userBean.getUsername());
-            account = new SimpleAccount(simplePrincipal, userBean.getPassword());
-
+            account = new SimpleAccount(simplePrincipal, userBean.getPassword(), userBean.getSalt().getBytes());
             //获取用户的角色信息
             List<RoleBean> roleBeans = roleService.getRolesOfUser(userBean.getId());
             account.setRoles(roleBeans.stream().map(e->new SimpleRole(e.getRoleCode())).collect(Collectors.toList()));

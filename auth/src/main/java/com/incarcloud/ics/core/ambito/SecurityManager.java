@@ -18,6 +18,5 @@ import com.incarcloud.ics.core.subject.SubjectContext;
 public interface SecurityManager extends Authenticator,Authorizer,Accessor,SessionManager {
     Subject login(AuthenticateToken authenticateToken, Subject subject) throws AuthenticationException;
     void logout(Subject subject);
-//    Subject createSubject(Account account, AuthenticateToken authenticateToken, Subject subject);
     Subject createSubject(SubjectContext subjectContext);
 }

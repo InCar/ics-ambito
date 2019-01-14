@@ -38,7 +38,7 @@ public class UsernamePasswordToken implements AuthenticateToken,Serializable {
     }
 
     @Override
-    public Object getCredential() {
+    public String getCredential() {
         return password;
     }
 }

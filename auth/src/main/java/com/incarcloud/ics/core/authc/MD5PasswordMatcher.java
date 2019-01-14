@@ -1,6 +1,9 @@
 package com.incarcloud.ics.core.authc;
 
+import com.incarcloud.ics.core.crypo.AbstractDegiestHelper;
+import com.incarcloud.ics.core.crypo.DigestHelper;
 import com.incarcloud.ics.core.exception.CredentialNotMatchException;
+import com.incarcloud.ics.core.subject.Account;
 
 /**
  * @author ThomasChan
@@ -10,11 +13,17 @@ import com.incarcloud.ics.core.exception.CredentialNotMatchException;
  */
 public class MD5PasswordMatcher implements CredentialMatcher {
 
-    @Override
-    public void assertMatch(Object principle, Object credential) {
 
-        if(!principle.equals(credential)){
-            throw new CredentialNotMatchException();
+    @Override
+    public void assertMatch(Account authenticateInfo, String credential) {
+        DigestHelper md5Helper = AbstractDegiestHelper
+                    .newInstance(DigestHelper.Algorithm.MD5, credential.getBytes(),
+                    authenticateInfo.getCredentialsSalt(), 2);
+        if(md5Helper == null){
+            throw new CredentialNotMatchException("No digest helper configured");
+        }
+        if(!authenticateInfo.getCredential().equals(md5Helper.toBase64())){
+            throw new CredentialNotMatchException("Credential match failed!");
         }
     }
 }

@@ -10,5 +10,5 @@ public interface AuthenticateToken {
 
     String getPrincipal();
 
-    Object getCredential();
+    String getCredential();
 }

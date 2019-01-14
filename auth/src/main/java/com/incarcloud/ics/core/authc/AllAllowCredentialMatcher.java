@@ -1,5 +1,7 @@
 package com.incarcloud.ics.core.authc;
 
+import com.incarcloud.ics.core.subject.Account;
+
 /**
  * @author ThomasChan
  * @version 1.0
@@ -9,7 +11,7 @@ package com.incarcloud.ics.core.authc;
 public class AllAllowCredentialMatcher implements CredentialMatcher {
 
     @Override
-    public void assertMatch(Object principle, Object credential) {
+    public void assertMatch(Account account, String credential) {
         //do nothing to let assert pass
     }
 }

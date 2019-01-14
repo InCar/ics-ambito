@@ -25,14 +25,20 @@ public class SimpleAccount implements Account,Serializable {
     private List<Organization> organizations = new ArrayList<>();
     private List<Role> roles = new ArrayList<>();
     private List<Privilege> privileges = new ArrayList<>();
+    private byte[] credentialsSalt;
 
     public SimpleAccount(Principal principal) {
         this.principal = principal;
     }
 
     public SimpleAccount(Principal principal, String password) {
+        this(principal, password, null);
+    }
+
+    public SimpleAccount(Principal principal, String password, byte[] credentialsSalt) {
         this.principal = principal;
         this.credential = password;
+        this.credentialsSalt = credentialsSalt;
     }
 
     @Override
@@ -78,5 +84,14 @@ public class SimpleAccount implements Account,Serializable {
     @Override
     public void setPrivileges(List<Privilege> privileges) {
         this.privileges = privileges;
+    }
+
+    @Override
+    public byte[] getCredentialsSalt() {
+        return credentialsSalt;
+    }
+
+    public void setCredentialsSalt(byte[] credentialsSalt) {
+        this.credentialsSalt = credentialsSalt;
     }
 }

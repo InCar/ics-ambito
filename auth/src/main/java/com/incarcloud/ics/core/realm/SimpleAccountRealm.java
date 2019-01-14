@@ -57,6 +57,4 @@ public abstract class SimpleAccountRealm extends CacheRealm {
         return account;
     }
 
-
-
 }

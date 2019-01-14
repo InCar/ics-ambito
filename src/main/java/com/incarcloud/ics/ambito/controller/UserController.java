@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.logging.Logger;
+import java.util.List;
 
 
 /**
@@ -28,8 +28,6 @@ import java.util.logging.Logger;
 @RequestMapping(value = "/ics/user")
 @RestController
 public class UserController {
-
-    private Logger logger = Logger.getLogger(UserController.class.getName());
 
     @Autowired
     private UserService userService;
@@ -125,38 +123,18 @@ public class UserController {
     }
 
 
-//    /**
-//     * 登录
-//     * @param usernamePasswordToken
-//     * @return
-//     */
-//    @PostMapping(value = "/login")
-//    public JsonMessage login(@RequestBody UsernamePasswordToken usernamePasswordToken,
-//                             HttpServletRequest request,
-//                             HttpServletResponse response){
-//        Subject subject = SecurityUtils.getSubject(request, response);
-//        subject.login(usernamePasswordToken);
-//        Assert.isTrue(subject.isAuthenticated(), "not login");
-//        Assert.isTrue(subject.getPrincipal().getUserIdentity().equals("admin"), "not admin");
-//        Session session = subject.getSession();
-//        System.out.println(session.getAttribute("user"));
-////        session.setAttribute("user", usernamePasswordToken.getPrincipal());
-//        return JsonMessage.success();
-//    }
-
     /**
      * 登录
-     * @param username
-     * @param password
      * @return
      */
-    @GetMapping(value = "/login")
-    public JsonMessage login(@RequestParam String username,
-                             @RequestParam String password){
+    @PostMapping(value = "/login")
+    public JsonMessage login(@RequestBody UsernamePasswordToken usernamePasswordToken){
         Subject subject = SecurityUtils.getSubject();
-        subject.login(new UsernamePasswordToken(username, password));
+        subject.login(usernamePasswordToken);
         Session session = subject.getSession();
         session.setAttribute("test", "123456");
+        List<UserBean> userBeans = userService.query(new StringCondition("username", usernamePasswordToken.getPrincipal(), StringCondition.Handler.EQUAL));
+        session.setAttribute("myInfo", userBeans.get(0));
         Assert.isTrue(subject.isAuthenticated(), "not login");
         Assert.isTrue(subject.getPrincipal().getUserIdentity() != null, "no identity after login");
         Assert.isTrue(subject.getSession(false)!= null, "has no session after login");
@@ -167,7 +145,7 @@ public class UserController {
      * 登出
      * @return
      */
-    @GetMapping(value = "/logout")
+    @PostMapping(value = "/logout")
     public JsonMessage logout(){
         Subject subject = SecurityUtils.getSubject();
         Assert.isTrue(subject.isAuthenticated(), "is not authenticated");
@@ -188,6 +166,6 @@ public class UserController {
         Subject subject = SecurityUtils.getSubject();
         Assert.isTrue(subject.isAuthenticated(), "is not authenticated");
         Session session = subject.getSession();
-        return JsonMessage.success(session.getAttribute("test"));
+        return JsonMessage.success(session.getAttribute("myInfo"));
     }
 }
