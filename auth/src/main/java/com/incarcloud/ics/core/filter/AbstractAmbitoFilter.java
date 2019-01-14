@@ -13,12 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * @author ThomasChan
- * @version 1.0
- * @description
- * @date 2019/1/11
- */
 public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
 
 //

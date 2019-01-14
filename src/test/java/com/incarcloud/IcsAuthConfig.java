@@ -3,6 +3,7 @@ package com.incarcloud;
 import com.incarcloud.ics.ambito.auth.JdbcRealm;
 import com.incarcloud.ics.core.ambito.DefaultSecurityManager;
 import com.incarcloud.ics.core.ambito.SecurityManager;
+import com.incarcloud.ics.core.filter.AmbitoFilter;
 import com.incarcloud.ics.core.realm.Realm;
 import com.incarcloud.ics.core.session.SessionManager;
 import com.incarcloud.ics.core.utils.SecurityUtils;
@@ -32,5 +33,9 @@ public class IcsAuthConfig {
         return realm;
     }
 
+    @Bean
+    public AmbitoFilter filter(){
+        return new AmbitoFilter();
+    }
 
 }

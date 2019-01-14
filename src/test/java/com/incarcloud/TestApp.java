@@ -36,7 +36,7 @@ public class TestApp {
     }
 
 //    @Bean
-//    public ShiroFilter shiroFilter(){
-//        return new ShiroFilter();
+//    public AmbitoFilter shiroFilter(){
+//        return new AmbitoFilter();
 //    }
 }
