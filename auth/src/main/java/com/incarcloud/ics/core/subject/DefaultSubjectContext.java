@@ -1,12 +1,12 @@
 package com.incarcloud.ics.core.subject;
 
 import com.incarcloud.ics.core.Principle.Principal;
-import com.incarcloud.ics.core.ambito.SecurityManager;
+import com.incarcloud.ics.core.security.SecurityManager;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
 import com.incarcloud.ics.core.exception.UnavailableSecurityManagerException;
 import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.utils.MapContext;
-import com.incarcloud.ics.core.utils.SecurityUtils;
+import com.incarcloud.ics.core.security.SecurityUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;

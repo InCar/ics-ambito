@@ -1,13 +1,10 @@
-//package com.incarcloud.ics.ambito.utils.logger;
+//package com.incarcloud.ics.security.utils.logger;
 //
 //import java.io.PrintWriter;
 //import java.io.StringWriter;
-//import java.time.Instant;
-//import java.time.ZoneId;
-//import java.time.format.DateTimeFormatter;
-//import java.util.Date;
-//import java.util.logging.LogRecord;
-//import java.util.logging.SimpleFormatter;
+//import java.utils.Date;
+//import java.utils.logging.LogRecord;
+//import java.utils.logging.SimpleFormatter;
 //
 //
 //public class IcsSimpleFormatter extends SimpleFormatter {

@@ -1,4 +1,4 @@
-package com.incarcloud.ics.core.ambito;
+package com.incarcloud.ics.core.security;
 
 import com.incarcloud.ics.core.access.Accessor;
 import com.incarcloud.ics.core.authc.AuthenticateToken;

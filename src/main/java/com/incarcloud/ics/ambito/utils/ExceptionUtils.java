@@ -3,12 +3,11 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  */
-package com.incarcloud.ics.ambito.utils.logger;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
+package com.incarcloud.ics.ambito.utils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * 关于异常的工具类.

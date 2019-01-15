@@ -3,7 +3,7 @@ package com.incarcloud.ics.core.filter;
 import com.incarcloud.ics.core.servlet.AmbitoHttpServletRequest;
 import com.incarcloud.ics.core.servlet.ShiroHttpServletResponse;
 import com.incarcloud.ics.core.subject.Subject;
-import com.incarcloud.ics.core.utils.SecurityUtils;
+import com.incarcloud.ics.core.security.SecurityUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

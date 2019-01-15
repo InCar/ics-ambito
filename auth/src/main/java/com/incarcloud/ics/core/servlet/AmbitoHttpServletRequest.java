@@ -21,7 +21,7 @@ package com.incarcloud.ics.core.servlet;
 
 import com.incarcloud.ics.core.role.SimpleRole;
 import com.incarcloud.ics.core.subject.Subject;
-import com.incarcloud.ics.core.utils.SecurityUtils;
+import com.incarcloud.ics.core.security.SecurityUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;

@@ -2,7 +2,7 @@ package com.incarcloud.ics.ambito.common;
 
 import com.incarcloud.ics.ambito.exception.AmbitoException;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
-import com.incarcloud.ics.ambito.utils.logger.ExceptionUtils;
+import com.incarcloud.ics.ambito.utils.ExceptionUtils;
 import com.incarcloud.ics.core.exception.AccountNotExistsException;
 import com.incarcloud.ics.core.exception.AuthException;
 import com.incarcloud.ics.core.exception.CredentialNotMatchException;
@@ -25,9 +25,9 @@ public enum ErrorDefine {
 
     UNDELETABLE("无法删除","15"),
 
-    REPEATED_USERNAME("用户名重�?","16"),
+    REPEATED_USERNAME("用户名重复","16"),
 
-    REPEATED_PHONE("手机号重�?","17"),
+    REPEATED_PHONE("手机号重复","17"),
 
     UN_AUTHENTICATED("认证失败","50"),
 
@@ -44,7 +44,7 @@ public enum ErrorDefine {
     private String code;
     private String message;
 
-    private ErrorDefine(String message, String code) {
+    ErrorDefine(String message, String code) {
         this.message = message;
         this.code = code;
     }
@@ -70,6 +70,7 @@ public enum ErrorDefine {
     }
 
     public static JsonMessage toErrorMessage(Exception e){
+        String stackTraceAsString = ExceptionUtils.getStackTraceAsString(e);
         if(e instanceof AmbitoException){
             for(ErrorDefine err : ErrorDefine.values()){
                 if(err.getCode().equals(((AmbitoException) e).getCode())){
@@ -79,14 +80,14 @@ public enum ErrorDefine {
         }
         if(e instanceof AuthException){
             if(e instanceof AccountNotExistsException){
-                return ACCOUNT_NOT_EXISTS.toErrorMessage(ExceptionUtils.getStackTraceAsString(e));
+                return ACCOUNT_NOT_EXISTS.toErrorMessage(stackTraceAsString);
             }
             if(e instanceof CredentialNotMatchException){
-                return PASSWORD_NOT_MATCH.toErrorMessage(ExceptionUtils.getStackTraceAsString(e));
+                return PASSWORD_NOT_MATCH.toErrorMessage();
             }
-            return UN_AUTHENTICATED.toErrorMessage(ExceptionUtils.getStackTraceAsString(e));
+            return UN_AUTHENTICATED.toErrorMessage(stackTraceAsString);
         }
 
-        return UNKNOWN_EXCEPTION.toErrorMessage(ExceptionUtils.getStackTraceAsString(e));
+        return UNKNOWN_EXCEPTION.toErrorMessage(stackTraceAsString);
     }
 }

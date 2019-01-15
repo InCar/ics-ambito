@@ -11,7 +11,7 @@ import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.core.authc.UsernamePasswordToken;
 import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.subject.Subject;
-import com.incarcloud.ics.core.utils.SecurityUtils;
+import com.incarcloud.ics.core.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;

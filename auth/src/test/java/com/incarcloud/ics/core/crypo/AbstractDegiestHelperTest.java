@@ -82,6 +82,11 @@ public class AbstractDegiestHelperTest {
         }
 
         {
+            DigestHelper defaultHelper = AbstractDegiestHelper.getMd5SaltHelper("4QrcOUm6Wau+VuBX8g+IPg==".getBytes(), "1234".getBytes());
+            Assert.assertEquals("MFsSw0Mexb7tmFWFdts9VA==", defaultHelper.toBase64());
+        }
+
+        {
             DigestHelper sha1Helper = AbstractDegiestHelper.newInstance(DigestHelper.Algorithm.SHA1, "123456".getBytes(), null, 1);
             Assert.assertEquals("fEqNCco3Yq9h5ZUglD3CZJT4lBs=", sha1Helper.toBase64());
         }
@@ -95,8 +100,7 @@ public class AbstractDegiestHelperTest {
             DigestHelper md5helper = AbstractDegiestHelper.newInstance(DigestHelper.Algorithm.MD5, "123456".getBytes(), "1234".getBytes(), 2);
             Assert.assertEquals("vILnxmabYfMuzlfEmMaFFQ==", md5helper.toBase64());
         }
-        //TODO: Test goes here...
-    } 
+    }
 
     
     @Test

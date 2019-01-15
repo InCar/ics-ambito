@@ -26,12 +26,6 @@ import com.incarcloud.ics.core.filter.Initializable;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-/**
- * Utility class to help call {@link org.apache.shiro.util.Initializable#init() Initializable.init()} and
- * {@link org.apache.shiro.util.Destroyable#destroy() Destroyable.destroy()} methods cleanly on any object.
- *
- * @since 0.2
- */
 public abstract class LifecycleUtils {
 
     private static final Logger log = Logger.getLogger(LifecycleUtils.class.getName());
@@ -46,14 +40,6 @@ public abstract class LifecycleUtils {
         initializable.init();
     }
 
-    /**
-     * Calls {@link #init(Object) init} for each object in the collection.  If the collection is {@code null} or empty,
-     * this method returns quietly.
-     *
-     * @param c the collection containing objects to {@link #init init}.
-     * @throws ShiroException if unable to initialize one or more instances.
-     * @since 0.9
-     */
     public static void init(Collection c) throws AuthException {
         if (c == null || c.isEmpty()) {
             return;
@@ -81,13 +67,6 @@ public abstract class LifecycleUtils {
         }
     }
 
-    /**
-     * Calls {@link #destroy(Object) destroy} for each object in the collection.
-     * If the collection is {@code null} or empty, this method returns quietly.
-     *
-     * @param c the collection of objects to destroy.
-     * @since 0.9
-     */
     public static void destroy(Collection c) {
         if (c == null || c.isEmpty()) {
             return;
