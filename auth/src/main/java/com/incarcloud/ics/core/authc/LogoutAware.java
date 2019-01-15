@@ -1,6 +1,6 @@
 package com.incarcloud.ics.core.authc;
 
-import com.incarcloud.ics.core.Principle.Principal;
+import com.incarcloud.ics.core.principal.Principal;
 
 /**
  * @author ThomasChan

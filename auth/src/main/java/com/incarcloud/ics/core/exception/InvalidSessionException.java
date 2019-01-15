@@ -7,6 +7,8 @@ package com.incarcloud.ics.core.exception;
  * @date 2019/1/7
  */
 public class InvalidSessionException extends SessionException {
+    private static final long serialVersionUID = 2127357946960396350L;
+
     public InvalidSessionException() {
     }
 

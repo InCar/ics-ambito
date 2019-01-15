@@ -1,7 +1,7 @@
 package com.incarcloud.ics.core.access;
 
 
-import com.incarcloud.ics.core.Principle.Principal;
+import com.incarcloud.ics.core.principal.Principal;
 
 import java.io.Serializable;
 import java.util.Collection;

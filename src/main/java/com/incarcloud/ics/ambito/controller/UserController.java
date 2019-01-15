@@ -1,5 +1,6 @@
 package com.incarcloud.ics.ambito.controller;
 
+import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
@@ -9,11 +10,10 @@ import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.core.authc.UsernamePasswordToken;
+import com.incarcloud.ics.core.security.SecurityUtils;
 import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.subject.Subject;
-import com.incarcloud.ics.core.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -132,12 +132,8 @@ public class UserController {
         Subject subject = SecurityUtils.getSubject();
         subject.login(usernamePasswordToken);
         Session session = subject.getSession();
-        session.setAttribute("test", "123456");
         List<UserBean> userBeans = userService.query(new StringCondition("username", usernamePasswordToken.getPrincipal(), StringCondition.Handler.EQUAL));
         session.setAttribute("myInfo", userBeans.get(0));
-        Assert.isTrue(subject.isAuthenticated(), "not login");
-        Assert.isTrue(subject.getPrincipal().getUserIdentity() != null, "no identity after login");
-        Assert.isTrue(subject.getSession(false)!= null, "has no session after login");
         return JsonMessage.success();
     }
 
@@ -148,11 +144,7 @@ public class UserController {
     @PostMapping(value = "/logout")
     public JsonMessage logout(){
         Subject subject = SecurityUtils.getSubject();
-        Assert.isTrue(subject.isAuthenticated(), "is not authenticated");
         subject.logout();
-        Assert.isTrue(!subject.isAuthenticated(), "is authenticated");
-        Assert.isTrue(subject.getSession(false) == null, "session is not null after logout");
-        Assert.isTrue(subject.getPrincipal() == null, "principal is not null after logout");
         return JsonMessage.success();
     }
 
@@ -164,7 +156,9 @@ public class UserController {
     @GetMapping(value = "/myInfo")
     public JsonMessage myInfo(){
         Subject subject = SecurityUtils.getSubject();
-        Assert.isTrue(subject.isAuthenticated(), "is not authenticated");
+        if(!subject.isAuthenticated()){
+            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+        }
         Session session = subject.getSession();
         return JsonMessage.success(session.getAttribute("myInfo"));
     }

@@ -29,12 +29,16 @@ public abstract class AbstractNativeSessionManager extends AbstractSessionManage
 
     @Override
     public void setTimeout(SessionKey sessionKey, long timeOut) throws InvalidSessionException {
-        lookupRequiredSession(sessionKey).setTimeout(timeOut);
+        Session session = lookupRequiredSession(sessionKey);
+        session.setTimeout(timeOut);
+        onChange(session);
     }
 
     @Override
     public void touch(SessionKey sessionKey) throws InvalidSessionException {
-        lookupRequiredSession(sessionKey).touch();
+        Session session = lookupRequiredSession(sessionKey);
+        session.touch();
+        onChange(session);
     }
 
     @Override
@@ -73,6 +77,14 @@ public abstract class AbstractNativeSessionManager extends AbstractSessionManage
     }
 
     protected void onStop(Session session, SessionKey sessionKey){
+        onStop(session);
+    }
+
+    protected void onStop(Session session){
+        onChange(session);
+    }
+
+    protected void onChange(Session s) {
     }
 
 
@@ -91,14 +103,19 @@ public abstract class AbstractNativeSessionManager extends AbstractSessionManage
         if(value == null){
             this.removeAttribute(sessionKey, key);
         }else {
-            lookupRequiredSession(sessionKey).setAttribute(key, value);
+            Session session = lookupRequiredSession(sessionKey);
+            session.setAttribute(key, value);
+            onChange(session);
         }
 
     }
 
     @Override
     public Object removeAttribute(SessionKey sessionKey, Object key) throws InvalidSessionException {
-        return lookupRequiredSession(sessionKey).removeAttribute(key);
+        Session session = lookupRequiredSession(sessionKey);
+        Object o = session.removeAttribute(key);
+        onChange(session);
+        return o;
     }
 
     @Override
@@ -125,6 +142,7 @@ public abstract class AbstractNativeSessionManager extends AbstractSessionManage
 
     protected void applyGlobalSessionTimeout(Session session) {
         session.setTimeout(getGlobalSessionTimeout());
+        onChange(session);
     }
 
     @Override

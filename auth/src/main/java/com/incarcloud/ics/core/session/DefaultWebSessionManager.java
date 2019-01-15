@@ -2,7 +2,6 @@ package com.incarcloud.ics.core.session;
 
 import com.incarcloud.ics.core.cookie.Cookie;
 import com.incarcloud.ics.core.cookie.SimpleCookie;
-import com.incarcloud.ics.core.exception.AuthorizationException;
 import com.incarcloud.ics.core.exception.UnknownSessionException;
 import com.incarcloud.ics.core.servlet.AmbitoHttpServletRequest;
 import com.incarcloud.ics.core.utils.WebUtils;
@@ -91,6 +90,10 @@ public class DefaultWebSessionManager extends AbstractValidateSessionManager imp
         this.getSessionIdCookie().removeFrom(request, response);
     }
 
+    protected void onChange(Session session) {
+        sessionDao.update(session);
+    }
+
     protected void onStart(Session session, SessionContext context){
         super.onStart(session, context);
 
@@ -116,13 +119,8 @@ public class DefaultWebSessionManager extends AbstractValidateSessionManager imp
         }
     }
 
-    @Override
-    protected Session createSession(SessionContext context) throws AuthorizationException {
-        return doCreateSession(context);
-    }
 
-
-    protected Session doCreateSession(SessionContext context) {
+    public Session doCreateSession(SessionContext context) {
         Session s = newSessionInstance(context);
         create(s);
         return s;
@@ -137,12 +135,12 @@ public class DefaultWebSessionManager extends AbstractValidateSessionManager imp
     }
 
     @Override
-    protected Session doGetSession(SessionKey key) {
+    public Session retrieveSession(SessionKey key) {
         Serializable sessionid = getSessionId(key);
         if(sessionid == null){
             return null;
         }
-        Session session = sessionDao.readSession(sessionid);
+        Session session = retrieveSessionFromDataSource(sessionid);
         if(session == null){
             String msg = "Could not find session with ID [" + sessionid + "]";
             throw new UnknownSessionException(msg);
@@ -150,6 +148,9 @@ public class DefaultWebSessionManager extends AbstractValidateSessionManager imp
         return session;
     }
 
+    protected Session retrieveSessionFromDataSource(Serializable sessionId) throws UnknownSessionException {
+        return sessionDao.readSession(sessionId);
+    }
 
     @Override
     protected Collection<Session> getActiveSessions() {

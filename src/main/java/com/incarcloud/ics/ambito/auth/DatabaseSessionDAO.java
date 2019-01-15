@@ -39,7 +39,7 @@ public class DatabaseSessionDAO extends AbstractSessionDAO {
 
     @Override
     protected Session doReadSession(Serializable sessionId) {
-        List<SessionBean> sessionBeans = sessionBeanDao.query(new StringCondition("sessionId", sessionId, StringCondition.Handler.EQUAL));
+        List<SessionBean> sessionBeans = sessionBeanDao.query(new StringCondition("id", sessionId, StringCondition.Handler.EQUAL));
         if(CollectionUtils.isEmpty(sessionBeans)){
             return null;
         }
@@ -48,7 +48,9 @@ public class DatabaseSessionDAO extends AbstractSessionDAO {
 
     @Override
     public void update(Session session) throws UnknownSessionException {
-        sessionBeanDao.update(new SessionBean((String) session.getId(), SerializationUtils.serialize(session)));
+        SessionBean sessionBean = sessionBeanDao.get(session.getId());
+        sessionBean.setSession(SerializationUtils.serialize(session));
+        sessionBeanDao.update(sessionBean);
     }
 
     @Override

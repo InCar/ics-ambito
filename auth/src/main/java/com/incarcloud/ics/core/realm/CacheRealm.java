@@ -1,6 +1,6 @@
 package com.incarcloud.ics.core.realm;
 
-import com.incarcloud.ics.core.Principle.Principal;
+import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
 import com.incarcloud.ics.core.authc.CredentialMatcher;
 import com.incarcloud.ics.core.authc.LogoutAware;

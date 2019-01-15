@@ -1,4 +1,4 @@
-package com.incarcloud.ics.core.Principle;
+package com.incarcloud.ics.core.principal;
 
 import java.io.Serializable;
 

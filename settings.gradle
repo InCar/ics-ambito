@@ -1,6 +1,5 @@
-rootProject.name = 'ics-security'
+rootProject.name = 'ics-ambito'
 include 'rdb'
 include 'servlet'
 include 'auth'
-include 'common'
 

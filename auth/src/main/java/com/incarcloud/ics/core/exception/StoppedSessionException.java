@@ -20,6 +20,8 @@ package com.incarcloud.ics.core.exception;
 
 public class StoppedSessionException extends InvalidSessionException {
 
+    private static final long serialVersionUID = 7823465523805207483L;
+
     public StoppedSessionException() {
         super();
     }
@@ -28,11 +30,9 @@ public class StoppedSessionException extends InvalidSessionException {
         super(message);
     }
 
-
     public StoppedSessionException(Throwable cause) {
         super(cause);
     }
-
 
     public StoppedSessionException(String message, Throwable cause) {
         super(message, cause);

@@ -5,7 +5,7 @@ import com.incarcloud.ics.ambito.entity.RoleBean;
 import com.incarcloud.ics.ambito.entity.UserBean;
 import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.UserService;
-import com.incarcloud.ics.core.Principle.SimplePrincipal;
+import com.incarcloud.ics.core.principal.SimplePrincipal;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
 import com.incarcloud.ics.core.authc.UsernamePasswordToken;
 import com.incarcloud.ics.core.exception.AccountNotExistsException;

@@ -29,13 +29,15 @@ public enum ErrorDefine {
 
     REPEATED_PHONE("手机号重复","17"),
 
-    UN_AUTHENTICATED("认证失败","50"),
+    AUTHENTICATE_FAILED("认证失败","50"),
 
     ACCOUNT_NOT_EXISTS("账号不存在","51"),
 
     ACCOUNT_LOCKED("账号已锁定","52"),
 
     PASSWORD_NOT_MATCH("密码错误","53"),
+
+    UN_AUTHENTICATE("未认证","54"),
 
     UN_AUTHORIZATION("无访问权限","61"),
 
@@ -85,7 +87,7 @@ public enum ErrorDefine {
             if(e instanceof CredentialNotMatchException){
                 return PASSWORD_NOT_MATCH.toErrorMessage();
             }
-            return UN_AUTHENTICATED.toErrorMessage(stackTraceAsString);
+            return AUTHENTICATE_FAILED.toErrorMessage(stackTraceAsString);
         }
 
         return UNKNOWN_EXCEPTION.toErrorMessage(stackTraceAsString);

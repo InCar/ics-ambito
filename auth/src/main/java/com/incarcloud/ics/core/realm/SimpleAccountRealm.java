@@ -51,9 +51,10 @@ public abstract class SimpleAccountRealm extends CacheRealm {
         Account account = getAccountInfo(token.getPrincipal());
         if(account == null) {
             throw new AccountNotExistsException();
-        }else {
-            addAccount(account);
         }
+//        else {
+//            addAccount(account);
+//        }
         return account;
     }
 

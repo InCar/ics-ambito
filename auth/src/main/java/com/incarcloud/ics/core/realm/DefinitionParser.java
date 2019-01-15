@@ -1,6 +1,6 @@
 package com.incarcloud.ics.core.realm;
 
-import com.incarcloud.ics.core.Principle.SimplePrincipal;
+import com.incarcloud.ics.core.principal.SimplePrincipal;
 import com.incarcloud.ics.core.org.Organization;
 import com.incarcloud.ics.core.org.SimpleOrganization;
 import com.incarcloud.ics.core.privilege.Privilege;

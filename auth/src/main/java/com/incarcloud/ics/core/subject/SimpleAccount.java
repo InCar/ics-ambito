@@ -1,7 +1,7 @@
 package com.incarcloud.ics.core.subject;
 
 
-import com.incarcloud.ics.core.Principle.Principal;
+import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.org.Organization;
 import com.incarcloud.ics.core.privilege.Privilege;
 import com.incarcloud.ics.core.role.Role;
