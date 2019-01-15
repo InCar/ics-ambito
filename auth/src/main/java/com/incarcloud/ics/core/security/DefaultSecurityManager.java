@@ -1,4 +1,4 @@
-package com.incarcloud.ics.core.ambito;
+package com.incarcloud.ics.core.security;
 
 import com.incarcloud.ics.core.Principle.Principal;
 import com.incarcloud.ics.core.access.Accessor;
@@ -324,7 +324,31 @@ public class DefaultSecurityManager implements SecurityManager {
         return subjectFactory;
     }
 
-//    public void setSubjectFactory(SubjectFactory subjectFactory) {
-//        this.subjectFactory = subjectFactory;
-//    }
+    public Accessor getAccessor() {
+        return accessor;
+    }
+
+    public void setAccessor(Accessor accessor) {
+        this.accessor = accessor;
+    }
+
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+
+    public SubjectDAO getSubjectDao() {
+        return subjectDao;
+    }
+
+    public void setSubjectDao(SubjectDAO subjectDao) {
+        this.subjectDao = subjectDao;
+    }
+
+    public void setSubjectFactory(SubjectFactory subjectFactory) {
+        this.subjectFactory = subjectFactory;
+    }
 }

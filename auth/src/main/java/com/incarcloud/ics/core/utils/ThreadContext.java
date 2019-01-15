@@ -19,7 +19,7 @@
 package com.incarcloud.ics.core.utils;
 
 import com.incarcloud.ics.core.subject.Subject;
-import com.incarcloud.ics.core.ambito.SecurityManager;
+import com.incarcloud.ics.core.security.SecurityManager;
 
 import java.util.Collections;
 import java.util.HashMap;

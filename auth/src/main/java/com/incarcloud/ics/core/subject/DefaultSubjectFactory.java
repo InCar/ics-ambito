@@ -1,7 +1,7 @@
 package com.incarcloud.ics.core.subject;
 
 import com.incarcloud.ics.core.Principle.Principal;
-import com.incarcloud.ics.core.ambito.SecurityManager;
+import com.incarcloud.ics.core.security.SecurityManager;
 import com.incarcloud.ics.core.session.Session;
 
 import javax.servlet.ServletRequest;

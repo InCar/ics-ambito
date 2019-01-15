@@ -1,12 +1,8 @@
 package com.incarcloud.ics.ambito.utils;
 
 
-import org.springframework.util.Assert;
-
-import javax.xml.stream.events.Characters;
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.Random;
 
 /**
  * @author ThomasChan

@@ -1,11 +1,11 @@
-package com.incarcloud.ics.core.utils;
+package com.incarcloud.ics.core.security;
 
 import com.incarcloud.ics.core.exception.UnavailableSecurityManagerException;
 import com.incarcloud.ics.core.subject.DefaultSubject;
 import com.incarcloud.ics.core.subject.DefaultSubjectContext;
 import com.incarcloud.ics.core.subject.Subject;
-import com.incarcloud.ics.core.ambito.SecurityManager;
 import com.incarcloud.ics.core.subject.SubjectContext;
+import com.incarcloud.ics.core.utils.ThreadContext;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;

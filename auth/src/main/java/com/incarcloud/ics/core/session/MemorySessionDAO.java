@@ -30,26 +30,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
 /**
- * Simple memory-based implementation of the SessionDAO that stores all of its sessions in an in-memory
- * {@link ConcurrentMap}.  <b>This implementation does not page to disk and is therefore unsuitable for applications
- * that could experience a large amount of sessions</b> and would therefore cause {@code OutOfMemoryException}s.  It is
- * <em>not</em> recommended for production use in most environments.
- * <h2>Memory Restrictions</h2>
- * If your application is expected to host many sessions beyond what can be stored in the
- * memory available to the JVM, it is highly recommended to use a different {@code SessionDAO} implementation which
- * uses a more expansive or permanent backing data store.
- * <p/>
- * In this case, it is recommended to instead use a custom
- * {@link CachingSessionDAO} implementation that communicates with a higher-capacity data store of your choice
- * (file system, database, etc).
- * <h2>Changes in 1.0</h2>
- * This implementation prior to 1.0 used to subclass the {@link CachingSessionDAO}, but this caused problems with many
- * cache implementations that would expunge entries due to TTL settings, resulting in Sessions that would be randomly
- * (and permanently) lost.  The Shiro 1.0 release refactored this implementation to be 100% memory-based (without
- * {@code Cache} usage to avoid this problem.
- *
- * @see CachingSessionDAO
- * @since 0.1
+ * 该类是基于内存的SessionDAO实现，直接会话保存在ConcurrentMap中，对于拥有大量会话的应用不建议使用，可能会造成OutOfMemory异常，
+ * 如果应用的会话数量很多，建议实现AbstractSessionDAO，使用更有扩展性的存储方式，比如保存到enhance, redis，mysql等
  */
 public class MemorySessionDAO extends AbstractSessionDAO {
 

@@ -8,6 +8,8 @@ package com.incarcloud.ics.core.exception;
  */
 public class AuthException extends RuntimeException {
 
+    private static final long serialVersionUID = -2917739828432385287L;
+
     public AuthException() {
     }
 
