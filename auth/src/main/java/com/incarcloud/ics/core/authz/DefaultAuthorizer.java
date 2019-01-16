@@ -7,4 +7,5 @@ package com.incarcloud.ics.core.authz;
  * @date 2019/1/9
  */
 public class DefaultAuthorizer extends AbstractAuthorizer {
+
 }

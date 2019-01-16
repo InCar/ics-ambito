@@ -15,6 +15,7 @@ import java.util.Collection;
 public abstract class AbstractAuthorizer implements Authorizer {
     @Override
     public boolean isPermitted(Principal account, Privilege privilege) {
+
         return false;
     }
 

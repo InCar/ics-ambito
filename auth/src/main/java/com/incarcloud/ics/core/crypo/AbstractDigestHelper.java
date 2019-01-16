@@ -10,7 +10,7 @@ import java.util.Base64;
  * @description
  * @date 2019/1/14
  */
-public abstract class AbstractDegiestHelper implements DigestHelper {
+public abstract class AbstractDigestHelper implements DigestHelper {
 
 
     public static final int DEFAULT_ITERATION = 1;
@@ -21,15 +21,15 @@ public abstract class AbstractDegiestHelper implements DigestHelper {
     private String base64Encode = null;
 
 
-    public AbstractDegiestHelper(String algorithmName, byte[] source) throws NoSuchAlgorithmException {
+    public AbstractDigestHelper(String algorithmName, byte[] source) throws NoSuchAlgorithmException {
         this(algorithmName, source, null);
     }
 
-    public AbstractDegiestHelper(String algorithmName, byte[] source, byte[] salt) throws NoSuchAlgorithmException {
+    public AbstractDigestHelper(String algorithmName, byte[] source, byte[] salt) throws NoSuchAlgorithmException {
         this(DEFAULT_ITERATION, algorithmName, source, salt);
     }
 
-    public AbstractDegiestHelper(int iteration, String algorithmName, byte[] source, byte[] salt) throws NoSuchAlgorithmException {
+    public AbstractDigestHelper(int iteration, String algorithmName, byte[] source, byte[] salt) throws NoSuchAlgorithmException {
         this.iteration = Math.max(iteration, DEFAULT_ITERATION);
         this.algorithmName = algorithmName;
         this.bytes = hash(source, salt, iteration);
@@ -90,7 +90,7 @@ public abstract class AbstractDegiestHelper implements DigestHelper {
 
     public static DigestHelper getMd5DefaultHelper(byte[] source) {
         try {
-            return new AbstractDegiestHelper(Algorithm.MD5.getName(), source){};
+            return new AbstractDigestHelper(Algorithm.MD5.getName(), source){};
         } catch (NoSuchAlgorithmException e) {
             return null;
         }
@@ -98,7 +98,7 @@ public abstract class AbstractDegiestHelper implements DigestHelper {
 
     public static DigestHelper getMd5SaltHelper(byte[] source, byte[] salt) {
         try {
-            return new AbstractDegiestHelper(SALT_ITERATION, Algorithm.MD5.getName(), source, salt){};
+            return new AbstractDigestHelper(SALT_ITERATION, Algorithm.MD5.getName(), source, salt){};
         } catch (NoSuchAlgorithmException e) {
             return null;
         }
@@ -106,7 +106,7 @@ public abstract class AbstractDegiestHelper implements DigestHelper {
 
     public static DigestHelper newInstance(DigestHelper.Algorithm algorithm, byte[] source, byte[] salt, int iteration)  {
         try {
-            return new AbstractDegiestHelper(iteration, algorithm.getName(), source, salt){};
+            return new AbstractDigestHelper(iteration, algorithm.getName(), source, salt){};
         } catch (NoSuchAlgorithmException e) {
             return null;
         }
