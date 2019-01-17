@@ -5,7 +5,6 @@ import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
 import com.incarcloud.ics.core.exception.AuthenticationException;
 import com.incarcloud.ics.core.privilege.Privilege;
-import com.incarcloud.ics.core.role.Role;
 import com.incarcloud.ics.core.session.Session;
 
 import javax.servlet.ServletRequest;
@@ -21,10 +20,10 @@ import java.util.Collection;
 public interface Subject {
     boolean isPermitted(Privilege privilege);
     boolean isPermittedAll(Collection<Privilege> privileges);
-    boolean hasRole(Role roleIdentifier);
-    boolean hasAllRoles(Collection<Role> roleIdentifiers);
-    boolean isAccessiableForData(String dataId);
-    Collection<String> getAccessiableOrg();
+    boolean hasRole(String roleIdentifier);
+    boolean hasAllRoles(Collection<String> roleIdentifiers);
+    boolean isAccessiableForData(java.lang.String dataId);
+    Collection<java.lang.String> getAccessiableOrg();
     void login(AuthenticateToken authenticateToken) throws AuthenticationException;
     boolean isAuthenticated();
     Session getSession();

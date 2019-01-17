@@ -2,7 +2,6 @@ package com.incarcloud.ics.core.authz;
 
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.privilege.Privilege;
-import com.incarcloud.ics.core.role.Role;
 
 import java.util.Collection;
 
@@ -15,6 +14,6 @@ import java.util.Collection;
 public interface Authorizer {
      boolean isPermitted(Principal account, Privilege privilege);
      boolean isPermittedAll(Principal account, Collection<Privilege> privileges);
-     boolean hasRole(Principal account, Role role);
-     boolean hasAllRoles(Principal account, Collection<Role> roleList);
+     boolean hasRole(Principal account, String role);
+     boolean hasAllRoles(Principal account, Collection<String> roleList);
 }

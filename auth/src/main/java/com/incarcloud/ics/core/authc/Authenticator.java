@@ -1,7 +1,5 @@
 package com.incarcloud.ics.core.authc;
 
-import com.incarcloud.ics.core.subject.Account;
-
 /**
  * @Description 权限认证类
  * @Author ThomasChan
@@ -9,5 +7,5 @@ import com.incarcloud.ics.core.subject.Account;
  * @Version 1.0
  */
 public interface Authenticator {
-    Account authenticate(AuthenticateToken authenticateToken);
+    AuthenticateInfo authenticate(AuthenticateToken authenticateToken);
 }

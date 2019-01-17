@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /** 
-* @description AbstractDegiestHelper Tester. 
+* @description AbstractDigestHelper Tester.
 * @author ThomasChan
 * @since <pre>Jan 14, 2019</pre> 
 * @version 1.0 
@@ -77,27 +77,27 @@ public class AbstractDegiestHelperTest {
     @Test
     public void testGetDefaultHelper() throws Exception {
         {
-            DigestHelper defaultHelper = AbstractDegiestHelper.getMd5DefaultHelper("123456".getBytes());
+            DigestHelper defaultHelper = AbstractDigestHelper.getMd5DefaultHelper("123456".getBytes());
             Assert.assertEquals("4QrcOUm6Wau+VuBX8g+IPg==", defaultHelper.toBase64());
         }
 
         {
-            DigestHelper defaultHelper = AbstractDegiestHelper.getMd5SaltHelper("4QrcOUm6Wau+VuBX8g+IPg==".getBytes(), "1234".getBytes());
+            DigestHelper defaultHelper = AbstractDigestHelper.getMd5SaltHelper("4QrcOUm6Wau+VuBX8g+IPg==".getBytes(), "1234".getBytes());
             Assert.assertEquals("MFsSw0Mexb7tmFWFdts9VA==", defaultHelper.toBase64());
         }
 
         {
-            DigestHelper sha1Helper = AbstractDegiestHelper.newInstance(DigestHelper.Algorithm.SHA1, "123456".getBytes(), null, 1);
+            DigestHelper sha1Helper = AbstractDigestHelper.newInstance(DigestHelper.Algorithm.SHA1, "123456".getBytes(), null, 1);
             Assert.assertEquals("fEqNCco3Yq9h5ZUglD3CZJT4lBs=", sha1Helper.toBase64());
         }
 
         {
-            DigestHelper sha1Helper = AbstractDegiestHelper.newInstance(DigestHelper.Algorithm.SHA256, "123456".getBytes(), null, 1);
+            DigestHelper sha1Helper = AbstractDigestHelper.newInstance(DigestHelper.Algorithm.SHA256, "123456".getBytes(), null, 1);
             Assert.assertEquals("jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=", sha1Helper.toBase64());
         }
 
         {
-            DigestHelper md5helper = AbstractDegiestHelper.newInstance(DigestHelper.Algorithm.MD5, "123456".getBytes(), "1234".getBytes(), 2);
+            DigestHelper md5helper = AbstractDigestHelper.newInstance(DigestHelper.Algorithm.MD5, "123456".getBytes(), "1234".getBytes(), 2);
             Assert.assertEquals("vILnxmabYfMuzlfEmMaFFQ==", md5helper.toBase64());
         }
     }

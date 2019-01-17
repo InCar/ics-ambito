@@ -1,7 +1,7 @@
 package com.incarcloud.ics.core.filter;
 
 import com.incarcloud.ics.core.servlet.AmbitoHttpServletRequest;
-import com.incarcloud.ics.core.servlet.ShiroHttpServletResponse;
+import com.incarcloud.ics.core.servlet.AmbitoHttpServletResponse;
 import com.incarcloud.ics.core.subject.Subject;
 import com.incarcloud.ics.core.security.SecurityUtils;
 
@@ -157,7 +157,7 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
         ServletResponse toUse = response;
         if ((request instanceof AmbitoHttpServletRequest) &&
                 (response instanceof HttpServletResponse)) {
-            //the ShiroHttpServletResponse exists to support URL rewriting for session ids.  This is only needed if
+            //the AmbitoHttpServletResponse exists to support URL rewriting for session ids.  This is only needed if
             //using Shiro sessions (i.e. not simple HttpSession based sessions):
             toUse = wrapServletResponse((HttpServletResponse) response, (AmbitoHttpServletRequest) request);
         }
@@ -165,7 +165,7 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
     }
 
     protected ServletResponse wrapServletResponse(HttpServletResponse orig, AmbitoHttpServletRequest request) {
-        return new ShiroHttpServletResponse(orig, getServletContext(), request);
+        return new AmbitoHttpServletResponse(orig, getServletContext(), request);
     }
 
     /**

@@ -38,7 +38,7 @@
 //    }
 //
 //    private String getThreadName() {
-//        String name = Thread.currentThread().getName();
+//        String name = Thread.currentThread().getRealmName();
 //        return name != null ? name : "";
 //    }
 //

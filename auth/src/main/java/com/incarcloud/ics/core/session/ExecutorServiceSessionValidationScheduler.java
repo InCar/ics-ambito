@@ -84,7 +84,7 @@ public class ExecutorServiceSessionValidationScheduler implements SessionValidat
     }
 
     /**
-     * Creates a single thread {@link ScheduledExecutorService} to validate sessions at fixed intervals 
+     * Creates a single thread {@link ScheduledExecutorService} to isValid sessions at fixed intervals
      * and enables this scheduler. The executor is created as a daemon thread to allow JVM to shut down
      */
     //TODO Implement an integration test to test for jvm exit as part of the standalone example

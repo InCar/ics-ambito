@@ -13,7 +13,7 @@ import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.ambito.utils.StringUtils;
-import com.incarcloud.ics.core.crypo.AbstractDegiestHelper;
+import com.incarcloud.ics.core.crypo.AbstractDigestHelper;
 import com.incarcloud.ics.core.crypo.DigestHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,7 +51,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         //生成随机盐
         String salt = StringUtils.getRandomSecureSalt();
         //使用随机盐混合密码进行md5加密
-        DigestHelper digestHelper = AbstractDegiestHelper.getMd5SaltHelper(user.getPassword().getBytes(), salt.getBytes());
+        DigestHelper digestHelper = AbstractDigestHelper.getMd5SaltHelper(user.getPassword().getBytes(), salt.getBytes());
         user.setSalt(salt);
         //保存加密后的密码，格式为base64
         user.setPassword(digestHelper.toBase64());

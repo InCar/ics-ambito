@@ -7,16 +7,15 @@ public interface Cache<K,V> {
 
     V get(K k);
 
-    boolean put(K k, V v);
+    V put(K k, V v);
 
     V remove(K k);
 
-
     int size();
-
 
     Set<K> keys();
 
-
     Collection<V> values();
+
+    void clear();
 }
