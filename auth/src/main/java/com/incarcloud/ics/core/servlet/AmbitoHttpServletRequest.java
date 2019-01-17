@@ -19,7 +19,6 @@
 package com.incarcloud.ics.core.servlet;
 
 
-import com.incarcloud.ics.core.role.SimpleRole;
 import com.incarcloud.ics.core.subject.Subject;
 import com.incarcloud.ics.core.security.SecurityUtils;
 
@@ -98,7 +97,7 @@ public class AmbitoHttpServletRequest extends HttpServletRequestWrapper {
 
     public boolean isUserInRole(String s) {
         Subject subject = getSubject();
-        boolean inRole = (subject != null && subject.hasRole(new SimpleRole(s)));
+        boolean inRole = (subject != null && subject.hasRole(s));
         if (!inRole) {
             inRole = super.isUserInRole(s);
         }

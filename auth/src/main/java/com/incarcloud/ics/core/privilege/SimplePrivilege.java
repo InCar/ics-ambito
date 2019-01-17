@@ -16,7 +16,7 @@ public class SimplePrivilege implements Privilege, Serializable {
         this.identifier = identifier;
     }
 
-    public String getIdentifier(){
+    public String getCode(){
         return identifier;
     }
 
@@ -25,11 +25,11 @@ public class SimplePrivilege implements Privilege, Serializable {
         if (this == o) return true;
         if (!(o instanceof SimplePrivilege)) return false;
         SimplePrivilege that = (SimplePrivilege) o;
-        return Objects.equals(getIdentifier(), that.getIdentifier());
+        return Objects.equals(getCode(), that.getCode());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getIdentifier());
+        return Objects.hash(getCode());
     }
 }

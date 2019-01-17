@@ -1,5 +1,6 @@
 package com.incarcloud.ics.core.subject;
 
+import com.incarcloud.ics.core.authc.AuthenticateInfo;
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.security.SecurityManager;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
@@ -23,7 +24,7 @@ public class DefaultSubjectContext extends MapContext implements SubjectContext 
     private static final String PRINCIPAL = DefaultSubjectContext.class.getName() + ".PRINCIPAL";
     private static final String SUBJECT = DefaultSubjectContext.class.getName() + ".SUBJECT";
     private static final String AUTHENTICATE_TOKEN = DefaultSubjectContext.class.getName() + ".AUTHENTICATE_TOKEN";
-    private static final String ACCOUNT_INFO = DefaultSubjectContext.class.getName() + ".ACCOUNT_INFO";
+    private static final String AUTHENTICATE_INFO = DefaultSubjectContext.class.getName() + ".AUTHENTICATE_INFO";
     private static final String SESSION_ID = DefaultSubjectContext.class.getName() + ".SESSION_ID";
     private static final String HOST = DefaultSubjectContext.class.getName() + ".HOST";
     private static final String SERVLET_REQUEST = DefaultSubjectContext.class.getName() + ".SERVLET_REQUEST";
@@ -128,13 +129,13 @@ public class DefaultSubjectContext extends MapContext implements SubjectContext 
     }
 
     @Override
-    public Account getAccountInfo() {
-        return getTypedValue(ACCOUNT_INFO, Account.class);
+    public AuthenticateInfo getAuthenticateInfo() {
+        return getTypedValue(AUTHENTICATE_INFO, AuthenticateInfo.class);
     }
 
     @Override
-    public void setAccountInfo(Account accountInfo) {
-        super.nullSafePut(ACCOUNT_INFO, accountInfo);
+    public void setAuthenticateInfo(AuthenticateInfo accountInfo) {
+        super.nullSafePut(AUTHENTICATE_INFO, accountInfo);
     }
 
     @Override
@@ -187,7 +188,7 @@ public class DefaultSubjectContext extends MapContext implements SubjectContext 
         Principal principals = getPrincipal();
         if (principals == null) {
             //check to see if they were just authenticated:
-            Account info = getAccountInfo();
+            AuthenticateInfo info = getAuthenticateInfo();
             if (info != null) {
                 principals = info.getPrincipal();
             }
@@ -217,7 +218,7 @@ public class DefaultSubjectContext extends MapContext implements SubjectContext 
         if (authc == null) {
             //see if there is an AuthenticationInfo object.  If so, the very presence of one indicates a successful
             //authentication attempt:
-            Account info = getAccountInfo();
+            AuthenticateInfo info = getAuthenticateInfo();
             authc = info != null;
         }
         if (!authc) {

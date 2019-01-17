@@ -1,7 +1,6 @@
 package com.incarcloud.ics.core.authc;
 
 import com.incarcloud.ics.core.realm.Realm;
-import com.incarcloud.ics.core.subject.Account;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -21,10 +20,10 @@ public class AtLeastOneSuccessStrategy implements AuthenticateStrategy {
 
 
     @Override
-    public Account authenticate(AuthenticateToken authenticateToken, List<Realm> realms) {
-        Account userDetail = null;
+    public AuthenticateInfo authenticate(AuthenticateToken authenticateToken, List<Realm> realms) {
+        AuthenticateInfo userDetail = null;
         for(Realm realm : realms){
-            userDetail = realm.getUserDetail(authenticateToken);
+            userDetail = realm.getAuthenticateInfo(authenticateToken);
             if(userDetail != null){
                 break;
             }

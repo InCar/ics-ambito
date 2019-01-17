@@ -1,10 +1,9 @@
 package com.incarcloud.ics.core.subject;
 
 
-import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.org.Organization;
+import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.privilege.Privilege;
-import com.incarcloud.ics.core.role.Role;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class SimpleAccount implements Account,Serializable {
     private final Principal principal;
     private Object credential;
     private List<Organization> organizations = new ArrayList<>();
-    private List<Role> roles = new ArrayList<>();
+    private List<String> roles = new ArrayList<>();
     private List<Privilege> privileges = new ArrayList<>();
     private byte[] credentialsSalt;
 
@@ -31,11 +30,11 @@ public class SimpleAccount implements Account,Serializable {
         this.principal = principal;
     }
 
-    public SimpleAccount(Principal principal, String password) {
+    public SimpleAccount(Principal principal, java.lang.String password) {
         this(principal, password, null);
     }
 
-    public SimpleAccount(Principal principal, String password, byte[] credentialsSalt) {
+    public SimpleAccount(Principal principal, java.lang.String password, byte[] credentialsSalt) {
         this.principal = principal;
         this.credential = password;
         this.credentialsSalt = credentialsSalt;
@@ -57,12 +56,12 @@ public class SimpleAccount implements Account,Serializable {
     }
 
     @Override
-    public List<Role> getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
     @Override
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 

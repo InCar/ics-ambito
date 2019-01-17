@@ -404,10 +404,10 @@ public class SimpleSession implements ValidatingSession, Serializable {
 
     /**
      * Returns the string representation of this SimpleSession, equal to
-     * <code>getClass().getName() + &quot;,id=&quot; + getId()</code>.
+     * <code>getClass().getRealmName() + &quot;,id=&quot; + getId()</code>.
      *
      * @return the string representation of this SimpleSession, equal to
-     *         <code>getClass().getName() + &quot;,id=&quot; + getId()</code>.
+     *         <code>getClass().getRealmName() + &quot;,id=&quot; + getId()</code>.
      * @since 1.0
      */
     @Override

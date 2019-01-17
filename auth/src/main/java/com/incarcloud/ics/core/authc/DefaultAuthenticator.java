@@ -1,7 +1,6 @@
 package com.incarcloud.ics.core.authc;
 
 import com.incarcloud.ics.core.realm.Realm;
-import com.incarcloud.ics.core.subject.Account;
 import com.incarcloud.ics.core.utils.Asserts;
 
 import java.util.ArrayList;
@@ -35,8 +34,8 @@ public class DefaultAuthenticator implements Authenticator {
     }
 
     @Override
-    public Account authenticate(AuthenticateToken authenticateToken) {
-        Account account = null;
+    public AuthenticateInfo authenticate(AuthenticateToken authenticateToken) {
+        AuthenticateInfo account = null;
         if(realms.size() == 1){
             account = doSingleRealmAuthenticate(authenticateToken);
         }else {
@@ -45,13 +44,13 @@ public class DefaultAuthenticator implements Authenticator {
         return account;
     }
 
-    private Account doMultiRealmAuthenticate(AuthenticateToken authenticateToken) {
+    private AuthenticateInfo doMultiRealmAuthenticate(AuthenticateToken authenticateToken) {
         ensureAuthenticateStrategyConfigured();
         return authenticateStrategy.authenticate(authenticateToken, realms);
     }
 
-    private Account doSingleRealmAuthenticate(AuthenticateToken authenticateToken) {
-        return  this.realms.get(0).getUserDetail(authenticateToken);
+    private AuthenticateInfo doSingleRealmAuthenticate(AuthenticateToken authenticateToken) {
+        return  this.realms.get(0).getAuthenticateInfo(authenticateToken);
     }
 
     private void ensureAuthenticateStrategyConfigured(){

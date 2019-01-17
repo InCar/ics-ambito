@@ -1,22 +1,19 @@
 package com.incarcloud.ics.core.security;
 
-import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.access.Accessor;
-import com.incarcloud.ics.core.authc.AuthenticateToken;
-import com.incarcloud.ics.core.authc.Authenticator;
-import com.incarcloud.ics.core.authc.DefaultAuthenticator;
-import com.incarcloud.ics.core.authc.LogoutAware;
+import com.incarcloud.ics.core.authc.*;
 import com.incarcloud.ics.core.authz.Authorizer;
+import com.incarcloud.ics.core.authz.DefaultAuthorizer;
 import com.incarcloud.ics.core.cache.CacheManager;
 import com.incarcloud.ics.core.cache.LocalCacheManager;
 import com.incarcloud.ics.core.exception.AuthenticationException;
 import com.incarcloud.ics.core.exception.InvalidSessionException;
 import com.incarcloud.ics.core.exception.SessionException;
-import com.incarcloud.ics.core.servlet.AmbitoHttpServletRequest;
+import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.privilege.Privilege;
 import com.incarcloud.ics.core.realm.CacheRealm;
 import com.incarcloud.ics.core.realm.Realm;
-import com.incarcloud.ics.core.role.Role;
+import com.incarcloud.ics.core.servlet.AmbitoHttpServletRequest;
 import com.incarcloud.ics.core.session.*;
 import com.incarcloud.ics.core.subject.*;
 
@@ -56,11 +53,12 @@ public class DefaultSecurityManager implements SecurityManager {
         this.sessionManager = new DefaultWebSessionManager();
         this.subjectDao = new DefaultSubjectDAO();
         this.subjectFactory = new DefaultSubjectFactory();
+        this.authorizer = new DefaultAuthorizer(this.getRealms());
     }
 
     @Override
     public Subject login(AuthenticateToken authenticateToken, Subject subject) throws AuthenticationException {
-        Account authenticate = authenticator.authenticate(authenticateToken);
+        AuthenticateInfo authenticate = authenticator.authenticate(authenticateToken);
         return createSubject(authenticate, authenticateToken, subject);
     }
 
@@ -70,15 +68,17 @@ public class DefaultSecurityManager implements SecurityManager {
         try {
             Principal principal = subject.getPrincipal();
             if(principal != null){
-                Authenticator authc = getAuthenticator();
-                if(authc instanceof LogoutAware){
-                    ((LogoutAware)authc).onLogout(principal);
+                List<Realm> realms = getRealms();
+                for(Realm realm : realms){
+                    if(realm instanceof LogoutAware){
+                        ((LogoutAware)realm).onLogout(principal);
+                    }
                 }
             }
             deleteSubject(subject);
         }catch (Exception e){
             if (logger.isLoggable(Level.FINE)) {
-                String msg = "Unable to cleanly unbind Subject.  Ignoring (logging out).";
+                java.lang.String msg = "Unable to cleanly unbind Subject.  Ignoring (logging out).";
                 logger.fine(msg);
             }
         }finally {
@@ -86,7 +86,7 @@ public class DefaultSecurityManager implements SecurityManager {
                 stopSession(subject);
             }catch (Exception e){
                 if (logger.isLoggable(Level.FINE)) {
-                    String msg = "Unable to cleanly stop Session for Subject [" + subject.getPrincipal() + "] " +
+                    java.lang.String msg = "Unable to cleanly stop Session for Subject [" + subject.getPrincipal() + "] " +
                             "Ignoring (logging out).";
                     logger.fine(msg);
                 }
@@ -126,10 +126,10 @@ public class DefaultSecurityManager implements SecurityManager {
      * @param existing
      * @return
      */
-    public Subject createSubject(Account account, AuthenticateToken authenticateToken, Subject existing) {
+    public Subject createSubject(AuthenticateInfo account, AuthenticateToken authenticateToken, Subject existing) {
         SubjectContext context = new DefaultSubjectContext();
         context.setAuthenticateToken(authenticateToken);
-        context.setAccountInfo(account);
+        context.setAuthenticateInfo(account);
         context.setIsAuthenticated(true);
         if(existing != null){
             context.setSubject(existing);
@@ -232,7 +232,7 @@ public class DefaultSecurityManager implements SecurityManager {
     }
 
     @Override
-    public Account authenticate(AuthenticateToken authenticateToken) {
+    public AuthenticateInfo authenticate(AuthenticateToken authenticateToken) {
         return authenticator.authenticate(authenticateToken);
     }
 
@@ -247,12 +247,12 @@ public class DefaultSecurityManager implements SecurityManager {
     }
 
     @Override
-    public boolean hasRole(Principal principal, Role role) {
+    public boolean hasRole(Principal principal, String role) {
         return authorizer.hasRole(principal, role);
     }
 
     @Override
-    public boolean hasAllRoles(Principal principal, Collection<Role> roleList) {
+    public boolean hasAllRoles(Principal principal, Collection<String> roleList) {
         return authorizer.hasAllRoles(principal, roleList);
     }
 
@@ -283,7 +283,7 @@ public class DefaultSecurityManager implements SecurityManager {
     }
 
     @Override
-    public Collection<String> assessibleOrgCodes(Principal principal) {
+    public Collection<java.lang.String> assessibleOrgCodes(Principal principal) {
         return accessor.assessibleOrgCodes(principal);
     }
 

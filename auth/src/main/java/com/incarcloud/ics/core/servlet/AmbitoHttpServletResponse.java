@@ -44,7 +44,7 @@ import java.net.URLEncoder;
  *
  * @since 0.2
  */
-public class ShiroHttpServletResponse extends HttpServletResponseWrapper {
+public class AmbitoHttpServletResponse extends HttpServletResponseWrapper {
 
     //TODO - complete JavaDoc
 
@@ -54,7 +54,7 @@ public class ShiroHttpServletResponse extends HttpServletResponseWrapper {
     //the associated request
     private AmbitoHttpServletRequest request = null;
 
-    public ShiroHttpServletResponse(HttpServletResponse wrapped, ServletContext context, AmbitoHttpServletRequest request) {
+    public AmbitoHttpServletResponse(HttpServletResponse wrapped, ServletContext context, AmbitoHttpServletRequest request) {
         super(wrapped);
         this.context = context;
         this.request = request;

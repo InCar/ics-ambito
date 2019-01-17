@@ -1,7 +1,6 @@
 package com.incarcloud.ics.core.authc;
 
 import com.incarcloud.ics.core.realm.Realm;
-import com.incarcloud.ics.core.subject.Account;
 
 import java.util.List;
 
@@ -12,5 +11,5 @@ import java.util.List;
  * @date 2019/1/2
  */
 public interface AuthenticateStrategy {
-    Account authenticate(AuthenticateToken authenticateToken, List<Realm> realms);
+    AuthenticateInfo authenticate(AuthenticateToken authenticateToken, List<Realm> realms);
 }

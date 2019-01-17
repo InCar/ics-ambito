@@ -1,8 +1,11 @@
 package com.incarcloud.ics.core.realm;
 
+import com.incarcloud.ics.core.access.AccessInfo;
+import com.incarcloud.ics.core.authc.AuthenticateInfo;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
+import com.incarcloud.ics.core.authz.AuthorizeInfo;
 import com.incarcloud.ics.core.exception.AuthenticationException;
-import com.incarcloud.ics.core.subject.Account;
+import com.incarcloud.ics.core.principal.Principal;
 
 
 /**
@@ -12,7 +15,11 @@ import com.incarcloud.ics.core.subject.Account;
  * @Version 1.0
  */
 public interface Realm {
-    String getName();
+    String getRealmName();
 
-    Account getUserDetail(AuthenticateToken principal) throws AuthenticationException;
+    AuthenticateInfo getAuthenticateInfo(AuthenticateToken authenticateToken) throws AuthenticationException;
+
+    AuthorizeInfo getAuthorizeInfo(Principal principal);
+
+    AccessInfo getAccessInfo(Principal principal);
 }

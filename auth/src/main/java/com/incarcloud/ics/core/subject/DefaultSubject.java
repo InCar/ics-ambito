@@ -1,11 +1,10 @@
 package com.incarcloud.ics.core.subject;
 
-import com.incarcloud.ics.core.principal.Principal;
-import com.incarcloud.ics.core.security.SecurityManager;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
 import com.incarcloud.ics.core.exception.InvalidSessionException;
+import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.privilege.Privilege;
-import com.incarcloud.ics.core.role.Role;
+import com.incarcloud.ics.core.security.SecurityManager;
 import com.incarcloud.ics.core.session.DefaultSessionContext;
 import com.incarcloud.ics.core.session.ProxiedSession;
 import com.incarcloud.ics.core.session.Session;
@@ -32,7 +31,7 @@ public class DefaultSubject implements Subject {
     protected Session session;
     protected boolean isAuthenticated;
     protected Principal principal;
-    protected String host;
+    protected java.lang.String host;
     private final ServletRequest servletRequest;
     private final ServletResponse servletResponse;
 
@@ -44,7 +43,7 @@ public class DefaultSubject implements Subject {
         this(securityManager, null, null, false, null, servletRequest, servletResponse);
     }
 
-    public DefaultSubject(SecurityManager securityManager, Session session,String host, boolean isAuthenticated, Principal principal, ServletRequest servletRequest, ServletResponse servletResponse) {
+    public DefaultSubject(SecurityManager securityManager, Session session, java.lang.String host, boolean isAuthenticated, Principal principal, ServletRequest servletRequest, ServletResponse servletResponse) {
         this.securityManager = securityManager;
         this.session = session;
         this.isAuthenticated = isAuthenticated;
@@ -54,11 +53,11 @@ public class DefaultSubject implements Subject {
         this.servletResponse = servletResponse;
     }
 
-    public String getHost() {
+    public java.lang.String getHost() {
         return host;
     }
 
-    public void setHost(String host) {
+    public void setHost(java.lang.String host) {
         this.host = host;
     }
 
@@ -81,22 +80,22 @@ public class DefaultSubject implements Subject {
     }
 
     @Override
-    public boolean hasRole(Role role) {
+    public boolean hasRole(String role) {
         return securityManager.hasRole(principal, role);
     }
 
     @Override
-    public boolean hasAllRoles(Collection<Role> roles) {
+    public boolean hasAllRoles(Collection<String> roles) {
         return securityManager.hasAllRoles(principal, roles);
     }
 
     @Override
-    public boolean isAccessiableForData(String dataId) {
+    public boolean isAccessiableForData(java.lang.String dataId) {
         return securityManager.isAccessibleForData(principal, dataId);
     }
 
     @Override
-    public Collection<String> getAccessiableOrg() {
+    public Collection<java.lang.String> getAccessiableOrg() {
         return securityManager.assessibleOrgCodes(principal);
     }
 

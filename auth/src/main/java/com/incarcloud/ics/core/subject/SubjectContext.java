@@ -1,5 +1,6 @@
 package com.incarcloud.ics.core.subject;
 
+import com.incarcloud.ics.core.authc.AuthenticateInfo;
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.security.SecurityManager;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
@@ -44,9 +45,9 @@ public interface SubjectContext  extends Map<String, Object> {
 
     void setAuthenticateToken(AuthenticateToken authenticateToken);
 
-    Account getAccountInfo();
+    AuthenticateInfo getAuthenticateInfo();
 
-    void setAccountInfo(Account accountInfo);
+    void setAuthenticateInfo(AuthenticateInfo accountInfo);
 
     void setServletRequest(ServletRequest servletRequest);
 
