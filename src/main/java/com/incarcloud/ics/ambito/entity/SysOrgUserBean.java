@@ -32,6 +32,15 @@ public class SysOrgUserBean {
     // 更新时间
     private Date updateTime;
 
+
+    public SysOrgUserBean() {
+    }
+
+    public SysOrgUserBean(Long orgId, Long userId) {
+        this.orgId = orgId;
+        this.userId = userId;
+    }
+
     public Long getId() {
         return id;
     }

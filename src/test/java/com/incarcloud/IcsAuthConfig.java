@@ -1,7 +1,7 @@
 package com.incarcloud;
 
-import com.incarcloud.ics.ambito.auth.DatabaseSessionDAO;
-import com.incarcloud.ics.ambito.auth.JdbcRealm;
+import com.incarcloud.ics.ambito.security.DatabaseSessionDAO;
+import com.incarcloud.ics.ambito.security.JdbcRealm;
 import com.incarcloud.ics.core.filter.AmbitoFilter;
 import com.incarcloud.ics.core.realm.Realm;
 import com.incarcloud.ics.core.security.DefaultSecurityManager;

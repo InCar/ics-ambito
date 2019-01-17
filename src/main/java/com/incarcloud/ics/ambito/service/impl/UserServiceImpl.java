@@ -3,13 +3,11 @@ package com.incarcloud.ics.ambito.service.impl;
 import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.dao.UserDao;
-import com.incarcloud.ics.ambito.entity.BaseBean;
-import com.incarcloud.ics.ambito.entity.ResourceBean;
-import com.incarcloud.ics.ambito.entity.RoleBean;
-import com.incarcloud.ics.ambito.entity.UserBean;
+import com.incarcloud.ics.ambito.entity.*;
 import com.incarcloud.ics.ambito.jdbc.BaseServiceImpl;
 import com.incarcloud.ics.ambito.service.ResourceService;
 import com.incarcloud.ics.ambito.service.RoleService;
+import com.incarcloud.ics.ambito.service.SysOrgUserService;
 import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.ambito.utils.StringUtils;
@@ -37,6 +35,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
     @Autowired
     private ResourceService resourceService;
 
+    @Autowired
+    private SysOrgUserService sysOrgUserService;
+
     @Override
     public UserBean register(UserBean user) {
         StringCondition username = new StringCondition("username", user.getUsername(), StringCondition.Handler.EQUAL);
@@ -48,16 +49,26 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         if(CollectionUtils.isNotEmpty(userBeans)){
             throw ErrorDefine.REPEATED_PHONE.toAmbitoException();
         }
-        //生成随机盐
+        //生成随机salt
         String salt = StringUtils.getRandomSecureSalt();
-        //使用随机盐混合密码进行md5加密
+        //使用随机salt混合密码进行md5加密
         DigestHelper digestHelper = AbstractDigestHelper.getMd5SaltHelper(user.getPassword().getBytes(), salt.getBytes());
         user.setSalt(salt);
         //保存加密后的密码，格式为base64
-        user.setPassword(digestHelper.toBase64());
+        user.setPassword(digestHelper.digestToBase64());
         userDao.save(user);
         userBeans = query(username);
-        return userBeans.get(0);
+        UserBean existing = userBeans.get(0);
+        //保存用户所属组织
+        List<Long> orgs = user.getOrgIds();
+        if(CollectionUtils.isNotEmpty(orgs)){
+            orgs.forEach(e->{
+                sysOrgUserService.save(new SysOrgUserBean(e, existing.getId()));
+            });
+        }
+        existing.setSalt(null);
+        existing.setPassword(null);
+        return existing;
     }
 
     @Override

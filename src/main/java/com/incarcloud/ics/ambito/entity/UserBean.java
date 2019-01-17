@@ -2,6 +2,8 @@ package com.incarcloud.ics.ambito.entity;
 
 import com.incarcloud.ics.ambito.jdbc.Table;
 
+import java.util.List;
+
 /**
  * @author ThomasChan
  * @version 1.0
@@ -30,6 +32,8 @@ public class UserBean  extends ExtendableBean{
     private Byte state;
 
     private String salt;
+
+    private List<Long> orgIds;
 
     public String getUsername() {
         return username;
@@ -103,4 +107,11 @@ public class UserBean  extends ExtendableBean{
         this.salt = salt;
     }
 
+    public List<Long> getOrgIds() {
+        return orgIds;
+    }
+
+    public void setOrgIds(List<Long> orgIds) {
+        this.orgIds = orgIds;
+    }
 }

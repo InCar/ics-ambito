@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -233,8 +234,21 @@ public class BaseServiceImpl<T> implements BaseService<T> {
     @Override  
     public int save(T t) {
         return baseDao.save(t);  
-    }  
-  
+    }
+
+
+    /**
+     * 保存
+     * @param ts 保存的对象
+     * @return int 保存的数量
+     */
+    @Override
+    public int saveBatch(Collection<T> ts) {
+        ts.forEach(this::save);
+        return ts.size();
+    }
+
+
     /** 
      * 保存 
      * @param sql 自定义保存sql 
@@ -254,6 +268,21 @@ public class BaseServiceImpl<T> implements BaseService<T> {
     @Override
     public int delete(Serializable id) {  
         return baseDao.delete(id);  
+    }
+
+
+    /**
+     * 批量删除
+     * @param ids 对象的id(Serializable)
+     * @return int 删除的数量
+     */
+    @Override
+    @Transactional
+    public int deleteBatch(Serializable[] ids) {
+        for(Serializable id : ids){
+            delete(id);
+        }
+        return ids.length;
     }
 
 

@@ -5,21 +5,25 @@ import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.config.Config;
 import com.incarcloud.ics.ambito.entity.SysOrgBean;
-import com.incarcloud.ics.ambito.entity.SysOrgVehicleBean;
+import com.incarcloud.ics.ambito.entity.SysOrgUserBean;
+import com.incarcloud.ics.ambito.entity.UserBean;
 import com.incarcloud.ics.ambito.exception.AmbitoException;
 import com.incarcloud.ics.ambito.jdbc.BaseServiceImpl;
 import com.incarcloud.ics.ambito.service.SysOrgService;
 import com.incarcloud.ics.ambito.service.SysOrgUserService;
 import com.incarcloud.ics.ambito.service.SysOrgVehicleService;
+import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author GuoKun
@@ -37,6 +41,8 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
     @Autowired
     private SysOrgVehicleService sysOrgVehicleService;
 
+    @Autowired
+    private UserService sysUserService;
 
     @Override
     public int save(SysOrgBean sysOrgBean){
@@ -202,6 +208,28 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
     }
 
 
+    @Override
+    public List<SysOrgBean> getUserManageOrgs(Long userId) {
+        List<SysOrgUserBean> orgUserBeans = sysOrgUserService.query(new NumberCondition("userId", userId, NumberCondition.Handler.EQUAL));
+        List<Long> orgIds = orgUserBeans.stream().map(SysOrgUserBean::getOrgId).collect(Collectors.toList());
+        List<SysOrgBean> orgBeans = this.query(new NumberCondition("id", orgIds, NumberCondition.Handler.IN));
+        return orgBeans;
+    }
 
+    @Override
+    public List<SysOrgBean> getUserManageOrgs(String username) {
+        List<UserBean> users = sysUserService.query(new StringCondition("username", username, StringCondition.Handler.EQUAL));
+        if(users.isEmpty()){
+            return Collections.emptyList();
+        }
+        return getUserManageOrgs(users.get(0).getId());
+    }
+
+
+    @Override
+    public Set<String> getUserManageOrgCodes(String username) {
+        List<SysOrgBean> users = getUserManageOrgs(username);
+        return users.stream().map(SysOrgBean::getOrgCode).collect(Collectors.toSet());
+    }
 
 }
