@@ -3,12 +3,10 @@ package com.incarcloud.ics.ambito.service.impl;
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.entity.ResourceBean;
-import com.incarcloud.ics.ambito.entity.RoleBean;
 import com.incarcloud.ics.ambito.entity.RoleResourceBean;
 import com.incarcloud.ics.ambito.jdbc.BaseServiceImpl;
 import com.incarcloud.ics.ambito.service.ResourceService;
 import com.incarcloud.ics.ambito.service.RoleResourceService;
-import com.incarcloud.ics.ambito.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +57,7 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceBean> implement
         List<Long> resources = roleResourceBeans.stream().map(RoleResourceBean::getResourceId).collect(Collectors.toList());
         List<ResourceBean> privleges = resourceService.query(Condition.and(
                 new NumberCondition("id", resources, NumberCondition.Handler.IN),
-                new NumberCondition("resourceType", 1, NumberCondition.Handler.EQUAL)
+                new NumberCondition("type", 1, NumberCondition.Handler.EQUAL)
         ));
         return privleges;
     }
