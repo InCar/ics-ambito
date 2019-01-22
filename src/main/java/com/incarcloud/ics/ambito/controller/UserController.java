@@ -4,6 +4,7 @@ import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
+import com.incarcloud.ics.ambito.entity.SysOrgBean;
 import com.incarcloud.ics.ambito.entity.UserBean;
 import com.incarcloud.ics.ambito.entity.VehicleArchivesBean;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
@@ -196,6 +197,7 @@ public class UserController {
         Assert.isTrue(subject.isPermittedAll(Arrays.asList(new SimplePrivilege("bcd"), new SimplePrivilege("abc"))), "");
         Assert.isTrue(!subject.isAccessibleForData(1L, VehicleArchivesBean.class),"");
         Assert.isTrue(subject.isAccessibleForData(2L, VehicleArchivesBean.class),"");
+        Assert.isTrue(subject.isAccessibleForData(7L, SysOrgBean.class),"");
         return JsonMessage.success();
     }
 

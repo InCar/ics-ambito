@@ -30,6 +30,7 @@ import java.util.*;
 
 //import com.incarcloud.ics.core.session.HttpServletSession;
 
+@SuppressWarnings("unchecked")
 public class AmbitoHttpSession implements HttpSession {
 
     //TODO - complete JavaDoc

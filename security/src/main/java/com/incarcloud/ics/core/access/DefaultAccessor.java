@@ -43,8 +43,8 @@ public class DefaultAccessor implements Accessor{
     protected boolean isAccessibleForRealm(Principal principal, Serializable id, Class<?> aClass, Realm realm){
         Asserts.assertNotNull(aClass, "aClass");
         AccessInfo accessInfo = realm.getAccessInfo(principal);
-        Collection<Serializable> serializables = accessInfo.getAccessibleDataId().get(aClass.getName());
-        return serializables != null && serializables.contains(id);
+        Collection<Serializable> collection = accessInfo.getAccessibleDataId().get(aClass.getName());
+        return collection != null && collection.contains(id);
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.ResourceBean;
 import com.incarcloud.ics.ambito.entity.RoleBean;
 import com.incarcloud.ics.ambito.entity.UserBean;
-import com.incarcloud.ics.ambito.entity.VehicleArchivesBean;
 import com.incarcloud.ics.ambito.service.ResourceService;
 import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.SysOrgService;
@@ -12,8 +11,7 @@ import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.ambito.utils.StringUtils;
 import com.incarcloud.ics.core.access.AccessInfo;
-import com.incarcloud.ics.core.access.AccessTable;
-import com.incarcloud.ics.core.access.FilterColumn;
+import com.incarcloud.ics.core.access.RequireAccessControl;
 import com.incarcloud.ics.core.access.SimpleAccessInfo;
 import com.incarcloud.ics.core.authc.AuthenticateInfo;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
@@ -56,11 +54,6 @@ public class JdbcRealm extends AccessRealm {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    protected List<Class<?>> needAccessControlClass = Arrays.asList(VehicleArchivesBean.class);
-
-    protected void addNeedAccessControlClass(Class<?> clzz){
-        needAccessControlClass.add(clzz);
-    }
 
     @Override
     protected AuthenticateInfo doGetAuthenticateInfo(AuthenticateToken authenticateToken) throws AuthenticationException {
@@ -104,7 +97,7 @@ public class JdbcRealm extends AccessRealm {
 
 
     private Collection<String> getOrgCodeByStrategy(Principal principal){
-        switch (this.accessStrategy){
+        switch (this.orgAccessType){
             case BELONG:{
                 return sysOrgService.getUserBelongOrgCodes(principal.getUserIdentity());
             }
@@ -120,15 +113,13 @@ public class JdbcRealm extends AccessRealm {
         }
     }
 
-
-
-    protected Map<String, Collection<Serializable>> extractAccessibleEntityId(Collection<String> orgCodes, Class<?> aEntityClass) {
-        super.assertAccessControlSupported(aEntityClass);
+    private Map<String, Collection<Serializable>> extractAccessibleEntityId(Collection<String> orgCodes, Class<?> aEntityClass) {
+        if(!super.isAccessControlSupported(aEntityClass)){
+            return Collections.emptyMap();
+        }
         String tableName = getTableName(aEntityClass);
-        //获取过滤字段
-        String filterColumnName = getFilterColumnName(aEntityClass);
         //获取能管理的数据id集合
-        List<Object> dataIds = getDataIds(orgCodes, tableName, filterColumnName);
+        List<Object> dataIds = getDataIds(orgCodes, tableName);
         Map<String, Collection<Serializable>> classCollectionMap = new HashMap<>();
         if(CollectionUtils.isNotEmpty(dataIds)){
             classCollectionMap.put(aEntityClass.getName(), dataIds.stream().map(e->(Serializable)e).collect(Collectors.toSet()));
@@ -136,29 +127,16 @@ public class JdbcRealm extends AccessRealm {
         return classCollectionMap;
     }
 
-    private List<Object> getDataIds(Collection<String> orgCodes, String tableName, String filterColumnName) {
+    private List<Object> getDataIds(Collection<String> orgCodes, String tableName) {
         String str = orgCodes.stream().map(e -> "?").collect(Collectors.joining("'"));
-        String sqlBuilder = "select id from " + tableName + " where " + filterColumnName + " in " + "(" + str + ")";
+        String columnName = StringUtils.camelToUnderline(FILTER_FIELD_NAME);
+        String sqlBuilder = "select id from " + tableName + " where " + columnName + " in " + "(" + str + ")";
         return jdbcTemplate.query(sqlBuilder, (rs, rowNum) -> rs.getObject(1), orgCodes.toArray());
     }
 
     private String getTableName(Class<?> aEntityClass) {
         //获取表名
-        String tableName = null;
-        AccessTable table = aEntityClass.getAnnotation(AccessTable.class);
-        if(table != null){
-            tableName = table.name();
-        }
-        return tableName;
-    }
-
-    private String getFilterColumnName(Class<?> aEntityClass) {
-        String filterFieldName = null;
-        AccessTable table = aEntityClass.getAnnotation(AccessTable.class);
-        if(table != null){
-            FilterColumn filterColumn = table.column();
-            filterFieldName = filterColumn.type().getColumnName();
-        }
-        return StringUtils.camelToUnderline(filterFieldName);
+        RequireAccessControl accessTable = aEntityClass.getAnnotation(RequireAccessControl.class);
+        return accessTable.tableName();
     }
 }

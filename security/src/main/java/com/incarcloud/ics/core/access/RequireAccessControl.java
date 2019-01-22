@@ -13,7 +13,6 @@ import java.lang.annotation.Target;
  */
 @Target({ ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AccessTable {
-    String name() default "";
-    FilterColumn column();
+public @interface RequireAccessControl {
+    String tableName() default "";
 }

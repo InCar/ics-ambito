@@ -1,7 +1,9 @@
 package com.incarcloud.ics.core.access;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,6 +16,11 @@ public class SimpleAccessInfo implements AccessInfo {
 
     private Collection<String> filterCodes;
     private Map<String,Collection<Serializable>> accessibleDataId;
+
+    public SimpleAccessInfo() {
+        this.filterCodes = new ArrayList<>();
+        this.accessibleDataId = new HashMap<>();
+    }
 
     public SimpleAccessInfo(Collection<String> accessibleCodes, Map<String, Collection<Serializable>> accessibleDataId) {
         this.filterCodes = accessibleCodes;

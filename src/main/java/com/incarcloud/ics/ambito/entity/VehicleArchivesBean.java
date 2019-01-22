@@ -1,14 +1,15 @@
 package com.incarcloud.ics.ambito.entity;
 
-import com.incarcloud.ics.core.access.AccessTable;
-import com.incarcloud.ics.core.access.FilterColumn;
 
+import com.incarcloud.ics.ambito.jdbc.Table;
+import com.incarcloud.ics.core.access.RequireAccessControl;
 import java.util.Date;
 
 /**
  * Created by on 2018/12/26.
  */
-@AccessTable(name = "t_vehicle_archives", column = @FilterColumn)
+@Table(name = "t_vehicle_archives")
+@RequireAccessControl(tableName = "t_vehicle_archives")
 public class VehicleArchivesBean extends ExtendableBean{
 
     private static final long serialVersionUID = 5885808001619406335L;
