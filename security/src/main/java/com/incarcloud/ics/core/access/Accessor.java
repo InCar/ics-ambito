@@ -7,12 +7,12 @@ import java.io.Serializable;
 import java.util.Collection;
 
 /**
- * @Description
+ * @description
  * 数据权限验证接口
  *
- * @Author ThomasChan
- * @Date 2018/12/19 5:13 PM
- * @Version 1.0
+ * @author ThomasChan
+ * @date 2018/12/19 5:13 PM
+ * @version 1.0
  */
 public interface Accessor {
 

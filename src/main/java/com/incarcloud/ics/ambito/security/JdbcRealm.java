@@ -11,12 +11,14 @@ import com.incarcloud.ics.ambito.service.SysOrgService;
 import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.ambito.utils.StringUtils;
-import com.incarcloud.ics.core.access.*;
+import com.incarcloud.ics.core.access.AccessInfo;
+import com.incarcloud.ics.core.access.AccessTable;
+import com.incarcloud.ics.core.access.FilterColumn;
+import com.incarcloud.ics.core.access.SimpleAccessInfo;
 import com.incarcloud.ics.core.authc.AuthenticateInfo;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
 import com.incarcloud.ics.core.authc.SimpleAuthenticateInfo;
 import com.incarcloud.ics.core.authz.AuthorizeInfo;
-import com.incarcloud.ics.core.exception.AccessorException;
 import com.incarcloud.ics.core.exception.AccountNotExistsException;
 import com.incarcloud.ics.core.exception.AuthenticationException;
 import com.incarcloud.ics.core.principal.Principal;
@@ -26,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -123,18 +124,9 @@ public class JdbcRealm extends AccessRealm {
 
     protected Map<String, Collection<Serializable>> extractAccessibleEntityId(Collection<String> orgCodes, Class<?> aEntityClass) {
         super.assertAccessControlSupported(aEntityClass);
-        //获取进行过滤的字段
-        FilterColumn filterColumn = aEntityClass.getAnnotation(FilterColumn.class);
-        FilterType type = filterColumn.type();
-        try {
-            aEntityClass.getDeclaredField(type.getColumnName());
-        } catch (NoSuchFieldException e) {
-            throw new AccessorException("The filter column "+type.getColumnName()+" is not exists in class "+aEntityClass);
-        }
         String tableName = getTableName(aEntityClass);
         //获取过滤字段
-        String filterColumnName = StringUtils.camelToUnderline(type.getColumnName());
-
+        String filterColumnName = getFilterColumnName(aEntityClass);
         //获取能管理的数据id集合
         List<Object> dataIds = getDataIds(orgCodes, tableName, filterColumnName);
         Map<String, Collection<Serializable>> classCollectionMap = new HashMap<>();
@@ -153,14 +145,20 @@ public class JdbcRealm extends AccessRealm {
     private String getTableName(Class<?> aEntityClass) {
         //获取表名
         String tableName = null;
-        Table table = aEntityClass.getAnnotation(Table.class);
+        AccessTable table = aEntityClass.getAnnotation(AccessTable.class);
         if(table != null){
             tableName = table.name();
-        }else {
-            AccessTable accessTable = aEntityClass.getAnnotation(AccessTable.class);
-            tableName = accessTable.name();
         }
         return tableName;
     }
 
+    private String getFilterColumnName(Class<?> aEntityClass) {
+        String filterFieldName = null;
+        AccessTable table = aEntityClass.getAnnotation(AccessTable.class);
+        if(table != null){
+            FilterColumn filterColumn = table.column();
+            filterFieldName = filterColumn.type().getColumnName();
+        }
+        return StringUtils.camelToUnderline(filterFieldName);
+    }
 }

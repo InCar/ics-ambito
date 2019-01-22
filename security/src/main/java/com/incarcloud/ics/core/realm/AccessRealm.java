@@ -2,13 +2,10 @@ package com.incarcloud.ics.core.realm;
 
 import com.incarcloud.ics.core.access.AccessInfo;
 import com.incarcloud.ics.core.access.AccessTable;
-import com.incarcloud.ics.core.access.FilterColumn;
 import com.incarcloud.ics.core.cache.Cache;
 import com.incarcloud.ics.core.exception.AccessDeniedException;
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.utils.Asserts;
-
-import javax.persistence.Table;
 
 /**
  * @author ThomasChan
@@ -80,11 +77,8 @@ public abstract class AccessRealm extends AuthorizeRealm {
     protected abstract AccessInfo doGetAccessInfo(Principal principal);
 
     protected void assertAccessControlSupported(Class<?> aClass){
-        if(!aClass.isAnnotationPresent(Table.class) && !aClass.isAnnotationPresent(AccessTable.class)){
-            throw new AccessDeniedException("The entity class need access control must configured with annotation " + AccessTable.class.getName() +" or " + Table.class.getName() );
-        }
-        if(aClass.isAnnotationPresent(FilterColumn.class)){
-            throw new AccessDeniedException("The entity class need access control must specify the filter column with annotation " + FilterColumn.class.getName());
+        if(!aClass.isAnnotationPresent(AccessTable.class)){
+            throw new AccessDeniedException("The entity class need access control must configured with annotation " + AccessTable.class.getName() );
         }
     }
 }

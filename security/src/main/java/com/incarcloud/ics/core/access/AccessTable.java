@@ -15,4 +15,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AccessTable {
     String name() default "";
+    FilterColumn column();
 }
