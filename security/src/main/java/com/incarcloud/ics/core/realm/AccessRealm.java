@@ -1,8 +1,14 @@
 package com.incarcloud.ics.core.realm;
 
 import com.incarcloud.ics.core.access.AccessInfo;
+import com.incarcloud.ics.core.access.AccessTable;
+import com.incarcloud.ics.core.access.FilterColumn;
 import com.incarcloud.ics.core.cache.Cache;
+import com.incarcloud.ics.core.exception.AccessDeniedException;
 import com.incarcloud.ics.core.principal.Principal;
+import com.incarcloud.ics.core.utils.Asserts;
+
+import javax.persistence.Table;
 
 /**
  * @author ThomasChan
@@ -12,10 +18,19 @@ import com.incarcloud.ics.core.principal.Principal;
  */
 public abstract class AccessRealm extends AuthorizeRealm {
 
-    private static final String ACCESS_INFO_CACHE_NAME = "accessInfoCacheName";
+    public static final String ACCESS_INFO_CACHE_NAME = "accessInfoCache";
+    protected AccessStrategy accessStrategy = AccessStrategy.MANAGE;
+
+    public AccessRealm() {
+    }
+
+    public AccessRealm(AccessStrategy accessStrategy) {
+        this.accessStrategy = accessStrategy;
+    }
 
     @Override
     public AccessInfo getAccessInfo(Principal principal) {
+        Asserts.assertNotNull(principal, "principal");
         AccessInfo accessInfo = getAccessInfoFromCache(principal.getUserIdentity());
         if(accessInfo == null){
             accessInfo = doGetAccessInfo(principal);
@@ -53,13 +68,23 @@ public abstract class AccessRealm extends AuthorizeRealm {
         return null;
     }
 
-    protected abstract AccessInfo doGetAccessInfo(Principal principal);
 
     protected void doClearCache(Principal principal){
         super.doClearCache(principal);
         Cache<String, Object> accessInfoCache = doGetCache(ACCESS_INFO_CACHE_NAME);
         if (accessInfoCache != null) {
             accessInfoCache.remove(principal.getUserIdentity());
+        }
+    }
+
+    protected abstract AccessInfo doGetAccessInfo(Principal principal);
+
+    protected void assertAccessControlSupported(Class<?> aClass){
+        if(!aClass.isAnnotationPresent(Table.class) && !aClass.isAnnotationPresent(AccessTable.class)){
+            throw new AccessDeniedException("The entity class need access control must configured with annotation " + AccessTable.class.getName() +" or " + Table.class.getName() );
+        }
+        if(aClass.isAnnotationPresent(FilterColumn.class)){
+            throw new AccessDeniedException("The entity class need access control must specify the filter column with annotation " + FilterColumn.class.getName());
         }
     }
 }

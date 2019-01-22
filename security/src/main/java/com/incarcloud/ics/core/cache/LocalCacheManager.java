@@ -46,7 +46,7 @@ public class LocalCacheManager<K,V> implements CacheManager{
     }
 
     /**
-     * 默认创建可过期ValidatingLRUCache缓存
+     * 默认创建可过期的ValidatingLRUCache缓存
      * @param name
      * @return
      * @throws CacheException

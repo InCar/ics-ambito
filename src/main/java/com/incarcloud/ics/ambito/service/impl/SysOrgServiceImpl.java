@@ -19,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -209,18 +207,23 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
 
 
     @Override
-    public List<SysOrgBean> getUserManageOrgs(Long userId) {
+    public Set<SysOrgBean> getUserManageOrgs(Long userId) {
         List<SysOrgUserBean> orgUserBeans = sysOrgUserService.query(new NumberCondition("userId", userId, NumberCondition.Handler.EQUAL));
         List<Long> orgIds = orgUserBeans.stream().map(SysOrgUserBean::getOrgId).collect(Collectors.toList());
         List<SysOrgBean> orgBeans = this.query(new NumberCondition("id", orgIds, NumberCondition.Handler.IN));
-        return orgBeans;
+        Set<SysOrgBean> collect = new HashSet<>();
+        for(SysOrgBean sysOrgBean : orgBeans){
+            List<SysOrgBean> childrenOrgs = getChildrenOrgs(sysOrgBean);
+            collect.addAll(new HashSet<>(childrenOrgs));
+        }
+        return collect;
     }
 
     @Override
-    public List<SysOrgBean> getUserManageOrgs(String username) {
+    public Set<SysOrgBean> getUserManageOrgs(String username) {
         List<UserBean> users = sysUserService.query(new StringCondition("username", username, StringCondition.Handler.EQUAL));
         if(users.isEmpty()){
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
         return getUserManageOrgs(users.get(0).getId());
     }
@@ -228,8 +231,26 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
 
     @Override
     public Set<String> getUserManageOrgCodes(String username) {
-        List<SysOrgBean> users = getUserManageOrgs(username);
+        Set<SysOrgBean> users = getUserManageOrgs(username);
         return users.stream().map(SysOrgBean::getOrgCode).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<String> getUserBelongOrgCodes(String username) {
+        List<UserBean> users = sysUserService.query(new StringCondition("username", username, StringCondition.Handler.EQUAL));
+        if(users.isEmpty()){
+            return Collections.emptySet();
+        }
+        List<SysOrgUserBean> orgUserBeans = sysOrgUserService.query(new NumberCondition("userId", users.get(0).getId(), NumberCondition.Handler.EQUAL));
+        List<Long> orgIds = orgUserBeans.stream().map(SysOrgUserBean::getOrgId).collect(Collectors.toList());
+        List<SysOrgBean> orgBeans = this.query(new NumberCondition("id", orgIds, NumberCondition.Handler.IN));;
+        return orgBeans.stream().map(SysOrgBean::getOrgCode).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<String> getAllOrgCodes() {
+        List<SysOrgBean> sysOrgBeans = query(new NumberCondition("status", 0, NumberCondition.Handler.EQUAL));
+        return sysOrgBeans.stream().map(SysOrgBean::getOrgCode).collect(Collectors.toSet());
     }
 
 }

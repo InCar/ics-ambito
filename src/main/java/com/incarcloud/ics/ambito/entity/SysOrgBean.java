@@ -67,7 +67,7 @@ public class SysOrgBean extends ExtendableBean{
     // 邮箱
     private String email;
 
-    //状态
+    //状态 0=关闭，1=正常
     private byte status;
 
     //备注

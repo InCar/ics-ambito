@@ -12,6 +12,8 @@ import com.incarcloud.ics.core.session.SessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
+
 /**
  * @author ThomasChan
  * @version 1.0
@@ -27,7 +29,6 @@ public class IcsAuthConfig {
         DefaultSecurityManager securityManager = new DefaultSecurityManager(realm);
         securityManager.setSessionManager(sessionManager());
         SecurityUtils.setSecurityManager(securityManager);
-
         return securityManager;
     }
 
@@ -36,6 +37,23 @@ public class IcsAuthConfig {
         Realm realm = new JdbcRealm();
         return realm;
     }
+
+//    @Bean(name = "myAccessor")
+//    public Accessor myAccessor(){
+//        Accessor accessor = new JdbcAccessor(myRealm());
+//        return accessor;
+//    }
+
+//    public Accessor accessor(){
+//        return new DefaultAccessor(myRealm()) {
+//            @Override
+//            protected boolean verifyAccessible(Collection<String> orgCodes, Serializable dataId, String tableName) {
+//
+//                return false;
+//            }
+//        };
+//    }
+
 
     @Bean
     public AmbitoFilter filter(){

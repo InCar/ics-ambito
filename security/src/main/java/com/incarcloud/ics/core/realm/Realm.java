@@ -22,4 +22,5 @@ public interface Realm {
     AuthorizeInfo getAuthorizeInfo(Principal principal);
 
     AccessInfo getAccessInfo(Principal principal);
+
 }

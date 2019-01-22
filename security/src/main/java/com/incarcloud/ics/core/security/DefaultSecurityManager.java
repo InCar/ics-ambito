@@ -279,14 +279,15 @@ public class DefaultSecurityManager implements SecurityManager {
         this.authenticator = authenticator;
     }
 
+
     @Override
-    public boolean isAccessibleForData(Principal principal, Serializable dataId) {
-        return accessor.isAccessibleForData(principal, dataId);
+    public boolean isAccessibleForData(Principal principal, Serializable id, Class<?> clzz) {
+        return accessor.isAccessibleForData(principal, id, clzz);
     }
 
     @Override
-    public Collection<java.lang.String> getAccessibleOrgCodes(Principal principal) {
-        return accessor.getAccessibleOrgCodes(principal);
+    public Collection<String> getFilterCodes(Principal principal, Class<?> aClass) {
+        return accessor.getFilterCodes(principal, aClass);
     }
 
     public List<Realm> getRealms() {

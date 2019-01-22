@@ -2,6 +2,7 @@ package com.incarcloud.ics.core.access;
 
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.realm.Realm;
+import com.incarcloud.ics.core.utils.Asserts;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,23 +25,37 @@ public class DefaultAccessor implements Accessor{
     }
 
     public DefaultAccessor(Realm realm) {
-        this.realmList = new ArrayList<>();
-        realmList.add(realm);
+        this(new ArrayList<>());
+        this.realmList.add(realm);
     }
 
     @Override
-    public boolean isAccessibleForData(Principal principal, Serializable dataId) {
-        Collection<String> orgCodes = getAccessibleOrgCodes(principal);
+    public boolean isAccessibleForData(Principal principal, Serializable id, Class<?> aClass) {
+        Asserts.assertNotNull(aClass, "aClass");
+        for(Realm realm : realmList){
+            if(isAccessibleForRealm(principal, id, aClass, realm)){
+                return true;
+            }
+        }
         return false;
     }
 
+    protected boolean isAccessibleForRealm(Principal principal, Serializable id, Class<?> aClass, Realm realm){
+        Asserts.assertNotNull(aClass, "aClass");
+        AccessInfo accessInfo = realm.getAccessInfo(principal);
+        Collection<Serializable> serializables = accessInfo.getAccessibleDataId().get(aClass.getName());
+        return serializables != null && serializables.contains(id);
+    }
+
     @Override
-    public Collection<String> getAccessibleOrgCodes(Principal principal) {
+    public Collection<String> getFilterCodes(Principal principal, Class<?> aClass) {
         Collection<String> orgCodes = new HashSet<>();
         for(Realm realm : realmList){
             AccessInfo accessInfo = realm.getAccessInfo(principal);
-            orgCodes.addAll(accessInfo.getManageOrgCodes());
+            orgCodes.addAll(accessInfo.getFilterCodes());
         }
         return orgCodes;
     }
+
+
 }

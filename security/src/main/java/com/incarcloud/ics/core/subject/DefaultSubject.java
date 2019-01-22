@@ -13,8 +13,8 @@ import com.incarcloud.ics.core.utils.StringUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.logging.Logger;
 
 
@@ -91,19 +91,13 @@ public class DefaultSubject implements Subject {
     }
 
     @Override
-    public boolean isAccessibleForData(java.lang.String dataId) {
-        if(isAuthenticated()){
-            return false;
-        }
-        return securityManager.isAccessibleForData(principal, dataId);
+    public boolean isAccessibleForData(Serializable dataId, Class<?> clzz) {
+        return securityManager.isAccessibleForData(principal, dataId, clzz);
     }
 
     @Override
-    public Collection<java.lang.String> getAccessibleOrg() {
-        if(!isAuthenticated()){
-            return Collections.emptySet();
-        }
-        return securityManager.getAccessibleOrgCodes(principal);
+    public Collection<String> getFilterCodes(Class<?> clzz) {
+        return securityManager.getFilterCodes(principal, clzz);
     }
 
     @Override
@@ -160,7 +154,6 @@ public class DefaultSubject implements Subject {
             this.isAuthenticated = false;
             this.principal = null;
         }
-
     }
 
     public SecurityManager getSecurityManager() {

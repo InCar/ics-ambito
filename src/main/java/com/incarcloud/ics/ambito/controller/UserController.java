@@ -5,6 +5,7 @@ import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.UserBean;
+import com.incarcloud.ics.ambito.entity.VehicleArchivesBean;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.pojo.PageResult;
@@ -193,6 +194,8 @@ public class UserController {
         Assert.isTrue(subject.isPermitted(new SimplePrivilege("abc")), "");
         Assert.isTrue(subject.isPermitted(new SimplePrivilege("bcd")), "");
         Assert.isTrue(subject.isPermittedAll(Arrays.asList(new SimplePrivilege("bcd"), new SimplePrivilege("abc"))), "");
+        Assert.isTrue(!subject.isAccessibleForData(1L, VehicleArchivesBean.class),"");
+        Assert.isTrue(subject.isAccessibleForData(2L, VehicleArchivesBean.class),"");
         return JsonMessage.success();
     }
 
@@ -203,7 +206,8 @@ public class UserController {
         if(!subject.isAuthenticated()){
             return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
         }
-        Collection<String> accessibleOrg = subject.getAccessibleOrg();
+        Collection<String> accessibleOrg = subject.getFilterCodes(VehicleArchivesBean.class);
         return JsonMessage.success(accessibleOrg);
     }
+
 }

@@ -1,6 +1,8 @@
 package com.incarcloud.ics.core.access;
 
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author ThomasChan
@@ -10,18 +12,29 @@ import java.util.Collection;
  */
 public class SimpleAccessInfo implements AccessInfo {
 
-    private Collection<String> manageOrgCodes;
+    private Collection<String> filterCodes;
+    private Map<String,Collection<Serializable>> accessibleDataId;
 
-    public SimpleAccessInfo(Collection<String> manageOrgCodes) {
-        this.manageOrgCodes = manageOrgCodes;
+    public SimpleAccessInfo(Collection<String> accessibleCodes, Map<String, Collection<Serializable>> accessibleDataId) {
+        this.filterCodes = accessibleCodes;
+        this.accessibleDataId = accessibleDataId;
     }
 
     @Override
-    public Collection<String> getManageOrgCodes() {
-        return manageOrgCodes;
+    public Collection<String> getFilterCodes() {
+        return filterCodes;
     }
 
-    public void setManageOrgCodes(Collection<String> manageOrgCodes) {
-        this.manageOrgCodes = manageOrgCodes;
+    public void setFilterCodes(Collection<String> filterCodes) {
+        this.filterCodes = filterCodes;
+    }
+
+    @Override
+    public Map<String, Collection<Serializable>> getAccessibleDataId() {
+        return accessibleDataId;
+    }
+
+    public void setAccessibleDataId(Map<String, Collection<Serializable>> accessibleDataId) {
+        this.accessibleDataId = accessibleDataId;
     }
 }

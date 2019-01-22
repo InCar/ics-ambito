@@ -9,6 +9,7 @@ import com.incarcloud.ics.core.session.Session;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -22,8 +23,8 @@ public interface Subject {
     boolean isPermittedAll(Collection<Privilege> privileges);
     boolean hasRole(String roleIdentifier);
     boolean hasAllRoles(Collection<String> roleIdentifiers);
-    boolean isAccessibleForData(String dataId);
-    Collection<java.lang.String> getAccessibleOrg();
+    boolean isAccessibleForData(Serializable dataId, Class<?> clzz);
+    Collection<String> getFilterCodes(Class<?> clzz);
     void login(AuthenticateToken authenticateToken) throws AuthenticationException;
     boolean isAuthenticated();
     Session getSession();
@@ -32,4 +33,5 @@ public interface Subject {
     Principal getPrincipal();
     ServletRequest getServletRequest();
     ServletResponse getServletResponse();
+
 }

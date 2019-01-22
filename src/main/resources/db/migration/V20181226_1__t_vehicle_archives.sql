@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS  `t_vehicle_archives` (
   `configuration` int(10) default null comment '配置 1:低配,2:标配,3:高配',
   `machine_no` varchar(80) default null comment '电机号',
   `gprs_no` varchar(80) binary default null comment 'gprs号',
+  `org_code` varchar(30) not null default '0' comment 'orgcode',
   `no3g` varchar(80) binary default null comment '3g卡号',
   `factory_name` varchar(80) binary default null comment '产地标识名称',
   `device_type` varchar(40) default null comment '设备型号',

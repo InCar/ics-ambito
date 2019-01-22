@@ -13,9 +13,14 @@ import java.util.Set;
  */
 public interface SysOrgService extends BaseService<SysOrgBean> {
     List<SysOrgBean> getChildrenOrgs(SysOrgBean sysOrgBean);
-    List<SysOrgBean> getUserManageOrgs(Long userId);
 
-    List<SysOrgBean> getUserManageOrgs(String username);
+    Set<SysOrgBean> getUserManageOrgs(Long userId);
+
+    Set<SysOrgBean> getUserManageOrgs(String username);
 
     Set<String> getUserManageOrgCodes(String username);
+
+    Set<String> getUserBelongOrgCodes(String username);
+
+    Set<String> getAllOrgCodes();
 }

@@ -15,6 +15,8 @@ import java.util.Collection;
  * @Version 1.0
  */
 public interface Accessor {
-    boolean isAccessibleForData(Principal principal, Serializable dataId);
-    Collection<String> getAccessibleOrgCodes(Principal principal);
+
+    boolean isAccessibleForData(Principal principal, Serializable dataId, Class<?> aClass);
+
+    Collection<String> getFilterCodes(Principal principal, Class<?> aClass);
 }
