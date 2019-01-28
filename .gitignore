@@ -14,7 +14,7 @@
 **/node_modules/
 build/
 out/
-bin/
+**/bin/**
 application-*.yml
 gradle.properties
 *.js.map
