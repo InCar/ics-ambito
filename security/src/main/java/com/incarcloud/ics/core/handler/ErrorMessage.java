@@ -8,16 +8,42 @@ package com.incarcloud.ics.core.handler;
  */
 public class ErrorMessage {
     private boolean result;
-    private String message;
+    private String message = "";
     private String error = "";
     private String code = "";
 
-    public ErrorMessage(boolean result, String message, String error, String code) {
-        this.result = result;
-        this.message = message;
-        this.error = error;
-        this.code = code;
+    public ErrorMessage() { }
+
+    public ErrorMessage(boolean result) {
+        this(result,null);
     }
+
+    public ErrorMessage(boolean result, String message) {
+        this(result, message,null);
+    }
+
+    public ErrorMessage(boolean result, String message,String code) {
+        this(result, message,code,null);
+    }
+
+    public ErrorMessage(boolean result, String message,String code, String error) {
+        this(result, message, code,error,null);
+    }
+
+    public ErrorMessage(boolean result, String message,String code, String error, T data) {
+        this.result=result;
+        if(message!=null){
+            this.message=message;
+        }
+        if(code!=null) {
+            this.code = code;
+        }
+        if(error!=null) {
+            this.error = error;
+        }
+        this.data = data;
+    }
+
 
     public boolean isResult() {
         return result;

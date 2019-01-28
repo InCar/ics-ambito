@@ -10,7 +10,7 @@ import com.incarcloud.ics.core.exception.UnauthenticatedException;
  * @date 2019/1/28
  */
 public enum SecurityMessage {
-    UnAuthenticated(UnauthenticatedException.class, new ErrorMessage());
+    UnAuthenticated(UnauthenticatedException.class, );
 
     private Class<? extends SecurityException> exceptionClzz;
 
