@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `t_sys_org` (
   `phone`  bigint DEFAULT NULL COMMENT '联系电话',
   `address` varchar(100) NOT NULL DEFAULT '' COMMENT '联系地址',
   `zip_code` varchar(30) NOT NULL DEFAULT '' COMMENT '邮政编码',
-  `status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '状态，0=可用，1=逻辑删除',
+  `status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '状态，0=可用，1=禁用',
   `remark` varchar(100) NOT NULL DEFAULT '' COMMENT '备注',
   `sort`   int NOT NULL DEFAULT 30 COMMENT '排序',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

@@ -2,19 +2,28 @@ package com.incarcloud.ics.ambito.controller;
 
 import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.Condition;
-import com.incarcloud.ics.ambito.condition.impl.NullCondition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
+import com.incarcloud.ics.ambito.entity.SysOrgBean;
 import com.incarcloud.ics.ambito.entity.UserBean;
-import com.incarcloud.ics.ambito.exception.AmbitoException;
+import com.incarcloud.ics.ambito.entity.VehicleArchivesBean;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
+import com.incarcloud.ics.ambito.pojo.PageResult;
 import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.UserService;
+import com.incarcloud.ics.core.authc.UsernamePasswordToken;
+import com.incarcloud.ics.core.privilege.SimplePrivilege;
+import com.incarcloud.ics.core.security.SecurityUtils;
+import com.incarcloud.ics.core.session.Session;
+import com.incarcloud.ics.core.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.logging.Logger;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -26,8 +35,6 @@ import java.util.logging.Logger;
 @RequestMapping(value = "/ics/user")
 @RestController
 public class UserController {
-
-    private Logger logger = Logger.getLogger(UserController.class.getName());
 
     @Autowired
     private UserService userService;
@@ -59,11 +66,24 @@ public class UserController {
                 new StringCondition("realName", realName, StringCondition.Handler.ALL_LIKE),
                 new StringCondition("phone", phone, StringCondition.Handler.ALL_LIKE)
         );
+
         if(pageNum == null || pageSize == null){
-            return JsonMessage.success(userService.query(cond));
+            List<UserBean> query = userService.query(cond);
+            maskCredential(query);
+            return JsonMessage.success(query);
         }else {
-            return JsonMessage.success(userService.queryPage(new Page(pageNum, pageSize), cond));
+            PageResult<UserBean> query = userService.queryPage(new Page(pageNum, pageSize), cond);
+            maskCredential(query.getContent());
+            return JsonMessage.success(query);
         }
+    }
+
+
+    private void maskCredential(Collection<UserBean> collection){
+        collection.forEach(e->{
+            e.setSalt(null);
+            e.setPassword(null);
+        });
     }
 
 
@@ -120,6 +140,76 @@ public class UserController {
     public JsonMessage deleteUser(@PathVariable long id){
         userService.delete(id);
         return JsonMessage.success();
+    }
+
+
+    /**
+     * 登录
+     * @return
+     */
+    @PostMapping(value = "/login")
+    public JsonMessage login(@RequestBody UsernamePasswordToken usernamePasswordToken){
+        Subject subject = SecurityUtils.getSubject();
+        subject.login(usernamePasswordToken);
+        Session session = subject.getSession();
+        List<UserBean> userBeans = userService.query(new StringCondition("username", usernamePasswordToken.getPrincipal(), StringCondition.Handler.EQUAL));
+        session.setAttribute("myInfo", userBeans.get(0));
+        return JsonMessage.success();
+    }
+
+    /**
+     * 登出
+     * @return
+     */
+    @PostMapping(value = "/logout")
+    public JsonMessage logout(){
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
+        return JsonMessage.success();
+    }
+
+    /**
+     * 获取用户信息
+     * @param
+     * @return
+     */
+    @GetMapping(value = "/myInfo")
+    public JsonMessage myInfo(){
+        Subject subject = SecurityUtils.getSubject();
+        if(!subject.isAuthenticated()){
+            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+        }
+        Session session = subject.getSession();
+        return JsonMessage.success(session.getAttribute("myInfo"));
+    }
+
+
+    @GetMapping(value = "/test")
+    public JsonMessage test(){
+        Subject subject = SecurityUtils.getSubject();
+        if(!subject.isAuthenticated()){
+            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+        }
+        Assert.isTrue(subject.hasRole("admin"), "");
+        Assert.isTrue(!subject.hasRole("user"), "");
+        Assert.isTrue(subject.isPermitted(new SimplePrivilege("abc")), "");
+        Assert.isTrue(subject.isPermitted(new SimplePrivilege("bcd")), "");
+        Assert.isTrue(subject.isPermittedAll(Arrays.asList(new SimplePrivilege("bcd"), new SimplePrivilege("abc"))), "");
+        Assert.isTrue(!subject.isAccessibleForData(1L, VehicleArchivesBean.class),"");
+        Assert.isTrue(subject.isAccessibleForData(2L, VehicleArchivesBean.class),"");
+        Assert.isTrue(subject.isAccessibleForData(7L, SysOrgBean.class),"");
+        return JsonMessage.success();
+    }
+
+
+    @GetMapping(value = "/getOrgs")
+    public JsonMessage getOrgs(){
+        Subject subject = SecurityUtils.getSubject();
+        if(!subject.isAuthenticated()){
+            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+        }
+        Collection<String> accessibleOrg = subject.getFilterCodes(VehicleArchivesBean.class);
+        return JsonMessage.success(accessibleOrg);
     }
 
 }

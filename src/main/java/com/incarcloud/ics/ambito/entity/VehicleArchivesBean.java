@@ -1,13 +1,15 @@
 package com.incarcloud.ics.ambito.entity;
 
-import com.incarcloud.ics.ambito.jdbc.Table;
 
+import com.incarcloud.ics.ambito.jdbc.Table;
+import com.incarcloud.ics.core.access.RequireAccessControl;
 import java.util.Date;
 
 /**
  * Created by on 2018/12/26.
  */
 @Table(name = "t_vehicle_archives")
+@RequireAccessControl(tableName = "t_vehicle_archives")
 public class VehicleArchivesBean extends ExtendableBean{
 
     private static final long serialVersionUID = 5885808001619406335L;
@@ -37,7 +39,7 @@ public class VehicleArchivesBean extends ExtendableBean{
     private String carProvince; //所属省
     private String carCity; //所属市
     private String remark; //备注
-
+    private String orgCode; //组织code
 
     public String getVinCode() {
         return vinCode;
@@ -239,4 +241,11 @@ public class VehicleArchivesBean extends ExtendableBean{
         this.remark = remark;
     }
 
+    public String getOrgCode() {
+        return orgCode;
+    }
+
+    public void setOrgCode(String orgCode) {
+        this.orgCode = orgCode;
+    }
 }

@@ -1,10 +1,7 @@
 package com.incarcloud.ics.ambito.entity;
 
-import com.incarcloud.ics.ambito.jdbc.Id;
-
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * @author ThomasChan
@@ -12,12 +9,9 @@ import java.util.Objects;
  * @description
  * @date 2018/12/27
  */
-public class BaseBean implements Serializable {
+public class BaseBean extends SuperBaseBean<Long> implements Serializable {
 
     private static final long serialVersionUID = 257515526994354578L;
-
-    @Id
-    private Long id;
 
     public Date createTime;
     public Long createTimeLong;
@@ -92,24 +86,5 @@ public class BaseBean implements Serializable {
         this.updateUser = updateUser;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BaseBean)) return false;
-        BaseBean baseBean = (BaseBean) o;
-        return Objects.equals(id, baseBean.id);
-    }
 }

@@ -4,6 +4,7 @@ import com.incarcloud.ics.ambito.entity.SysOrgBean;
 import com.incarcloud.ics.ambito.jdbc.BaseService;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author GuoKun
@@ -12,4 +13,14 @@ import java.util.List;
  */
 public interface SysOrgService extends BaseService<SysOrgBean> {
     List<SysOrgBean> getChildrenOrgs(SysOrgBean sysOrgBean);
+
+    Set<SysOrgBean> getUserManageOrgs(Long userId);
+
+    Set<SysOrgBean> getUserManageOrgs(String username);
+
+    Set<String> getUserManageOrgCodes(String username);
+
+    Set<String> getUserBelongOrgCodes(String username);
+
+    Set<String> getAllOrgCodes();
 }

@@ -2,7 +2,7 @@ package com.incarcloud.ics.ambito.exception;
 
 import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
-import com.incarcloud.ics.ambito.utils.logger.ExceptionUtils;
+import com.incarcloud.ics.ambito.utils.ExceptionUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;

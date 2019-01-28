@@ -1,7 +1,5 @@
 package com.incarcloud.ics.ambito.exception;
 
-import com.incarcloud.ics.ambito.common.ErrorDefine;
-
 /**
  * @author ThomasChan
  * @version 1.0
@@ -9,6 +7,8 @@ import com.incarcloud.ics.ambito.common.ErrorDefine;
  * @date 2018/12/27
  */
 public class AmbitoException extends RuntimeException{
+
+    private static final long serialVersionUID = 6012050882440753873L;
 
     private String code;
 

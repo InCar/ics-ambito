@@ -1,39 +1,21 @@
 package com.incarcloud.ics.ambito.controller;
 
-import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.Condition;
-import com.incarcloud.ics.ambito.condition.impl.NullCondition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.SysOrgBean;
-import com.incarcloud.ics.ambito.exception.AmbitoException;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.SysOrgService;
-import com.incarcloud.ics.ambito.service.SysOrgUserService;
-import com.incarcloud.ics.ambito.service.SysOrgVehicleService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.object.BatchSqlUpdate;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.incarcloud.ics.ambito.common.ErrorDefine.PARENT_ORG_NOT_EXISTS;
-import static com.incarcloud.ics.ambito.common.ErrorDefine.UNKNOWN_EXCEPTION;
 
 
 /**
