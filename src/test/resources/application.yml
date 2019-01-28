@@ -14,7 +14,9 @@ spring:
        password: maptracking
        jdbcUrl: jdbc:mysql://47.98.211.203:3306/ambito?characterEncoding=utf8&useSSL=false
        driver-class-name: com.mysql.cj.jdbc.Driver
-
-
-
+logging:
+  level:
+    org.springfromework.web: info
+    org.hibernate: error
+    com.incarcloud.ics: FINE
 

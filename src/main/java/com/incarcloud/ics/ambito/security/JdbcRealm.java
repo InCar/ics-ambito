@@ -20,6 +20,7 @@ import com.incarcloud.ics.core.authz.AuthorizeInfo;
 import com.incarcloud.ics.core.exception.AccountNotExistsException;
 import com.incarcloud.ics.core.exception.AuthenticationException;
 import com.incarcloud.ics.core.principal.Principal;
+import com.incarcloud.ics.core.privilege.WildcardPrivilege;
 import com.incarcloud.ics.core.realm.AccessRealm;
 import com.incarcloud.ics.core.role.SimpleAuthorizeInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +81,9 @@ public class JdbcRealm extends AccessRealm {
             List<ResourceBean> privilegeOfRole = resourceService.getPrivilegeOfRole(roleBean.getId());
             resourceBeans.addAll(privilegeOfRole);
         }
-        authorizeInfo.setStringPrivileges(resourceBeans.stream().map(ResourceBean::getCode).collect(Collectors.toSet()));
+        authorizeInfo.setPrivileges(resourceBeans.stream().map(e->{
+            return new WildcardPrivilege(e.getCode());
+        }).collect(Collectors.toSet()));
         return authorizeInfo;
     }
 

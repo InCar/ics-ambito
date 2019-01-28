@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.incarcloud.ics.core.filter;
+package com.incarcloud.ics.core.filterChain;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletRequest;

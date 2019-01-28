@@ -1,6 +1,7 @@
 package com.incarcloud.ics.core.role;
 
 import com.incarcloud.ics.core.authz.AuthorizeInfo;
+import com.incarcloud.ics.core.privilege.Privilege;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -16,16 +17,16 @@ public class SimpleAuthorizeInfo implements AuthorizeInfo, Serializable {
 
     private static final long serialVersionUID = -958931075733666722L;
     private Collection<String> roles;
-    private Collection<String> stringPrivileges;
+    private Collection<Privilege> privileges;
 
     public SimpleAuthorizeInfo() {
         this.roles = new HashSet<>();
-        this.stringPrivileges = new HashSet<>();
+        this.privileges = new HashSet<>();
     }
 
-    public SimpleAuthorizeInfo(Collection<String> roles, Collection<String> stringPrivileges) {
+    public SimpleAuthorizeInfo(Collection<String> roles, Collection<Privilege> privileges) {
         this.roles = roles;
-        this.stringPrivileges = stringPrivileges;
+        this.privileges = privileges;
     }
 
 
@@ -35,15 +36,15 @@ public class SimpleAuthorizeInfo implements AuthorizeInfo, Serializable {
     }
 
     @Override
-    public Collection<String> getStringPrivileges() {
-        return stringPrivileges;
+    public Collection<Privilege> getPrivileges() {
+        return privileges;
     }
 
     public void setRoles(Collection<String> roles) {
         this.roles = roles;
     }
 
-    public void setStringPrivileges(Collection<String> stringPrivileges) {
-        this.stringPrivileges = stringPrivileges;
+    public void setPrivileges(Collection<Privilege> privileges) {
+        this.privileges = privileges;
     }
 }
