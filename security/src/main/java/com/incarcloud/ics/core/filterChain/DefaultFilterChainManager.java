@@ -101,11 +101,10 @@ public class DefaultFilterChainManager implements FilterChainManager {
             throw new NullPointerException("chainDefinition cannot be null or empty.");
         } else {
             String[] filterTokens = this.splitChainDefinition(chainDefinition);
-            String[] var4 = filterTokens;
-            int var5 = filterTokens.length;
+            int length = filterTokens.length;
 
-            for(int var6 = 0; var6 < var5; ++var6) {
-                String token = var4[var6];
+            for(int i = 0; i < length; ++i) {
+                String token = filterTokens[i];
                 String[] nameConfigPair = this.toNameConfigPair(token);
                 this.addToChain(chainName, nameConfigPair[0], nameConfigPair[1]);
             }
@@ -189,7 +188,6 @@ public class DefaultFilterChainManager implements FilterChainManager {
             String msg = "chainSpecificFilterConfig was specified, but the underlying Filter instance is not an 'instanceof' " + PathConfigProcessor.class.getName() + ".  This is required if the filter is to accept " + "chain-specific configuration.";
             throw new IllegalArgumentException(msg);
         }
-
     }
 
     @Override

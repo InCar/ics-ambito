@@ -1,13 +1,59 @@
-group 'com.incarcloud.ambito'
-version '2.0-SNAPSHOT'
+allprojects {
+    group 'com.incarcloud.ics'
+    version '1.0-SNAPSHOT'
 
-apply plugin: 'java'
-apply plugin: 'maven-publish'
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
 
 
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+    repositories {
+        mavenLocal()
+        maven { url ALI_MAVEN_URL }
+        mavenCentral()
+    }
+
+    jar {
+        enabled = true
+    }
+
+    compileJava{
+        options.encoding = "utf-8"
+        options.compilerArgs << "-Xlint:unchecked"
+        options.compilerArgs << "-Werror"
+        options.compilerArgs << "-Xdiags:verbose"
+    }
+
+    compileTestJava{
+        options.encoding = "utf-8"
+        options.compilerArgs << "-Xlint:unchecked"
+        options.compilerArgs << "-Werror"
+        options.compilerArgs << "-Xdiags:verbose"
+    }
+
+    //发布到远程MAVEN仓库使用 gradle publishMavenPublicationToMavenRepository
+    publishing{
+        publications {
+            maven(MavenPublication){
+                from components.java
+            }
+        }
+        repositories {
+            maven{
+                url MAVEN_URL_SNAPSHOTS
+                credentials {
+                    username MAVEN_AUTH_USERNAME
+                    password MAVEN_AUTH_PASSWORD
+                }
+            }
+        }
+    }
+
+    defaultTasks("assemble")
+}
+
 
 repositories {
     mavenLocal()
@@ -28,7 +74,6 @@ repositories {
         //springboot web支持 仅供单元测试使用
         testCompile("org.springframework.boot:spring-boot-starter-web:2.0.3.RELEASE")
         testCompile("org.springframework.boot:spring-boot-test:2.0.3.RELEASE")
-
         testCompile group: 'junit', name: 'junit', version: '4.12'
         testCompile ("com.alibaba:fastjson:1.+")
         testCompile ("com.zaxxer:HikariCP:3.2.0")
@@ -55,57 +100,3 @@ task startWeb(type: JavaExec) {
 }
 
 
-
-jar {
-    enabled = true
-}
-
-compileJava{
-    options.encoding = "utf-8"
-    options.compilerArgs << "-Xlint:unchecked"
-    options.compilerArgs << "-Werror"
-    options.compilerArgs << "-Xdiags:verbose"
-}
-
-compileTestJava{
-    options.encoding = "utf-8"
-    options.compilerArgs << "-Xlint:unchecked"
-    options.compilerArgs << "-Werror"
-    options.compilerArgs << "-Xdiags:verbose"
-}
-
-//发布到远程MAVEN仓库使用 gradle publishMavenPublicationToMavenRepository
-publishing{
-    publications {
-        maven(MavenPublication){
-            from components.java
-        }
-    }
-    repositories {
-        maven{
-            url MAVEN_URL_SNAPSHOTS
-            credentials {
-                username MAVEN_AUTH_USERNAME
-                password MAVEN_AUTH_PASSWORD
-            }
-        }
-    }
-}
-
-
-
-buildscript {
-
-    repositories {
-        mavenLocal()
-        maven { url ALI_MAVEN_URL}
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.flywaydb:flyway-gradle-plugin:5.+"
-    }
-
-}
-
-
-defaultTasks("assemble")

@@ -39,7 +39,7 @@ public class WildcardPrivilege implements Privilege {
             }
 
             List<String> parts = CollectionUtils.asList(wildcardString.split(":"));
-            this.parts = new ArrayList();
+            this.parts = new ArrayList<>();
             Iterator var4 = parts.iterator();
 
             while(var4.hasNext()) {
@@ -76,20 +76,21 @@ public class WildcardPrivilege implements Privilege {
             List<Set<String>> otherParts = wp.getParts();
             int i = 0;
 
-            for(Iterator var5 = otherParts.iterator(); var5.hasNext(); ++i) {
-                Set<String> otherPart = (Set)var5.next();
+            for(Iterator iterator = otherParts.iterator(); iterator.hasNext(); ++i) {
+                @SuppressWarnings("unchecked")
+                Set<String> otherPart = (Set<String>) iterator.next();
                 if (this.getParts().size() - 1 < i) {
                     return true;
                 }
 
-                Set<String> part = (Set)this.getParts().get(i);
+                Set<String> part = this.getParts().get(i);
                 if (!part.contains("*") && !part.containsAll(otherPart)) {
                     return false;
                 }
             }
 
             while(i < this.getParts().size()) {
-                Set<String> part = (Set)this.getParts().get(i);
+                Set<String> part = this.getParts().get(i);
                 if (!part.contains("*")) {
                     return false;
                 }
@@ -103,10 +104,11 @@ public class WildcardPrivilege implements Privilege {
 
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        Iterator var2 = this.parts.iterator();
+        Iterator iterator = this.parts.iterator();
 
-        while(var2.hasNext()) {
-            Set<String> part = (Set)var2.next();
+        while(iterator.hasNext()) {
+            @SuppressWarnings("unchecked")
+            Set<String> part = (Set<String>)iterator.next();
             if (buffer.length() > 0) {
                 buffer.append(":");
             }

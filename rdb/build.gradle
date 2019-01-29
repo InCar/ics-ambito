@@ -2,11 +2,6 @@ plugins {
     id 'java'
 }
 
-group 'com.incarcloud.ambito'
-version '2.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
-
 repositories {
     mavenCentral()
 }

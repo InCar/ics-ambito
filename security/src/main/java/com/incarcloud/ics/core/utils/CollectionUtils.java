@@ -40,7 +40,7 @@ public class CollectionUtils {
         }
     }
 
-
+    @SuppressWarnings("unchecked")
     public static <E> List<E> asList(E... elements) {
         return elements != null && elements.length != 0 ? Arrays.asList(elements) : Collections.emptyList();
     }
