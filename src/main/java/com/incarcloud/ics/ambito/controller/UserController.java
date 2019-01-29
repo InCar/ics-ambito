@@ -15,11 +15,13 @@ import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.core.authc.UsernamePasswordToken;
 import com.incarcloud.ics.core.privilege.WildcardPrivilege;
 import com.incarcloud.ics.core.security.SecurityUtils;
+import com.incarcloud.ics.core.session.Session;
+import com.incarcloud.ics.core.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import javax.security.auth.Subject;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
