@@ -7,31 +7,22 @@ package com.incarcloud.ics.core.handler;
  * @date 2019/1/28
  */
 public class ErrorMessage {
-    private boolean result;
+
+    public static final String UNKNOWN_CODE = "999";
+    private boolean result = Boolean.FALSE;
     private String message = "";
     private String error = "";
     private String code = "";
 
-    public ErrorMessage() { }
-
-    public ErrorMessage(boolean result) {
-        this(result,null);
+    public ErrorMessage(String message) {
+        this(message,null);
     }
 
-    public ErrorMessage(boolean result, String message) {
-        this(result, message,null);
+    public ErrorMessage(String message,String code) {
+        this(message, code, null);
     }
 
-    public ErrorMessage(boolean result, String message,String code) {
-        this(result, message,code,null);
-    }
-
-    public ErrorMessage(boolean result, String message,String code, String error) {
-        this(result, message, code,error,null);
-    }
-
-    public ErrorMessage(boolean result, String message,String code, String error, T data) {
-        this.result=result;
+    public ErrorMessage(String message,String code, String error) {
         if(message!=null){
             this.message=message;
         }
@@ -41,9 +32,7 @@ public class ErrorMessage {
         if(error!=null) {
             this.error = error;
         }
-        this.data = data;
     }
-
 
     public boolean isResult() {
         return result;
@@ -76,4 +65,18 @@ public class ErrorMessage {
     public void setCode(String code) {
         this.code = code;
     }
+
+    public static ErrorMessage of(String message,String code, String error){
+        return new ErrorMessage(message, code, error);
+    }
+
+    public static ErrorMessage unknownMessage(){
+        return of("", UNKNOWN_CODE, "");
+    }
+
+    public String toJsonString() {
+        return "{\"result\":"+this.isResult()+",\"message\":\""+this.getMessage()+"!\",\"error\":\""+this.getError()+"\",\"code\":\""+this.getCode()+"\"}";
+    }
+
+
 }

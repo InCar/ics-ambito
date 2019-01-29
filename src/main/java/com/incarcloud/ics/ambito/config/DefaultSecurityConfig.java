@@ -46,9 +46,7 @@ public class DefaultSecurityConfig {
         FilterFactoryBean filterFactoryBean = new FilterFactoryBean();
         Map<String,String> filterChainDefinitions = new LinkedHashMap<>();
         filterChainDefinitions.put("/ics/user/login", "anon");
-        filterChainDefinitions.put("/ics/**", "authc,roles[admin],perms[test]");
-//        filterChainDefinitions.put("/ics/**", "authc");
-
+        filterChainDefinitions.put("/ics/**", "authc");
         filterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitions);
         filterFactoryBean.setSecurityManager(securityManager());
         return filterFactoryBean;
