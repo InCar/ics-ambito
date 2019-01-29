@@ -1,5 +1,6 @@
 package com.incarcloud.ics.ambito.entity;
 
+
 import com.incarcloud.ics.ambito.jdbc.Id;
 
 import java.io.Serializable;
@@ -11,18 +12,18 @@ import java.util.Objects;
  * @description
  * @date 2019/1/15
  */
-public class SuperBaseBean implements Serializable {
+public class SuperBaseBean<K> implements Serializable {
 
     private static final long serialVersionUID = -4375476220053935738L;
 
     @Id
-    private Long id;
+    private K id;
 
-    public Long getId() {
+    public K getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(K id) {
         this.id = id;
     }
 

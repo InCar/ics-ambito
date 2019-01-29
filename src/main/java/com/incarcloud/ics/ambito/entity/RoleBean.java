@@ -1,9 +1,7 @@
 package com.incarcloud.ics.ambito.entity;
 
-import com.incarcloud.ics.ambito.jdbc.Table;
 
-import java.io.Serializable;
-import java.util.Date;
+import com.incarcloud.ics.ambito.jdbc.Table;
 
 /**
  * @author ThomasChan

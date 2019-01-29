@@ -2,8 +2,10 @@ package com.incarcloud.ics.ambito.jdbc;
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.pojo.PageResult;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -45,9 +47,15 @@ public interface BaseService<T> {
 
      int save(T t);
 
+     @Transactional
+     int saveBatch(Collection<T> t);
+
      int save(String sql, List<Object> params);
 
      int delete(Serializable id);
+
+     @Transactional
+     int deleteBatch(Serializable[] ids);
 
      int delete(Condition condition);
 }

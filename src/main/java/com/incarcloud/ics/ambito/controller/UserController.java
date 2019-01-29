@@ -1,21 +1,28 @@
 package com.incarcloud.ics.ambito.controller;
 
+import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
+import com.incarcloud.ics.ambito.entity.SysOrgBean;
 import com.incarcloud.ics.ambito.entity.UserBean;
+import com.incarcloud.ics.ambito.entity.VehicleArchivesBean;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
+import com.incarcloud.ics.ambito.pojo.PageResult;
 import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.core.authc.UsernamePasswordToken;
+import com.incarcloud.ics.core.privilege.WildcardPrivilege;
+import com.incarcloud.ics.core.security.SecurityUtils;
 import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.subject.Subject;
-import com.incarcloud.ics.core.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -59,11 +66,24 @@ public class UserController {
                 new StringCondition("realName", realName, StringCondition.Handler.ALL_LIKE),
                 new StringCondition("phone", phone, StringCondition.Handler.ALL_LIKE)
         );
+
         if(pageNum == null || pageSize == null){
-            return JsonMessage.success(userService.query(cond));
+            List<UserBean> query = userService.query(cond);
+            maskCredential(query);
+            return JsonMessage.success(query);
         }else {
-            return JsonMessage.success(userService.queryPage(new Page(pageNum, pageSize), cond));
+            PageResult<UserBean> query = userService.queryPage(new Page(pageNum, pageSize), cond);
+            maskCredential(query.getContent());
+            return JsonMessage.success(query);
         }
+    }
+
+
+    private void maskCredential(Collection<UserBean> collection){
+        collection.forEach(e->{
+            e.setSalt(null);
+            e.setPassword(null);
+        });
     }
 
 
@@ -132,12 +152,8 @@ public class UserController {
         Subject subject = SecurityUtils.getSubject();
         subject.login(usernamePasswordToken);
         Session session = subject.getSession();
-        session.setAttribute("test", "123456");
         List<UserBean> userBeans = userService.query(new StringCondition("username", usernamePasswordToken.getPrincipal(), StringCondition.Handler.EQUAL));
         session.setAttribute("myInfo", userBeans.get(0));
-        Assert.isTrue(subject.isAuthenticated(), "not login");
-        Assert.isTrue(subject.getPrincipal().getUserIdentity() != null, "no identity after login");
-        Assert.isTrue(subject.getSession(false)!= null, "has no session after login");
         return JsonMessage.success();
     }
 
@@ -148,11 +164,7 @@ public class UserController {
     @PostMapping(value = "/logout")
     public JsonMessage logout(){
         Subject subject = SecurityUtils.getSubject();
-        Assert.isTrue(subject.isAuthenticated(), "is not authenticated");
         subject.logout();
-        Assert.isTrue(!subject.isAuthenticated(), "is authenticated");
-        Assert.isTrue(subject.getSession(false) == null, "session is not null after logout");
-        Assert.isTrue(subject.getPrincipal() == null, "principal is not null after logout");
         return JsonMessage.success();
     }
 
@@ -164,8 +176,40 @@ public class UserController {
     @GetMapping(value = "/myInfo")
     public JsonMessage myInfo(){
         Subject subject = SecurityUtils.getSubject();
-        Assert.isTrue(subject.isAuthenticated(), "is not authenticated");
+        if(!subject.isAuthenticated()){
+            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+        }
         Session session = subject.getSession();
         return JsonMessage.success(session.getAttribute("myInfo"));
     }
+
+
+    @GetMapping(value = "/test")
+    public JsonMessage test(){
+        Subject subject = SecurityUtils.getSubject();
+        if(!subject.isAuthenticated()){
+            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+        }
+        Assert.isTrue(subject.hasRole("admin"), "");
+        Assert.isTrue(!subject.hasRole("user"), "");
+        Assert.isTrue(subject.isPermitted(new WildcardPrivilege("abc")), "");
+        Assert.isTrue(subject.isPermitted(new WildcardPrivilege("bcd")), "");
+        Assert.isTrue(subject.isPermittedAllObjectPrvileges(Arrays.asList(new WildcardPrivilege("bcd"), new WildcardPrivilege("abc"))), "");
+        Assert.isTrue(!subject.isAccessibleForData(1L, VehicleArchivesBean.class),"");
+        Assert.isTrue(subject.isAccessibleForData(2L, VehicleArchivesBean.class),"");
+        Assert.isTrue(subject.isAccessibleForData(7L, SysOrgBean.class),"");
+        return JsonMessage.success();
+    }
+
+
+    @GetMapping(value = "/getOrgs")
+    public JsonMessage getOrgs(){
+        Subject subject = SecurityUtils.getSubject();
+        if(!subject.isAuthenticated()){
+            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+        }
+        Collection<String> accessibleOrg = subject.getFilterCodes(VehicleArchivesBean.class);
+        return JsonMessage.success(accessibleOrg);
+    }
+
 }

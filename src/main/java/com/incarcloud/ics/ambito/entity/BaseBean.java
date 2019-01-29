@@ -9,10 +9,9 @@ import java.util.Date;
  * @description
  * @date 2018/12/27
  */
-public class BaseBean extends SuperBaseBean implements Serializable {
+public class BaseBean extends SuperBaseBean<Long> implements Serializable {
 
     private static final long serialVersionUID = 257515526994354578L;
-
 
     public Date createTime;
     public Long createTimeLong;

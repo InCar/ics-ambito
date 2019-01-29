@@ -1,20 +1,18 @@
 package com.incarcloud.ics.ambito.controller;
 
 import com.incarcloud.ics.ambito.condition.Condition;
+import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.SysOrgUserBean;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.SysOrgUserService;
+import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author GuoKun
@@ -47,19 +45,34 @@ public class SysOrgUserController {
 
 
     @PostMapping(value = "/save")
-    public JsonMessage save(@RequestBody SysOrgUserBean sysOrgUserBean) {
-        if (sysOrgUserBean.getId() == null) {
-            sysOrgUserService.save(sysOrgUserBean);
-        } else {
-            sysOrgUserService.update(sysOrgUserBean);
+    @Transactional
+    public JsonMessage save(@RequestBody List<SysOrgUserBean> sysOrgUserBeans) {
+        for(SysOrgUserBean sysOrgUserBean : sysOrgUserBeans) {
+            List<SysOrgUserBean> existing = sysOrgUserService.query(Condition.and(
+                    new NumberCondition("orgId", sysOrgUserBean.getOrgId(), NumberCondition.Handler.EQUAL),
+                    new NumberCondition("userId", sysOrgUserBean.getUserId(), NumberCondition.Handler.EQUAL)
+            ));
+            if(CollectionUtils.isNotEmpty(existing)){
+                continue;
+            }
+            if (sysOrgUserBean.getId() == null) {
+                sysOrgUserService.save(sysOrgUserBean);
+            } else {
+                sysOrgUserService.update(sysOrgUserBean);
+            }
         }
         return JsonMessage.success();
     }
 
 
-    @DeleteMapping(value = "/delete/{id}")
-    public JsonMessage delete(@PathVariable long id) {
-        sysOrgUserService.delete(id);
+    /**
+     * 批量删除用户组织的绑定关系
+     * @param ids
+     * @return
+     */
+    @DeleteMapping(value = "/delete")
+    public JsonMessage delete(@RequestParam Long[] ids) {
+        sysOrgUserService.deleteBatch(ids);
         return JsonMessage.success();
     }
 }

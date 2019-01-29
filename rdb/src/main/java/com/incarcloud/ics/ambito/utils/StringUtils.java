@@ -96,4 +96,5 @@ public class StringUtils {
         SECURE_RANDOM.nextBytes(bytes);
         return Base64.getEncoder().encodeToString(bytes);
     }
+
 }

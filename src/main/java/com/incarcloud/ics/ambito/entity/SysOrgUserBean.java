@@ -1,5 +1,6 @@
 package com.incarcloud.ics.ambito.entity;
 
+
 import com.incarcloud.ics.ambito.jdbc.Table;
 
 import java.util.Date;
@@ -31,6 +32,15 @@ public class SysOrgUserBean {
 
     // 更新时间
     private Date updateTime;
+
+
+    public SysOrgUserBean() {
+    }
+
+    public SysOrgUserBean(Long orgId, Long userId) {
+        this.orgId = orgId;
+        this.userId = userId;
+    }
 
     public Long getId() {
         return id;

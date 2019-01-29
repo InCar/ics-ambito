@@ -2,9 +2,9 @@ package com.incarcloud.ics.ambito.entity;
 
 
 import com.incarcloud.ics.ambito.jdbc.Table;
+import com.incarcloud.ics.core.access.RequireAccessControl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,6 +13,7 @@ import java.util.List;
  * @Date 2018-12-26 11:46:02
  */
 @Table(name = "t_sys_org")
+@RequireAccessControl(tableName = "t_sys_org")
 public class SysOrgBean extends ExtendableBean{
 
     private static final long serialVersionUID = -5029982119320932787L;
@@ -68,7 +69,7 @@ public class SysOrgBean extends ExtendableBean{
     // 邮箱
     private String email;
 
-    //状态
+    //状态 0=关闭，1=正常
     private byte status;
 
     //备注
