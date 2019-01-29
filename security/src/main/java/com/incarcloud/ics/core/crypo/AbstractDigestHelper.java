@@ -1,6 +1,6 @@
 package com.incarcloud.ics.core.crypo;
 
-import com.incarcloud.ics.core.exception.AuthException;
+import com.incarcloud.ics.core.exception.SecurityException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -94,7 +94,7 @@ public abstract class AbstractDigestHelper implements DigestHelper {
         try {
             return new AbstractDigestHelper(Algorithm.MD5.getName(), source){};
         } catch (NoSuchAlgorithmException e) {
-            throw new AuthException(e);
+            throw new SecurityException(e);
         }
     }
 
@@ -102,7 +102,7 @@ public abstract class AbstractDigestHelper implements DigestHelper {
         try {
             return new AbstractDigestHelper(SALT_ITERATION, Algorithm.MD5.getName(), source, salt){};
         } catch (NoSuchAlgorithmException e) {
-            throw new AuthException(e);
+            throw new SecurityException(e);
         }
     }
 
@@ -110,7 +110,7 @@ public abstract class AbstractDigestHelper implements DigestHelper {
         try {
             return new AbstractDigestHelper(iteration, algorithm.getName(), source, salt){};
         } catch (NoSuchAlgorithmException e) {
-            throw new AuthException(e);
+            throw new SecurityException(e);
         }
     }
 

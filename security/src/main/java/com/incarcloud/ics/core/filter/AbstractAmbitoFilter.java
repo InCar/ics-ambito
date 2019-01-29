@@ -1,9 +1,13 @@
 package com.incarcloud.ics.core.filter;
 
+import com.incarcloud.ics.core.filterChain.FilterChainResolver;
+import com.incarcloud.ics.core.security.DefaultSecurityManager;
+import com.incarcloud.ics.core.security.SecurityManager;
+import com.incarcloud.ics.core.security.SecurityUtils;
 import com.incarcloud.ics.core.servlet.AmbitoHttpServletRequest;
 import com.incarcloud.ics.core.servlet.AmbitoHttpServletResponse;
+import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.subject.Subject;
-import com.incarcloud.ics.core.security.SecurityUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -12,35 +16,51 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
 
-//
-    /**
-     * {@code doFilterInternal} implementation that sets-up, executes, and cleans-up a Shiro-filtered request.  It
-     * performs the following ordered operations:
-     * <ol>
-     * <li>{@link #prepareServletRequest(ServletRequest, ServletResponse, FilterChain) Prepares}
-     * the incoming {@code ServletRequest} for use during Shiro's processing</li>
-     * <li>{@link #prepareServletResponse(ServletRequest, ServletResponse, FilterChain) Prepares}
-     * the outgoing {@code ServletResponse} for use during Shiro's processing</li>
-     * <li> {@link #createSubject(javax.servlet.ServletRequest, javax.servlet.ServletResponse) Creates} a
-     * {@link Subject} instance based on the specified request/response pair.</li>
-     * <li>Finally {@link Subject#execute(Runnable) executes} the
-     * {@link #updateSessionLastAccessTime(javax.servlet.ServletRequest, javax.servlet.ServletResponse)} and
-     * {@link #executeChain(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)}
-     * methods</li>
-     * </ol>
-     * <p/>
-     * The {@code Subject.}{@link Subject#execute(Runnable) execute(Runnable)} call in step #4 is used as an
-     * implementation technique to guarantee proper thread binding and restoration is completed successfully.
-     *
-     * @param servletRequest  the incoming {@code ServletRequest}
-     * @param servletResponse the outgoing {@code ServletResponse}
-     * @param chain           the container-provided {@code FilterChain} to execute
-     * @throws IOException                    if an IO error occurs
-     * @throws javax.servlet.ServletException if an Throwable other than an IOException
-     */
+    private Logger logger = Logger.getLogger(AbstractAmbitoFilter.class.getName());
+    private FilterChainResolver filterChainResolver;
+    private SecurityManager securityManager;
+
+//    public AbstractAmbitoFilter(FilterChainResolver filterChainResolver, SecurityManager securityManager) {
+//        this.filterChainResolver = filterChainResolver;
+//        this.securityManager = securityManager;
+//    }
+
+    public FilterChainResolver getFilterChainResolver() {
+        return filterChainResolver;
+    }
+
+    public void setFilterChainResolver(FilterChainResolver filterChainResolver) {
+        this.filterChainResolver = filterChainResolver;
+    }
+
+    public SecurityManager getSecurityManager() {
+        return securityManager;
+    }
+
+    public void setSecurityManager(SecurityManager securityManager) {
+        this.securityManager = securityManager;
+    }
+
+    protected final void onFilterConfigSet() throws Exception {
+//        this.applyStaticSecurityManagerEnabledConfig();
+//        this.init();
+        this.ensureSecurityManager();
+        SecurityUtils.setSecurityManager(this.getSecurityManager());
+    }
+
+    private void ensureSecurityManager() {
+        SecurityManager securityManager = this.getSecurityManager();
+        if (securityManager == null) {
+            securityManager = new DefaultSecurityManager();
+            this.setSecurityManager(securityManager);
+        }
+    }
+
+
     protected void doFilterInternal(ServletRequest servletRequest, ServletResponse servletResponse, final FilterChain chain)
             throws ServletException, IOException {
 
@@ -50,8 +70,7 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
             final ServletRequest request = prepareServletRequest(servletRequest, servletResponse, chain);
             final ServletResponse response = prepareServletResponse(request, servletResponse, chain);
 
-            final Subject subject = createSubject(request, response);
-
+            createSubject(request, response);
             //noinspection unchecked
 //            subject.execute(new Callable() {
 //                public Object call() throws Exception {
@@ -60,8 +79,8 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
 //                    return null;
 //                }
 //            });
+            updateSessionLastAccessTime(request, response);
             executeChain(request, response, chain);
-
         } catch (RuntimeException ex) {
             t = ex.getCause();
         } catch (Throwable throwable) {
@@ -79,6 +98,23 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
             String msg = "Filtered request failed.";
             throw new ServletException(msg, t);
         }
+    }
+
+    protected void updateSessionLastAccessTime(ServletRequest request, ServletResponse response) {
+        if (!this.isHttpSessions()) {
+            Subject subject = SecurityUtils.getSubject();
+            if (subject != null) {
+                Session session = subject.getSession(false);
+                if (session != null) {
+                    try {
+                        session.touch();
+                    } catch (Throwable e) {
+                        logger.severe("session.touch() method invocation has failed.  Unable to updatethe corresponding session's last access time based on the incoming request.");
+                    }
+                }
+            }
+        }
+
     }
 
     /**
@@ -118,20 +154,12 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
         return toUse;
     }
 
-    /**
-     * Wraps the original HttpServletRequest in a {@link AmbitoHttpServletRequest}, which is required for supporting
-     * Servlet Specification behavior backed by a {@link org.apache.shiro.subject.Subject Subject} instance.
-     *
-     * @param orig the original Servlet Container-provided incoming {@code HttpServletRequest} instance.
-     * @return {@link AmbitoHttpServletRequest AmbitoHttpServletRequest} instance wrapping the original.
-     * @since 1.0
-     */
     protected ServletRequest wrapServletRequest(HttpServletRequest orig) {
         return new AmbitoHttpServletRequest(orig, getServletContext(), isHttpSessions());
     }
 
     public boolean isHttpSessions(){
-        return true;
+        return this.getSecurityManager().isHttpSessionMode();
     }
 
     /**
@@ -190,52 +218,48 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
      */
     protected void executeChain(ServletRequest request, ServletResponse response, FilterChain origChain)
             throws IOException, ServletException {
-//        FilterChain chain = getExecutionChain(request, response, origChain);
-        origChain.doFilter(request, response);
+        FilterChain chain = getExecutionChain(request, response, origChain);
+        chain.doFilter(request, response);
     }
 
 
-//    /**
-//     * Returns the {@code FilterChain} to execute for the given request.
-//     * <p/>
-//     * The {@code origChain} argument is the
-//     * original {@code FilterChain} supplied by the Servlet Container, but it may be modified to provide
-//     * more behavior by pre-pending further chains according to the Shiro configuration.
-//     * <p/>
-//     * This implementation returns the chain that will actually be executed by acquiring the chain from a
-//     * {@link #getFilterChainResolver() filterChainResolver}.  The resolver determines exactly which chain to
-//     * execute, typically based on URL configuration.  If no chain is returned from the resolver call
-//     * (returns {@code null}), then the {@code origChain} will be returned by default.
-//     *
-//     * @param request   the incoming ServletRequest
-//     * @param response  the outgoing ServletResponse
-//     * @param origChain the original {@code FilterChain} provided by the Servlet Container
-//     * @return the {@link FilterChain} to execute for the given request
-//     * @since 1.0
-//     */
-//    protected FilterChain getExecutionChain(ServletRequest request, ServletResponse response, FilterChain origChain) {
-//        FilterChain chain = origChain;
-//
-//        FilterChainResolver resolver = getFilterChainResolver();
-//        if (resolver == null) {
-//            log.debug("No FilterChainResolver configured.  Returning original FilterChain.");
-//            return origChain;
-//        }
-//
-//        FilterChain resolved = resolver.getChain(request, response, origChain);
-//        if (resolved != null) {
-//            log.trace("Resolved a configured FilterChain for the current request.");
-//            chain = resolved;
-//        } else {
-//            log.trace("No FilterChain configured for the current request.  Using the default.");
-//        }
-//
-//        return chain;
-//    }
-//
-//    public void setFilterChainResolver(FilterChainResolver filterChainResolver) {
-//        this.filterChainResolver = filterChainResolver;
-//    }
+    /**
+     * Returns the {@code FilterChain} to execute for the given request.
+     * <p/>
+     * The {@code origChain} argument is the
+     * original {@code FilterChain} supplied by the Servlet Container, but it may be modified to provide
+     * more behavior by pre-pending further chains according to the Shiro configuration.
+     * <p/>
+     * This implementation returns the chain that will actually be executed by acquiring the chain from a
+     * {@link #getFilterChainResolver() filterChainResolver}.  The resolver determines exactly which chain to
+     * execute, typically based on URL configuration.  If no chain is returned from the resolver call
+     * (returns {@code null}), then the {@code origChain} will be returned by default.
+     *
+     * @param request   the incoming ServletRequest
+     * @param response  the outgoing ServletResponse
+     * @param origChain the original {@code FilterChain} provided by the Servlet Container
+     * @return the {@link FilterChain} to execute for the given request
+     * @since 1.0
+     */
+    protected FilterChain getExecutionChain(ServletRequest request, ServletResponse response, FilterChain origChain) {
+        FilterChain chain = origChain;
+
+        FilterChainResolver resolver = getFilterChainResolver();
+        if (resolver == null) {
+            logger.fine("No FilterChain configured for the current request.  Using the default.");
+            return origChain;
+        }
+
+        FilterChain resolved = resolver.getChain(request, response, origChain);
+        if (resolved != null) {
+            chain = resolved;
+        }else {
+            logger.fine("No FilterChain configured for the current request.  Using the default.");
+        }
+        return chain;
+    }
+
+
 
 
 }

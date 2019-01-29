@@ -18,10 +18,10 @@
  */
 package com.incarcloud.ics.core.filter;
 
-import com.incarcloud.ics.core.exception.AuthException;
+import com.incarcloud.ics.core.exception.SecurityException;
 
 public interface Initializable {
 
-    void init() throws AuthException;
+    void init() throws SecurityException;
 
 }

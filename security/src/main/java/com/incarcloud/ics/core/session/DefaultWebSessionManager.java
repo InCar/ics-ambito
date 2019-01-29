@@ -24,6 +24,7 @@ public class DefaultWebSessionManager extends AbstractValidateSessionManager imp
     private SessionFactory sessionFactory;
     private Cookie sessionIdCookie;
     private boolean isDeleteInvalidSessions;
+
     public DefaultWebSessionManager() {
         this.sessionIdCookie = new SimpleCookie(AmbitoHttpSession.DEFAULT_SESSION_ID_NAME);
         this.sessionDao = new MemorySessionDAO();

@@ -144,9 +144,9 @@ public class Config {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        System.out.println(new Config());
-    }
+//    public static void main(String[] args) {
+//        System.out.println(new Config());
+//    }
 
 
 }

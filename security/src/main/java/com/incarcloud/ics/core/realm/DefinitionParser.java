@@ -4,7 +4,7 @@
 //import com.incarcloud.ics.core.org.Organization;
 //import com.incarcloud.ics.core.org.SimpleOrganization;
 //import com.incarcloud.ics.core.privilege.Privilege;
-//import com.incarcloud.ics.core.privilege.SimplePrivilege;
+//import com.incarcloud.ics.core.privilege.AllPrivilege;
 //import com.incarcloud.ics.core.role.String;
 //import com.incarcloud.ics.core.role.SimpleRole;
 //import com.incarcloud.ics.core.subject.Account;
@@ -47,7 +47,7 @@
 //        }
 //
 //        List<String> privilgeList = Arrays.asList(splits[1].split(SPLIT_TOKEN));
-//        List<Privilege> simplePrivileges = privilgeList.stream().map(SimplePrivilege::new).collect(Collectors.toList());
+//        List<Privilege> simplePrivileges = privilgeList.stream().map(AllPrivilege::new).collect(Collectors.toList());
 //        simpleRole.setPrivileges(simplePrivileges);
 //        return simpleRole;
 //    }

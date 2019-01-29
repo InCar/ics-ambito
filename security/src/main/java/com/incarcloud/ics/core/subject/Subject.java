@@ -20,7 +20,8 @@ import java.util.Collection;
  */
 public interface Subject {
     boolean isPermitted(Privilege privilege);
-    boolean isPermittedAll(Collection<Privilege> privileges);
+    boolean isPermittedAllObjectPrvileges(Collection<Privilege> privileges);
+    boolean isPermittedAllStringPrivileges(Collection<String> privileges);
     boolean hasRole(String roleIdentifier);
     boolean hasAllRoles(Collection<String> roleIdentifiers);
     boolean isAccessibleForData(Serializable dataId, Class<?> clzz);

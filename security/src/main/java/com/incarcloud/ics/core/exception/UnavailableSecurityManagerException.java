@@ -6,7 +6,7 @@ package com.incarcloud.ics.core.exception;
  * @description
  * @date 2019/1/8
  */
-public class UnavailableSecurityManagerException extends AuthException {
+public class UnavailableSecurityManagerException extends SecurityException {
     private static final long serialVersionUID = -3061829807055871186L;
 
     public UnavailableSecurityManagerException() {

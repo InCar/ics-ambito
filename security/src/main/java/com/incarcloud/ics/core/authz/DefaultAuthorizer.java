@@ -8,7 +8,6 @@ import com.incarcloud.ics.core.utils.Asserts;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author ThomasChan
@@ -39,35 +38,56 @@ public class DefaultAuthorizer implements Authorizer {
         return true;
     }
 
+
+    @Override
+    public boolean isPermittedAllStringPrivileges(Principal principal, Collection<String> privileges) {
+        for(Realm realm : realmList){
+            if(!isPermittedAllStringOfRealm(realm, principal, privileges)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     private boolean isPermittedOfRealm(Realm realm, Principal principal, Privilege privilege){
         AuthorizeInfo authorizeInfo = realm.getAuthorizeInfo(principal);
         if(authorizeInfo == null){
             return false;
         }
-        if(!authorizeInfo.getStringPrivileges().contains(privilege.getCode())){
-            return false;
+        for(Privilege pri : authorizeInfo.getPrivileges()){
+            if(!pri.implies(privilege)){
+                return false;
+            }
         }
         return true;
     }
 
-    private boolean isPermittedAllOfRealm(Realm realm, Principal principal, Collection<Privilege> privileges){
-        Collection<String> privilegeCodes = privileges.stream().map(Privilege::getCode).collect(Collectors.toSet());
+    private boolean isPermittedAllObjectOfRealm(Realm realm, Principal principal, Collection<Privilege> privileges){
+        for(Privilege p : privileges){
+            if(!isPermittedOfRealm(realm, principal, p)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    private boolean isPermittedAllStringOfRealm(Realm realm, Principal principal, Collection<String> privileges){
         AuthorizeInfo authorizeInfo = realm.getAuthorizeInfo(principal);
         if(authorizeInfo == null){
             return false;
         }
-        if(!authorizeInfo.getStringPrivileges().containsAll(privilegeCodes)){
+        if(!authorizeInfo.getPrivileges().containsAll(privileges)){
             return false;
         }
         return true;
     }
 
 
-
     @Override
-    public boolean isPermittedAll(Principal account, Collection<Privilege> privileges) {
+    public boolean isPermittedAllObjectPrivileges(Principal account, Collection<Privilege> privileges) {
         for(Realm realm : realmList){
-            if(!isPermittedAllOfRealm(realm, account, privileges)){
+            if(!isPermittedAllObjectOfRealm(realm, account, privileges)){
                 return false;
             }
         }
