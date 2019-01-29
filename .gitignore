@@ -9,6 +9,7 @@
 .gradle/
 .idea/
 .vscode/
+**/.classpath
 
 **/.DS_Store
 **/node_modules/
