@@ -1,6 +1,6 @@
 package com.incarcloud.ics.core.org;
 
-import com.incarcloud.ics.core.exception.AuthException;
+import com.incarcloud.ics.core.exception.SecurityException;
 
 import java.io.Serializable;
 import java.util.List;
@@ -65,7 +65,7 @@ public class DefaultOrganizationTree implements OrganizationTree, Serializable {
         if(collect.isEmpty()){
             logger.fine("There is no chief of this organization tree");
         }else if(collect.size() > 1){
-            throw AuthException.getIcsException("More than one chief have been found!");
+            throw SecurityException.getException("More than one chief have been found!");
         }else {
             chief = collect.get(0);
         }

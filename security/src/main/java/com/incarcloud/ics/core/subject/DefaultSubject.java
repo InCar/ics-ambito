@@ -76,8 +76,13 @@ public class DefaultSubject implements Subject {
     }
 
     @Override
-    public boolean isPermittedAll(Collection<Privilege> privileges) {
-        return securityManager.isPermittedAll(principal, privileges);
+    public boolean isPermittedAllObjectPrvileges(Collection<Privilege> privileges) {
+        return securityManager.isPermittedAllObjectPrivileges(principal, privileges);
+    }
+
+    @Override
+    public boolean isPermittedAllStringPrivileges(Collection<String> privileges) {
+        return securityManager.isPermittedAllStringPrivileges(principal, privileges);
     }
 
     @Override

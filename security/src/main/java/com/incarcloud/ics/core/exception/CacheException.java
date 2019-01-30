@@ -6,7 +6,7 @@ package com.incarcloud.ics.core.exception;
  * @Date 2018/12/19
  * @Version 1.0
  */
-public class CacheException extends AuthException {
+public class CacheException extends SecurityException {
     public CacheException() {
     }
 

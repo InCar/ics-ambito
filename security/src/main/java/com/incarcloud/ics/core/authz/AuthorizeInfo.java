@@ -1,5 +1,7 @@
 package com.incarcloud.ics.core.authz;
 
+import com.incarcloud.ics.core.privilege.Privilege;
+
 import java.util.Collection;
 
 /**
@@ -10,5 +12,5 @@ import java.util.Collection;
  */
 public interface AuthorizeInfo {
     Collection<String> getRoles();
-    Collection<String> getStringPrivileges();
+    Collection<Privilege> getPrivileges();
 }

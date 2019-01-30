@@ -94,23 +94,14 @@ public abstract class OncePerRequestFilter extends NameableFilter {
         this.enabled = enabled;
     }
 
-    /**
-     * This {@code doFilter} implementation stores a request attribute for
-     * "already filtered", proceeding without filtering again if the
-     * attribute is already there.
-     *
-     * @see #getAlreadyFilteredAttributeName
-     * @see #shouldNotFilter
-     * @see #doFilterInternal
-     */
+
     public final void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String alreadyFilteredAttributeName = getAlreadyFilteredAttributeName();
         if ( request.getAttribute(alreadyFilteredAttributeName) != null ) {
             filterChain.doFilter(request, response);
         } else //noinspection deprecation
-            if (/* added in 1.2: */ !isEnabled(request, response) ||
-                /* retain backwards compatibility: */ shouldNotFilter(request) ) {
+            if (/* added in 1.2: */ !isEnabled(request, response)) {
             filterChain.doFilter(request, response);
         } else {
             // Do invoke this filter...
@@ -126,30 +117,6 @@ public abstract class OncePerRequestFilter extends NameableFilter {
         }
     }
 
-    /**
-     * Returns {@code true} if this filter should filter the specified request, {@code false} if it should let the
-     * request/response pass through immediately to the next element in the {@code FilterChain}.
-     * <p/>
-     * This default implementation merely returns the value of {@link #isEnabled() isEnabled()}, which is
-     * {@code true} by default (to ensure the filter always executes by default), but it can be overridden by
-     * subclasses for request-specific behavior if necessary.  For example, a filter could be enabled or disabled
-     * based on the request path being accessed.
-     * <p/>
-     * <b>Helpful Hint:</b> if your subclass extends {@link org.apache.shiro.web.filter.PathMatchingFilter PathMatchingFilter},
-     * you may wish to instead override the
-     * {@link org.apache.shiro.web.filter.PathMatchingFilter#isEnabled(javax.servlet.ServletRequest, javax.servlet.ServletResponse, String, Object)
-     * PathMatchingFilter.isEnabled(request,response,path,pathSpecificConfig)}
-     * method if you want to make your enable/disable decision based on any path-specific configuration.
-     *
-     * @param request the incoming servlet request
-     * @param response the outbound servlet response
-     * @return {@code true} if this filter should filter the specified request, {@code false} if it should let the
-     * request/response pass through immediately to the next element in the {@code FilterChain}.
-     * @throws IOException in the case of any IO error
-     * @throws ServletException in the case of any error
-     * @see org.apache.shiro.web.filter.PathMatchingFilter#isEnabled(javax.servlet.ServletRequest, javax.servlet.ServletResponse, String, Object)
-     * @since 1.2
-     */
     @SuppressWarnings({"UnusedParameters"})
     protected boolean isEnabled(ServletRequest request, ServletResponse response) throws ServletException, IOException {
         return isEnabled();
@@ -172,24 +139,6 @@ public abstract class OncePerRequestFilter extends NameableFilter {
         }
         return name + ALREADY_FILTERED_SUFFIX;
     }
-
-    /**
-     * Can be overridden in subclasses for custom filtering control,
-     * returning <code>true</code> to avoid filtering of the given request.
-     * <p>The default implementation always returns <code>false</code>.
-     *
-     * @param request current HTTP request
-     * @return whether the given request should <i>not</i> be filtered
-     * @throws ServletException in case of errors
-     * @deprecated in favor of overriding {@link #isEnabled(javax.servlet.ServletRequest, javax.servlet.ServletResponse)}
-     * for custom behavior.  This method will be removed in Shiro 2.0.
-     */
-    @Deprecated
-    @SuppressWarnings({"UnusedDeclaration"})
-    protected boolean shouldNotFilter(ServletRequest request) throws ServletException {
-        return false;
-    }
-
 
     /**
      * Same contract as for

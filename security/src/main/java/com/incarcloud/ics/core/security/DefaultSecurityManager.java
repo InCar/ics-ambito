@@ -45,17 +45,24 @@ public class DefaultSecurityManager implements SecurityManager {
     private SubjectDAO subjectDao;
     private SubjectFactory subjectFactory;
 
+    public DefaultSecurityManager() {
+        this.cacheManager = new LocalCacheManager();
+        this.sessionManager = new DefaultWebSessionManager();
+        this.subjectDao = new DefaultSubjectDAO();
+        this.subjectFactory = new DefaultSubjectFactory();
+    }
+
     public DefaultSecurityManager(Realm realm) {
         this.cacheManager = new LocalCacheManager();
         List<Realm> realms = new ArrayList<>();
         realms.add(realm);
         this.setRealms(realms);
-        this.authenticator = new DefaultAuthenticator(realm);
         this.sessionManager = new DefaultWebSessionManager();
         this.subjectDao = new DefaultSubjectDAO();
         this.subjectFactory = new DefaultSubjectFactory();
         this.authorizer = new DefaultAuthorizer(realm);
         this.accessor = new DefaultAccessor(realm);
+        this.authenticator = new DefaultAuthenticator(realm);
     }
 
     @Override
@@ -168,6 +175,12 @@ public class DefaultSecurityManager implements SecurityManager {
         return subject;
     }
 
+    @Override
+    public boolean isHttpSessionMode() {
+        SessionManager sessionManager = this.getSessionManager();
+        return sessionManager.isServletContainerSessions();
+    }
+
     private void save(Subject subject) {
         subjectDao.save(subject);
     }
@@ -222,6 +235,10 @@ public class DefaultSecurityManager implements SecurityManager {
         return this.sessionManager.getSession(key);
     }
 
+    @Override
+    public boolean isServletContainerSessions() {
+        return this.sessionManager.isServletContainerSessions();
+    }
 
     protected SubjectContext ensureSecurityManager(SubjectContext context) {
         if (context.resolveSecurityManager() != null) {
@@ -244,8 +261,13 @@ public class DefaultSecurityManager implements SecurityManager {
     }
 
     @Override
-    public boolean isPermittedAll(Principal principal, Collection<Privilege> privileges) {
-        return authorizer.isPermittedAll(principal, privileges);
+    public boolean isPermittedAllObjectPrivileges(Principal principal, Collection<Privilege> privileges) {
+        return authorizer.isPermittedAllObjectPrivileges(principal, privileges);
+    }
+
+    @Override
+    public boolean isPermittedAllStringPrivileges(Principal principal, Collection<String> privileges) {
+        return authorizer.isPermittedAllStringPrivileges(principal, privileges);
     }
 
     @Override

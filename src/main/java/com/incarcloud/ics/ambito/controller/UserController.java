@@ -13,13 +13,14 @@ import com.incarcloud.ics.ambito.pojo.PageResult;
 import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.core.authc.UsernamePasswordToken;
-import com.incarcloud.ics.core.privilege.SimplePrivilege;
+import com.incarcloud.ics.core.privilege.WildcardPrivilege;
 import com.incarcloud.ics.core.security.SecurityUtils;
 import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -192,9 +193,9 @@ public class UserController {
         }
         Assert.isTrue(subject.hasRole("admin"), "");
         Assert.isTrue(!subject.hasRole("user"), "");
-        Assert.isTrue(subject.isPermitted(new SimplePrivilege("abc")), "");
-        Assert.isTrue(subject.isPermitted(new SimplePrivilege("bcd")), "");
-        Assert.isTrue(subject.isPermittedAll(Arrays.asList(new SimplePrivilege("bcd"), new SimplePrivilege("abc"))), "");
+        Assert.isTrue(subject.isPermitted(new WildcardPrivilege("abc")), "");
+        Assert.isTrue(subject.isPermitted(new WildcardPrivilege("bcd")), "");
+        Assert.isTrue(subject.isPermittedAllObjectPrvileges(Arrays.asList(new WildcardPrivilege("bcd"), new WildcardPrivilege("abc"))), "");
         Assert.isTrue(!subject.isAccessibleForData(1L, VehicleArchivesBean.class),"");
         Assert.isTrue(subject.isAccessibleForData(2L, VehicleArchivesBean.class),"");
         Assert.isTrue(subject.isAccessibleForData(7L, SysOrgBean.class),"");
