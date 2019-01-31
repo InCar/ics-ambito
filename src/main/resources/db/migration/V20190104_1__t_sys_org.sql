@@ -1,4 +1,4 @@
-CREATE TABLE `t_sys_org` (
+CREATE TABLE IF NOT EXISTS `t_sys_org` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id 自增',
   `org_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '组织名称',
   `org_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '组织code',

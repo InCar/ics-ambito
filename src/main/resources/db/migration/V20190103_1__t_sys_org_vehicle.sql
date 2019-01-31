@@ -1,8 +1,4 @@
--- ----------------------------
--- Table structure for t_sys_org_vehicle
--- ----------------------------
-DROP TABLE IF EXISTS `t_sys_org_vehicle`;
-CREATE TABLE `t_sys_org_vehicle` (
+CREATE TABLE IF NOT EXISTS `t_sys_org_vehicle` (
   `id` bigint(32) NOT NULL AUTO_INCREMENT COMMENT 'id 自增',
   `org_id` bigint(32) NOT NULL DEFAULT '0' COMMENT '组织机构id',
   `vehicle_id` bigint(32) NOT NULL DEFAULT '0' COMMENT '车辆ID',
