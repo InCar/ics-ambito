@@ -9,7 +9,6 @@ package com.incarcloud.ics.core.exception;
 public class CacheException extends SecurityException {
     public CacheException() {
     }
-
     public CacheException(String message) {
         super(message);
     }

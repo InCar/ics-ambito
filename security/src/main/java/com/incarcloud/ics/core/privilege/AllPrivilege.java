@@ -5,4 +5,9 @@ public class AllPrivilege implements Privilege {
     public boolean implies(Privilege privilege) {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "ALL";
+    }
 }

@@ -6,7 +6,7 @@ package com.incarcloud.ics.core.exception;
  * @description
  * @date 2019/1/2
  */
-public class CredentialNotMatchException extends AuthenticationException {
+public class CredentialNotMatchException extends UnauthenticatedException {
 
     public CredentialNotMatchException() {
         super();

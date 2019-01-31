@@ -24,7 +24,4 @@ public class UnavailableSecurityManagerException extends SecurityException {
         super(cause);
     }
 
-    public UnavailableSecurityManagerException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

@@ -18,7 +18,7 @@ public abstract class AccessControllerFilter extends PathMatcherFilter {
     public static final String POST_METHOD = "POST";
 
     protected Subject getSubject(ServletRequest request, ServletResponse response) {
-        return SecurityUtils.getSubject();
+        return SecurityUtils.getSubject(request, response);
     }
 
     protected abstract boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception;

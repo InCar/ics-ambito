@@ -24,7 +24,4 @@ public class InvalidSessionException extends SessionException {
         super(cause);
     }
 
-    public InvalidSessionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

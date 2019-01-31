@@ -6,7 +6,7 @@ package com.incarcloud.ics.core.exception;
  * @Date 2018/12/20
  * @Version 1.0
  */
-public class AccountNotExistsException extends AuthenticationException {
+public class AccountNotExistsException extends UnauthenticatedException {
     public AccountNotExistsException() {
         super();
     }

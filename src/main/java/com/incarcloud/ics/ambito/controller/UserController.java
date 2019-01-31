@@ -12,6 +12,8 @@ import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.pojo.PageResult;
 import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.UserService;
+import com.incarcloud.ics.core.aspect.anno.Logic;
+import com.incarcloud.ics.core.aspect.anno.RequiresRoles;
 import com.incarcloud.ics.core.authc.UsernamePasswordToken;
 import com.incarcloud.ics.core.privilege.WildcardPrivilege;
 import com.incarcloud.ics.core.security.SecurityUtils;
@@ -178,7 +180,7 @@ public class UserController {
     public JsonMessage myInfo(){
         Subject subject = SecurityUtils.getSubject();
         if(!subject.isAuthenticated()){
-            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+            return ErrorDefine.UN_AUTHENTICATED.toErrorMessage();
         }
         Session session = subject.getSession();
         return JsonMessage.success(session.getAttribute("myInfo"));
@@ -186,10 +188,11 @@ public class UserController {
 
 
     @GetMapping(value = "/test")
+    @RequiresRoles(value = {"admin1","admin"}, logic = Logic.AND)
     public JsonMessage test(){
         Subject subject = SecurityUtils.getSubject();
         if(!subject.isAuthenticated()){
-            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+            return ErrorDefine.UN_AUTHENTICATED.toErrorMessage();
         }
         Assert.isTrue(subject.hasRole("admin"), "");
         Assert.isTrue(!subject.hasRole("user"), "");
@@ -203,11 +206,12 @@ public class UserController {
     }
 
 
+
     @GetMapping(value = "/getOrgs")
     public JsonMessage getOrgs(){
         Subject subject = SecurityUtils.getSubject();
         if(!subject.isAuthenticated()){
-            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+            return ErrorDefine.UN_AUTHENTICATED.toErrorMessage();
         }
         Collection<String> accessibleOrg = subject.getFilterCodes(VehicleArchivesBean.class);
         return JsonMessage.success(accessibleOrg);

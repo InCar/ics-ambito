@@ -1,6 +1,6 @@
 package com.incarcloud.ics.core.session;
 
-import com.incarcloud.ics.core.exception.AuthorizationException;
+import com.incarcloud.ics.core.exception.UnAuthorizeException;
 import com.incarcloud.ics.core.exception.InvalidSessionException;
 import com.incarcloud.ics.core.exception.SessionException;
 import com.incarcloud.ics.core.exception.UnknownSessionException;
@@ -138,7 +138,7 @@ public abstract class AbstractNativeSessionManager extends AbstractSessionManage
         return new DelegatingSession(this, new WebSessionKey(session.getId()));
     }
 
-    protected abstract Session createSession(SessionContext context) throws AuthorizationException;
+    protected abstract Session createSession(SessionContext context) throws UnAuthorizeException;
 
     protected void applyGlobalSessionTimeout(Session session) {
         session.setTimeout(getGlobalSessionTimeout());
