@@ -8,7 +8,7 @@ import javax.servlet.FilterConfig;
  * @description
  * @date 2019/1/11
  */
-public abstract class NameableFilter extends AbstractFilter implements Nameable, Initializable {
+public abstract class NameableFilter extends AbstractFilter implements Nameable {
 
     private String name;
 

@@ -13,7 +13,8 @@ import java.util.Collection;
  */
 public interface Authorizer {
      boolean isPermitted(Principal account, Privilege privilege);
-     boolean isPermittedAll(Principal account, Collection<Privilege> privileges);
+     boolean isPermittedAllObjectPrivileges(Principal account, Collection<Privilege> privileges);
+     boolean isPermittedAllStringPrivileges(Principal account, Collection<String> privileges);
      boolean hasRole(Principal account, String role);
      boolean hasAllRoles(Principal account, Collection<String> roleList);
 }

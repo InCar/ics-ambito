@@ -19,7 +19,7 @@
 package com.incarcloud.ics.core.utils;
 
 
-import com.incarcloud.ics.core.exception.AuthException;
+import com.incarcloud.ics.core.exception.SecurityException;
 import com.incarcloud.ics.core.filter.Destroyable;
 import com.incarcloud.ics.core.filter.Initializable;
 
@@ -30,17 +30,17 @@ public abstract class LifecycleUtils {
 
     private static final Logger log = Logger.getLogger(LifecycleUtils.class.getName());
 
-    public static void init(Object o) throws AuthException {
+    public static void init(Object o) throws SecurityException {
         if (o instanceof Initializable) {
             init((Initializable) o);
         }
     }
 
-    public static void init(Initializable initializable) throws AuthException {
+    public static void init(Initializable initializable) throws SecurityException {
         initializable.init();
     }
 
-    public static void init(Collection c) throws AuthException {
+    public static void init(Collection c) throws SecurityException {
         if (c == null || c.isEmpty()) {
             return;
         }

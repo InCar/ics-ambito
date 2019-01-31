@@ -6,7 +6,9 @@ package com.incarcloud.ics.core.exception;
  * @Date 2018/12/19
  * @Version 1.0
  */
-public class AuthenticationException extends AuthException {
+public class AuthenticationException extends SecurityException {
+    private static final long serialVersionUID = -3050954258662190502L;
+
     public AuthenticationException() {
         super();
     }

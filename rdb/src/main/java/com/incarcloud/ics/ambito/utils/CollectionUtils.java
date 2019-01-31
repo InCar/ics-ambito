@@ -1,7 +1,6 @@
 package com.incarcloud.ics.ambito.utils;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author ThomasChan
@@ -26,4 +25,6 @@ public class CollectionUtils {
     public static boolean isNotEmpty(Map c){
         return c != null && !c.isEmpty();
     }
+
+
 }

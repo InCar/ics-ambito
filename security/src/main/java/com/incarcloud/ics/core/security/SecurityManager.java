@@ -19,4 +19,5 @@ public interface SecurityManager extends Authenticator,Authorizer,Accessor,Sessi
     Subject login(AuthenticateToken authenticateToken, Subject subject) throws AuthenticationException;
     void logout(Subject subject);
     Subject createSubject(SubjectContext subjectContext);
+    boolean isHttpSessionMode();
 }

@@ -16,12 +16,22 @@ public class UsernamePasswordToken implements AuthenticateToken,Serializable {
 
     private String password;
 
+    private boolean isRememberMe;
+    private String host;
+
     public UsernamePasswordToken() {
     }
 
     public UsernamePasswordToken(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public UsernamePasswordToken(String username, String password, boolean isRememberMe, String host) {
+        this.username = username;
+        this.password = password;
+        this.isRememberMe = isRememberMe;
+        this.host = host;
     }
 
     public void setUsername(String username) {
@@ -40,5 +50,21 @@ public class UsernamePasswordToken implements AuthenticateToken,Serializable {
     @Override
     public String getCredential() {
         return password;
+    }
+
+    public boolean isRememberMe() {
+        return isRememberMe;
+    }
+
+    public void setRememberMe(boolean rememberMe) {
+        isRememberMe = rememberMe;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 }

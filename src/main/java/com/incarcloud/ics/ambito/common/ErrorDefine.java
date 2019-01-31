@@ -4,7 +4,7 @@ import com.incarcloud.ics.ambito.exception.AmbitoException;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.utils.ExceptionUtils;
 import com.incarcloud.ics.core.exception.AccountNotExistsException;
-import com.incarcloud.ics.core.exception.AuthException;
+import com.incarcloud.ics.core.exception.SecurityException;
 import com.incarcloud.ics.core.exception.CredentialNotMatchException;
 
 /**
@@ -80,7 +80,7 @@ public enum ErrorDefine {
                 }
             }
         }
-        if(e instanceof AuthException){
+        if(e instanceof SecurityException){
             if(e instanceof AccountNotExistsException){
                 return ACCOUNT_NOT_EXISTS.toErrorMessage(stackTraceAsString);
             }

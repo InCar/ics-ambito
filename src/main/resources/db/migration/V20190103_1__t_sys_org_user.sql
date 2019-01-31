@@ -1,8 +1,4 @@
--- ----------------------------
--- Table structure for t_sys_org_user
--- ----------------------------
-DROP TABLE IF EXISTS `t_sys_org_user`;
-CREATE TABLE `t_sys_org_user` (
+CREATE TABLE IF NOT EXISTS `t_sys_org_user` (
   `id` bigint(32) NOT NULL AUTO_INCREMENT COMMENT 'id 自增',
   `org_id` bigint(32) NOT NULL DEFAULT '0' COMMENT '组织机构id',
   `user_id` bigint(32) NOT NULL DEFAULT '0' COMMENT '用户id',

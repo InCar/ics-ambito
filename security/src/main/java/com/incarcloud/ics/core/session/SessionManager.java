@@ -8,5 +8,6 @@ public interface SessionManager {
     Session start(SessionContext sessionContext);
 
     Session getSession(SessionKey key) throws SessionException;
-    
+
+    boolean isServletContainerSessions();
 }
