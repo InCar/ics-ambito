@@ -18,25 +18,23 @@ export default {
 				,treeUpId:'parentCode'//树形父id字段名称
 				,treeShowName:'orgName'//以树形式显示的字段
 				,cols: [
-					{width:100,title: '操作', align:'center'/*toolbar: '#barDemo'*/
+					 {type:'numbers', title: '序号'}
+					,{field:'orgName', edit:'text',width:300, title: '组织名称'}
+					,{width:200,title: '操作', align:'center'/*toolbar: '#barDemo'*/
 							,templet: function(d){
 							var addBtn='<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="add">添加</a>';
+							var editBtn='<a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>';
 							var delBtn='<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';
-							return addBtn+delBtn;
+							return addBtn+editBtn+delBtn;
 					}
 					}
-					,{field:'orgName', edit:'text',width:300, title: '组织名称'}
 			]
 				,page:false
-				,parseData:function (res) {//数据加载后回调
-				}
-				,onClickRow:function (index, o) {
-					// console.log(o)
-			}
-		}
+		 },
+		 clickRow: (data, index) => {}, // 点击行获取行数据
+		 setData: (data, index) => {} // 整理数据
     };
 		this.par = tool.extend(par, options, true);
-
 		this.listeners = []; //自定义事件，用于监听插件的用户交互
     this.handlers = {};
     this.init(this.par);
@@ -60,10 +58,11 @@ export default {
 			,treeShowName:obj.config.treeShowName//以树形式显示的字段
 			,cols: [obj.config.cols]
 			,page:obj.config.page
-			,parseData:function (res) {//数据加载后回调
+			,parseData: (res) => {//数据加载后回调
+				 return this.par.setData(res);
 			}
-			,onClickRow:function (index, o) {
-				// console.log(o)
+			,onClickRow: (index, data) => {
+				 this.par.clickRow(data, index)
 		}
 	});
 		// 工具栏参数与lay-filter匹配
@@ -81,8 +80,8 @@ export default {
 				(index) => {//确定回调
 						tool.Ajax(`${this.par.apiUrl}/ics/sysorg/delete/${obj.data.id}`, {}, "delete")
 						.then((data) => {
-							obj.del();
-							console.log(data);
+							if (data.code === "200") obj.del();
+							else layer.confirm(data.message, {icon: 3, title:'提示'});
 						}, (re) => {
 							console.log(re);
 						})
@@ -94,20 +93,15 @@ export default {
   },
 	add: function (obj) {
 		this.par.addParams = {
-			email: "123@qq.com",
-			orgName:"人事部",
-			orgCode: "rsb",
-			fullName: "英卡人事部"
+			email: "456@qq.com",
+			orgName:"财务部",
+			orgCode: "cwb",
+			fullName: "英卡财务部"
 		}
 		// 组装必须的parentCode，parentCodes
 		let code = {parentCode: obj.orgCode, parentCodes: `${obj.parentCodes}${obj.orgCode},`}
 		let params = Object.assign(code, this.par.addParams);
-		tool.Ajax(`${this.par.apiUrl}/ics/sysorg/save`, params, "post")
-		.then((data) =>{
-			if(data.code === "200") {
-				this.query(this.par.config.id, obj);
-			}
-		})
+		this.query(this.par.config.id, params);
   },
 	// 重载
 	reload: function () {
@@ -117,47 +111,18 @@ export default {
 				}
 		});
 	},
-	// 刷新数据
-	query: function (id, obj) {
-		tool.Ajax(`${this.par.apiUrl}/ics/sysorg/list`, {}, "get")
-		.then(() => {
-			this.treeGrid.query(id, {
-				where:{
-						name:obj.orgName
-				}
-		  });
+	/**
+	 * 刷新数据
+	 * @param id 唯一标识符
+	 * @param params 参数
+	 */
+	query: function (id, params) {
+		tool.Ajax(`${this.par.apiUrl}/ics/sysorg/save`, params, "post")
+		.then((data) =>{
+					this.treeGrid.query(id, {
+						where:{
+						}
+					});
 		})
- },
-	recuNodes: function(child) {
-		child.map(item => {
-				item.name = item.orgName;
-				item.spread = false; // 默认不展开
-				if(item.children.length) this.recuNodes(item.children)
-		})
-	},
-	on: function(type, handler){
-		// type: detail, del, edit
-		if(typeof this.handlers[type] === 'undefined') {
-				this.handlers[type] = [];
-		}
-		this.listeners.push(type);
-		this.handlers[type].push(handler);
-		return this;
-	},
-	emit: function(event){
-		if(!event.target) {
-				event.target = this;
-		}
-		if(this.handlers[event.type] instanceof Array) {
-				var handlers = this.handlers[event.type];
-				for(var i = 0, len = handlers.length; i < len; i++) {
-						handlers[i](event);
-						return true;
-				}
-		}
-		return false;
-	},
-	addTreeListener: function() {
-
-	},
+ }
 };

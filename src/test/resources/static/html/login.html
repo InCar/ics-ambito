@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="../css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="../../dist/index.css" />
+    <style>
+      
+    </style>
+</head>
+<body>
+  <div id="login" style="width: 500px;    padding: 20px;"></div>
+<script src="../../dist/testbundle.js"></script>
+
+<script>
+  let login = new PermissionInfo.Login({
+      elem: 'login',
+      apiUrl: "",
+			params: {id: 1}, // 传入id
+			addParams: { // 新增参数
+			},
+      config: {
+        nameLabel: "用户名",
+        namePlaceholder: "请输入用户名",
+        pswLabel: "密码",
+        pswPlaceholder: "请输入密码",
+		 }
+  })
+</script>
+</body>
+</html>
