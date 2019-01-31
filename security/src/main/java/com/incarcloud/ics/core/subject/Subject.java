@@ -1,6 +1,7 @@
 package com.incarcloud.ics.core.subject;
 
 
+import com.incarcloud.ics.core.exception.UnAuthorizeException;
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
 import com.incarcloud.ics.core.exception.AuthenticationException;
@@ -22,7 +23,12 @@ public interface Subject {
     boolean isPermitted(Privilege privilege);
     boolean isPermittedAllObjectPrvileges(Collection<Privilege> privileges);
     boolean isPermittedAllStringPrivileges(Collection<String> privileges);
+    void checkPermitted(Privilege privilege) throws UnAuthorizeException;
+    void checkPermittedAllObjectPrvileges(Collection<Privilege> privileges) throws UnAuthorizeException;
+    void checkPermittedAllStringPrivileges(Collection<String> privileges) throws UnAuthorizeException;
     boolean hasRole(String roleIdentifier);
+    void checkRole(String roleIdentifier) throws UnAuthorizeException;
+    void checkAllRoles(Collection<String> roleIdentifiers) throws UnAuthorizeException;
     boolean hasAllRoles(Collection<String> roleIdentifiers);
     boolean isAccessibleForData(Serializable dataId, Class<?> clzz);
     Collection<String> getFilterCodes(Class<?> clzz);

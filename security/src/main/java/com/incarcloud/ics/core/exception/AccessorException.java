@@ -7,7 +7,7 @@ package com.incarcloud.ics.core.exception;
  * @Date 2018/12/19
  * @Version 1.0
  */
-public class AccessorException extends SecurityException {
+public class AccessorException extends AuthorizationException {
     public AccessorException() {
         super();
     }

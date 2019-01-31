@@ -30,7 +30,7 @@ public enum DefaultFilter {
     }
 
     public static Map<String, Filter> createInstanceMap(FilterConfig config) {
-        Map<String, Filter> filters = new LinkedHashMap(values().length);
+        Map<String, Filter> filters = new LinkedHashMap<>(values().length);
         DefaultFilter[] var2 = values();
         int var3 = var2.length;
 

@@ -2,10 +2,7 @@
 package com.incarcloud.ics.core.utils;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class StringUtils {
 
@@ -112,12 +109,13 @@ public class StringUtils {
         return toStringArray(tokens);
     }
 
-    public static String[] toStringArray(Collection collection) {
+    public static String[] toStringArray(Collection<String> collection) {
         if (collection == null) {
             return null;
         }
-        return (String[]) collection.toArray(new String[collection.size()]);
+        return collection.toArray(new String[0]);
     }
+
 
     public static boolean startsWithIgnoreCase(String str, String prefix) {
         if (str == null || prefix == null) {

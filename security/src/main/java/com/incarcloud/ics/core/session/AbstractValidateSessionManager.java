@@ -1,6 +1,6 @@
 package com.incarcloud.ics.core.session;
 
-import com.incarcloud.ics.core.exception.AuthorizationException;
+import com.incarcloud.ics.core.exception.UnAuthorizeException;
 import com.incarcloud.ics.core.exception.ExpiredSessionException;
 import com.incarcloud.ics.core.exception.InvalidSessionException;
 import com.incarcloud.ics.core.exception.SessionException;
@@ -54,12 +54,12 @@ public abstract class AbstractValidateSessionManager extends AbstractNativeSessi
     }
 
     @Override
-    protected Session createSession(SessionContext context) throws AuthorizationException {
+    protected Session createSession(SessionContext context) throws UnAuthorizeException {
         enableSessionValidationIfNecessary();
         return doCreateSession(context);
     }
 
-    public abstract Session doCreateSession(SessionContext context) throws AuthorizationException;
+    public abstract Session doCreateSession(SessionContext context) throws UnAuthorizeException;
 
     @Override
     public Session doGetSession(SessionKey key) throws SessionException {

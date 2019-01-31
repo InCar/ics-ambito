@@ -255,6 +255,8 @@ public abstract class ThreadContext {
      * @since 0.2
      */
     public static Subject getSubject() {
+//        log.info("Current Thread is " + Thread.currentThread().getName());
+//        log.info("Current subject is " + get(SUBJECT_KEY));
         return (Subject) get(SUBJECT_KEY);
     }
 

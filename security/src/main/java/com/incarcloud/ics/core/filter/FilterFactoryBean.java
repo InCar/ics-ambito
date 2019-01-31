@@ -19,8 +19,8 @@ import java.util.logging.Logger;
 public class FilterFactoryBean {
     private static final transient Logger log = Logger.getLogger(FilterFactoryBean.class.getName());
     private SecurityManager securityManager;
-    private Map<String, Filter> filters = new LinkedHashMap();
-    private Map<String, String> filterChainDefinitionMap = new LinkedHashMap();
+    private Map<String, Filter> filters = new LinkedHashMap<>();
+    private Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
     private String loginUrl;
     private String successUrl;
     private String unauthorizedUrl;
