@@ -13,16 +13,16 @@ import java.io.PrintWriter;
  * @description
  * @date 2019/1/28
  */
-public abstract class AbstractExceptionHandler implements SecurityFilterExceptionHandler {
+public abstract class AbstractSecurityFilterExceptionHandler implements SecurityFilterExceptionHandler {
 
     private Class<? extends SecurityException> exceptionClass;
 
-    public AbstractExceptionHandler(Class<? extends SecurityException> exceptionClass) {
+    public AbstractSecurityFilterExceptionHandler(Class<? extends SecurityException> exceptionClass) {
         this.exceptionClass = exceptionClass;
     }
 
     protected ErrorMessage getErrorMessage(){
-        return SecurityMessage.getErrorMessage(exceptionClass);
+        return SecurityExceptionMessage.getErrorMessage(exceptionClass);
     }
 
     public Class<? extends SecurityException> getExceptionClass() {

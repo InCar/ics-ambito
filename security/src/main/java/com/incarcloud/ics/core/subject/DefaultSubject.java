@@ -245,7 +245,7 @@ public class DefaultSubject implements Subject {
     }
 
     protected void assertAuthzCheckPossible() throws RuntimeException {
-        if (getPrincipal() != null) {
+        if (getPrincipal() == null) {
             String msg = "This subject is anonymous - it does not have any identifying principals and " +
                     "authorization operations require an identity to check against.";
             throw new UnauthenticatedException(msg);

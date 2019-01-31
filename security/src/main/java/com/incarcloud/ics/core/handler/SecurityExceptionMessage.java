@@ -10,20 +10,20 @@ import com.incarcloud.ics.core.exception.UnauthenticatedException;
  * @description
  * @date 2019/1/28
  */
-public enum SecurityMessage {
-    UN_AUTHENTICATED(UnauthenticatedException.class.getName(), ErrorMessageConstants.UN_AUTHENTICATED),
-    UN_AUTHORIZED(UnAuthorizeException.class.getName(), ErrorMessageConstants.UN_AUTHORIZED);
+public enum SecurityExceptionMessage {
+    UN_AUTHENTICATED(UnauthenticatedException.class, ErrorMessageConstants.UN_AUTHENTICATED),
+    UN_AUTHORIZED(UnAuthorizeException.class, ErrorMessageConstants.UN_AUTHORIZED);
 
     private ErrorMessage errorMessage;
-    private String exceptionClassName;
+    private Class<? extends SecurityException> exceptionClass;
 
-    SecurityMessage(String exceptionClassName, ErrorMessage errorMessage) {
+    SecurityExceptionMessage(Class<? extends SecurityException> exceptionClass, ErrorMessage errorMessage) {
         this.errorMessage = errorMessage;
-        this.exceptionClassName = exceptionClassName;
+        this.exceptionClass = exceptionClass;
     }
 
-    public String getExceptionClassName() {
-        return exceptionClassName;
+    public Class<? extends SecurityException> getExceptionClass() {
+        return exceptionClass;
     }
 
     public ErrorMessage getErrorMessage() {
@@ -34,8 +34,8 @@ public enum SecurityMessage {
         if(exceptionClass == null){
             return null;
         }
-        for(SecurityMessage sm : SecurityMessage.values()){
-            if(sm.exceptionClassName.equals(exceptionClass.getName())){
+        for(SecurityExceptionMessage sm : SecurityExceptionMessage.values()){
+            if(sm.getExceptionClass().isAssignableFrom(exceptionClass)){
                 return sm.getErrorMessage();
             }
         }

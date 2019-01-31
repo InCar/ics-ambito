@@ -26,7 +26,9 @@ public class AuthenticationFilter extends  AccessControllerFilter{
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception{
-        SimpleFilterExceptionHandlerFactory.getInstance().newHandler(UnauthenticatedException.class)
+        SimpleFilterExceptionHandlerFactory
+                .getInstance()
+                .newHandler(UnauthenticatedException.class)
                 .handle(WebUtils.toHttp(request), WebUtils.toHttp(response));
         return false;
     }

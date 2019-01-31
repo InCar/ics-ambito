@@ -22,6 +22,6 @@ public class SimpleFilterExceptionHandlerFactory implements FilterExceptionHandl
 
     @Override
     public SecurityFilterExceptionHandler newHandler(Class<? extends SecurityException> exceptionClass) {
-        return new AbstractExceptionHandler(exceptionClass) {};
+        return new AbstractSecurityFilterExceptionHandler(exceptionClass) {};
     }
 }

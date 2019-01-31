@@ -66,12 +66,12 @@ public class ErrorMessage {
         this.code = code;
     }
 
-    public static ErrorMessage of(String message,String code, String error){
-        return new ErrorMessage(message, code, error);
+    public static ErrorMessage of(String message,String code){
+        return new ErrorMessage(message, code);
     }
 
     public static ErrorMessage unknownMessage(){
-        return of("", UNKNOWN_CODE, "");
+        return of("未知异常", UNKNOWN_CODE);
     }
 
     public String toJsonString() {
