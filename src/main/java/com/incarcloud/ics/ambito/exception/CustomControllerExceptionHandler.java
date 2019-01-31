@@ -3,12 +3,14 @@ package com.incarcloud.ics.ambito.exception;
 import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.utils.ExceptionUtils;
-import com.incarcloud.ics.core.exception.*;
 import com.incarcloud.ics.core.exception.SecurityException;
+import com.incarcloud.ics.core.handler.HttpSecurityExceptionHandler;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import static com.incarcloud.ics.ambito.common.ErrorDefine.*;
@@ -25,9 +27,10 @@ public class CustomControllerExceptionHandler {
 
     private Logger logger = Logger.getLogger(CustomControllerExceptionHandler.class.getName());
 
+
     @ExceptionHandler(value = Exception.class)
     public JsonMessage handleUnknownExceptions(final Exception ex) {
-        return handleUnknownException(ex);
+        return handleMessageUndefinedException(ex);
     }
 
     @ExceptionHandler(value = AmbitoException.class)
@@ -37,26 +40,20 @@ public class CustomControllerExceptionHandler {
                 return err.toErrorMessage();
             }
         }
-        return handleUnknownException(ex);
+        return handleMessageUndefinedException(ex);
     }
 
     @ExceptionHandler(value = SecurityException.class)
-    public JsonMessage handleSecurityExceptions(final SecurityException ex) {
-        if(ex instanceof AccountNotExistsException){
-            return ACCOUNT_NOT_EXISTS.toErrorMessage();
+    public void handleSecurityExceptions(final SecurityException ex,
+                                                HttpServletResponse response) {
+        parseAndLogStacktrace(ex);
+        try {
+            HttpSecurityExceptionHandler.getInstance().handle(response, ex);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        if(ex instanceof CredentialNotMatchException){
-            return PASSWORD_NOT_MATCH.toErrorMessage();
-        }
-        if(ex instanceof UnAuthorizeException){
-            return UN_AUTHORIZATION.toErrorMessage();
-        }
-        if(ex instanceof InvalidSessionException){
-            return INVALID_SESSION.toErrorMessage();
-        }
-        return AUTHENTICATE_FAILED.toErrorMessage(parseAndLogStacktrace(ex));
-    }
 
+    }
 
     private String parseAndLogStacktrace(Exception ex){
         String stackTraceAsString = ExceptionUtils.getStackTraceAsString(ex);
@@ -64,7 +61,7 @@ public class CustomControllerExceptionHandler {
         return stackTraceAsString;
     }
 
-    private JsonMessage handleUnknownException(Exception ex){
+    private JsonMessage handleMessageUndefinedException(Exception ex){
         return UNKNOWN_EXCEPTION.toErrorMessage(parseAndLogStacktrace(ex));
     }
 }

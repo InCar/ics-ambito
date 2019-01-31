@@ -15,41 +15,38 @@ import com.incarcloud.ics.core.exception.CredentialNotMatchException;
  */
 public enum ErrorDefine {
 
-    PARENT_ORG_NOT_EXISTS("父组织不存在", "10"),
+    PARENT_ORG_NOT_EXISTS("10", "父组织不存在"),
 
-    REPEATED_NAME("名称重复","11"),
+    REPEATED_NAME("11", "名称重复"),
 
-    SAVING_EXCEPTION("保存异常","12"),
+    SAVING_EXCEPTION("12", "保存异常"),
 
-    REPEATED_CODE("编号重复","13"),
+    REPEATED_CODE("13", "编号重复"),
 
-    UNDELETABLE("无法删除","15"),
+    UNDELETABLE("15","无法删除"),
 
-    REPEATED_USERNAME("用户名重复","16"),
+    REPEATED_USERNAME("16","用户名重复"),
 
-    REPEATED_PHONE("手机号重复","17"),
+    REPEATED_PHONE("17","手机号重复"),
 
+    ACCOUNT_NOT_EXISTS("51","账号不存在"),
 
-    AUTHENTICATE_FAILED("认证失败","50"),
+    ACCOUNT_LOCKED("52","账号已锁定"),
 
-    ACCOUNT_NOT_EXISTS("账号不存在","51"),
+    PASSWORD_NOT_MATCH("53","密码错误"),
 
-    ACCOUNT_LOCKED("账号已锁定","52"),
+    INVALID_SESSION("55","会话已失效"),
 
-    PASSWORD_NOT_MATCH("密码错误","53"),
+    UN_AUTHENTICATED("401","未通过认证"),
 
-    UN_AUTHENTICATE("未认证","54"),
+    UN_AUTHORIZATION("403","无访问权限"),
 
-    INVALID_SESSION("会话已失效","55"),
-
-    UN_AUTHORIZATION("无访问权限","61"),
-
-    UNKNOWN_EXCEPTION("未知异常", "999")
+    UNKNOWN_EXCEPTION("999", "未知异常")
     ;
     private String code;
     private String message;
 
-    ErrorDefine(String message, String code) {
+    ErrorDefine(String code, String message) {
         this.message = message;
         this.code = code;
     }

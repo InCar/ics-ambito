@@ -157,7 +157,7 @@ public class DefaultAuthorizer implements Authorizer {
     @Override
     public void checkAllRoles(Principal account, Collection<String> roleList) throws UnAuthorizeException {
         if(!hasAllRoles(account, roleList)){
-            throw new UnAuthorizeException("User "+account.getUserIdentity()+" doesn't have all role : ["+roleList+"]");
+            throw new UnAuthorizeException("User "+account.getUserIdentity()+" doesn't have all role : "+roleList);
         }
     }
 

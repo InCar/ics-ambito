@@ -20,7 +20,6 @@ public class AopAnnotationsMethodInterceptor extends AnnotationsMethodIntercepto
 
     private Logger log = Logger.getLogger(AopAnnotationsMethodInterceptor.class.getName());
 
-
     private MethodInvocation proxy(org.aopalliance.intercept.MethodInvocation aopMethodInvocation){
 
         return new MethodInvocation() {

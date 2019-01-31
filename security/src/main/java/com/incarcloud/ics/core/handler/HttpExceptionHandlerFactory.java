@@ -8,6 +8,6 @@ import com.incarcloud.ics.core.exception.SecurityException;
  * @description
  * @date 2019/1/31
  */
-public interface FilterExceptionHandlerFactory {
-    SecurityFilterExceptionHandler newHandler(Class<? extends SecurityException> exceptionClass);
+public interface HttpExceptionHandlerFactory {
+    HttpExceptionHandler newHandler(SecurityException ex);
 }

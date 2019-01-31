@@ -1,6 +1,5 @@
 package com.incarcloud.ics.ambito.config;
 
-import com.incarcloud.skeleton.config.LogConfig;
 
 /**
  * @author ThomasChan
@@ -17,7 +16,7 @@ public class Config {
     private CacheConfig authorizingCache = CacheConfig.defaultConfigOf("authorizingCache");
     private CacheConfig authenticateCache =  CacheConfig.defaultConfigOf("authenticateCache");
     private CacheConfig accessCache = CacheConfig.defaultConfigOf("accessCache");
-    private LogConfig logConfig = new LogConfig();
+//    private LogConfig logConfig = new LogConfig();
 
 
     public Config() {

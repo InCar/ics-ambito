@@ -31,14 +31,15 @@ public enum SecurityExceptionMessage {
     }
 
     public static ErrorMessage getErrorMessage(Class<? extends SecurityException> exceptionClass){
+        ErrorMessage errorMessage = null;
         if(exceptionClass == null){
-            return null;
+            return ErrorMessage.unknownMessage();
         }
         for(SecurityExceptionMessage sm : SecurityExceptionMessage.values()){
             if(sm.getExceptionClass().isAssignableFrom(exceptionClass)){
-                return sm.getErrorMessage();
+                errorMessage = sm.getErrorMessage();
             }
         }
-        return null;
+        return errorMessage;
     }
 }

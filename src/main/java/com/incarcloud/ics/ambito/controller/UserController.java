@@ -180,7 +180,7 @@ public class UserController {
     public JsonMessage myInfo(){
         Subject subject = SecurityUtils.getSubject();
         if(!subject.isAuthenticated()){
-            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+            return ErrorDefine.UN_AUTHENTICATED.toErrorMessage();
         }
         Session session = subject.getSession();
         return JsonMessage.success(session.getAttribute("myInfo"));
@@ -192,18 +192,16 @@ public class UserController {
     public JsonMessage test(){
         Subject subject = SecurityUtils.getSubject();
         if(!subject.isAuthenticated()){
-            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+            return ErrorDefine.UN_AUTHENTICATED.toErrorMessage();
         }
         Assert.isTrue(subject.hasRole("admin"), "");
         Assert.isTrue(!subject.hasRole("user"), "");
-        String a = null;
-        a.toString();
-//        Assert.isTrue(subject.isPermitted(new WildcardPrivilege("abc")), "");
-//        Assert.isTrue(subject.isPermitted(new WildcardPrivilege("bcd")), "");
-//        Assert.isTrue(subject.isPermittedAllObjectPrvileges(Arrays.asList(new WildcardPrivilege("bcd"), new WildcardPrivilege("abc"))), "");
-//        Assert.isTrue(!subject.isAccessibleForData(1L, VehicleArchivesBean.class),"");
-//        Assert.isTrue(subject.isAccessibleForData(2L, VehicleArchivesBean.class),"");
-//        Assert.isTrue(subject.isAccessibleForData(7L, SysOrgBean.class),"");
+        Assert.isTrue(subject.isPermitted(new WildcardPrivilege("abc")), "");
+        Assert.isTrue(subject.isPermitted(new WildcardPrivilege("bcd")), "");
+        Assert.isTrue(subject.isPermittedAllObjectPrvileges(Arrays.asList(new WildcardPrivilege("bcd"), new WildcardPrivilege("abc"))), "");
+        Assert.isTrue(!subject.isAccessibleForData(1L, VehicleArchivesBean.class),"");
+        Assert.isTrue(subject.isAccessibleForData(2L, VehicleArchivesBean.class),"");
+        Assert.isTrue(subject.isAccessibleForData(7L, SysOrgBean.class),"");
         return JsonMessage.success();
     }
 
@@ -212,7 +210,7 @@ public class UserController {
     public JsonMessage getOrgs(){
         Subject subject = SecurityUtils.getSubject();
         if(!subject.isAuthenticated()){
-            return ErrorDefine.UN_AUTHENTICATE.toErrorMessage();
+            return ErrorDefine.UN_AUTHENTICATED.toErrorMessage();
         }
         Collection<String> accessibleOrg = subject.getFilterCodes(VehicleArchivesBean.class);
         return JsonMessage.success(accessibleOrg);

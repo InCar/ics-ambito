@@ -1,7 +1,7 @@
 package com.incarcloud.ics.core.filter;
 
 import com.incarcloud.ics.core.exception.UnAuthorizeException;
-import com.incarcloud.ics.core.handler.SimpleFilterExceptionHandlerFactory;
+import com.incarcloud.ics.core.handler.HttpSecurityExceptionHandler;
 import com.incarcloud.ics.core.utils.WebUtils;
 
 import javax.servlet.ServletRequest;
@@ -23,8 +23,8 @@ public abstract class AuthorizationFilter extends AccessControllerFilter {
     }
 
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws IOException {
-        SimpleFilterExceptionHandlerFactory.getInstance().newHandler(UnAuthorizeException.class)
-                .handle(WebUtils.toHttp(request), WebUtils.toHttp(response));
+        HttpSecurityExceptionHandler.getInstance()
+                .handle(WebUtils.toHttp(response), new UnAuthorizeException());
         return false;
     }
 }
