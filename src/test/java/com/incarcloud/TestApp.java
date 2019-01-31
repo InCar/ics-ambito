@@ -1,6 +1,7 @@
 package com.incarcloud;
 
 
+import com.incarcloud.ics.ambito.config.SecurityBeanConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -35,10 +36,8 @@ public class TestApp {
         return DataSourceBuilder.create().build();
     }
 
-//    @Bean
-//    public AmbitoFilter shiroFilter(){
-//        return new AmbitoFilter();
-//    }
-
+    public SecurityBeanConfiguration securityConfigurationBean(){
+        return new SecurityBeanConfiguration();
+    }
 
 }

@@ -1,6 +1,6 @@
 package com.incarcloud.ics.core.handler;
 
-import com.incarcloud.ics.core.exception.AuthorizationException;
+import com.incarcloud.ics.core.exception.UnAuthorizeException;
 import com.incarcloud.ics.core.exception.SecurityException;
 import com.incarcloud.ics.core.exception.UnauthenticatedException;
 
@@ -12,7 +12,7 @@ import com.incarcloud.ics.core.exception.UnauthenticatedException;
  */
 public enum SecurityMessage {
     UN_AUTHENTICATED(UnauthenticatedException.class.getName(), ErrorMessageConstants.UN_AUTHENTICATED),
-    UN_AUTHORIZED(AuthorizationException.class.getName(), ErrorMessageConstants.UN_AUTHORIZED);
+    UN_AUTHORIZED(UnAuthorizeException.class.getName(), ErrorMessageConstants.UN_AUTHORIZED);
 
     private ErrorMessage errorMessage;
     private String exceptionClassName;

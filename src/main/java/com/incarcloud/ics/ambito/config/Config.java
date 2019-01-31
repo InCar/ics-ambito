@@ -1,5 +1,7 @@
 package com.incarcloud.ics.ambito.config;
 
+import com.incarcloud.skeleton.config.LogConfig;
+
 /**
  * @author ThomasChan
  * @version 1.0
@@ -12,9 +14,11 @@ public class Config {
      * 是否递归删除组织，true表示递归删除�?有组织及其子组织，false表示只删除本组织
      */
     private boolean deleteOrgRecursion = false;
-    private CacheConfig authorizingCacheConfig = CacheConfig.getDefaultAuthorizeCacheConfig();
-    private CacheConfig authenticateCacheConfig = CacheConfig.getDefaultAuthenticateCacheConfig();
-    private CacheConfig accessCacheConfig = CacheConfig.getDefaultAccessInfoCacheConfig();
+    private CacheConfig authorizingCache = CacheConfig.defaultConfigOf("authorizingCache");
+    private CacheConfig authenticateCache =  CacheConfig.defaultConfigOf("authenticateCache");
+    private CacheConfig accessCache = CacheConfig.defaultConfigOf("accessCache");
+    private LogConfig logConfig = new LogConfig();
+
 
     public Config() {
     }
@@ -31,28 +35,28 @@ public class Config {
         this.deleteOrgRecursion = deleteOrgRecursion;
     }
 
-    public CacheConfig getAuthorizingCacheConfig() {
-        return authorizingCacheConfig;
+    public CacheConfig getAuthorizingCache() {
+        return authorizingCache;
     }
 
-    public void setAuthorizingCacheConfig(CacheConfig authorizingCacheConfig) {
-        this.authorizingCacheConfig = authorizingCacheConfig;
+    public void setAuthorizingCache(CacheConfig authorizingCache) {
+        this.authorizingCache = authorizingCache;
     }
 
-    public CacheConfig getAuthenticateCacheConfig() {
-        return authenticateCacheConfig;
+    public CacheConfig getAuthenticateCache() {
+        return authenticateCache;
     }
 
-    public void setAuthenticateCacheConfig(CacheConfig authenticateCacheConfig) {
-        this.authenticateCacheConfig = authenticateCacheConfig;
+    public void setAuthenticateCache(CacheConfig authenticateCache) {
+        this.authenticateCache = authenticateCache;
     }
 
-    public CacheConfig getAccessCacheConfig() {
-        return accessCacheConfig;
+    public CacheConfig getAccessCache() {
+        return accessCache;
     }
 
-    public void setAccessCacheConfig(CacheConfig accessCacheConfig) {
-        this.accessCacheConfig = accessCacheConfig;
+    public void setAccessCache(CacheConfig accessCache) {
+        this.accessCache = accessCache;
     }
 
 
@@ -65,27 +69,24 @@ public class Config {
         private long maxSize;
         private long timeToLiveSeconds;
 
-        public static CacheConfig getDefault(String cacheName){
-            return new CacheConfig(cacheName, false, 1000, 60 * 60);
+        public static CacheConfig defaultConfigOf(String cacheName){
+            return new CacheConfigBuilder()
+                    .setCacheName(cacheName)
+                    .setIsEternal(false)
+                    .setMaxSize(1000)
+                    .setTimeToLiveSeconds(60 * 60)
+                    .build();
         }
 
-        public static CacheConfig getDefaultAuthorizeCacheConfig(){
-            return new CacheConfig("authorizeCache", false, 1000, 60 * 60);
+        private CacheConfig(CacheConfigBuilder builder){
+            this.cacheName = builder.cacheName;
+            this.isEternal = builder.isEternal;
+            this.maxSize = builder.maxSize;
+            this.timeToLiveSeconds = builder.timeToLiveSeconds;
         }
 
-        public static CacheConfig getDefaultAccessInfoCacheConfig(){
-            return new CacheConfig("accessInfoCache", false, 1000, 60 * 60);
-        }
-
-        public static CacheConfig getDefaultAuthenticateCacheConfig(){
-            return new CacheConfig("authenticateCache", false, 1000, 60 * 60);
-        }
-
-        public CacheConfig(String cacheName, boolean isEternal, long maxSize, long timeToLiveSeconds) {
-            this.cacheName = cacheName;
-            this.isEternal = isEternal;
-            this.maxSize = maxSize;
-            this.timeToLiveSeconds = timeToLiveSeconds;
+        public CacheConfigBuilder builder(){
+            return new CacheConfigBuilder();
         }
 
         public String getCacheName() {
@@ -120,33 +121,36 @@ public class Config {
             this.timeToLiveSeconds = timeToLiveSeconds;
         }
 
+        private static class CacheConfigBuilder {
+            private String cacheName;
+            private boolean isEternal;
+            private long maxSize;
+            private long timeToLiveSeconds;
 
-        @Override
-        public String toString() {
-            final StringBuilder sb = new StringBuilder("CacheConfig{");
-            sb.append("cacheName='").append(cacheName).append('\'');
-            sb.append(", isEternal=").append(isEternal);
-            sb.append(", maxSize=").append(maxSize);
-            sb.append(", timeToLiveSeconds=").append(timeToLiveSeconds);
-            sb.append('}');
-            return sb.toString();
+            public CacheConfigBuilder setCacheName(String cacheName) {
+                this.cacheName = cacheName;
+                return this;
+            }
+
+            public CacheConfigBuilder setIsEternal(boolean isEternal) {
+                this.isEternal = isEternal;
+                return this;
+            }
+
+            public CacheConfigBuilder setMaxSize(long maxSize) {
+                this.maxSize = maxSize;
+                return this;
+            }
+
+            public CacheConfigBuilder setTimeToLiveSeconds(long timeToLiveSeconds) {
+                this.timeToLiveSeconds = timeToLiveSeconds;
+                return this;
+            }
+
+            public CacheConfig build(){
+                return new CacheConfig(this);
+            }
         }
     }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Config{");
-        sb.append("deleteOrgRecursion=").append(deleteOrgRecursion);
-        sb.append(", authorizingCacheConfig=").append(authorizingCacheConfig);
-        sb.append(", authenticateCacheConfig=").append(authenticateCacheConfig);
-        sb.append(", accessCacheConfig=").append(accessCacheConfig);
-        sb.append('}');
-        return sb.toString();
-    }
-
-//    public static void main(String[] args) {
-//        System.out.println(new Config());
-//    }
-
 
 }

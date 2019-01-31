@@ -10,6 +10,7 @@ import com.incarcloud.ics.core.cache.LocalCacheManager;
 import com.incarcloud.ics.core.exception.AuthenticationException;
 import com.incarcloud.ics.core.exception.InvalidSessionException;
 import com.incarcloud.ics.core.exception.SessionException;
+import com.incarcloud.ics.core.exception.UnAuthorizeException;
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.privilege.Privilege;
 import com.incarcloud.ics.core.realm.CacheRealm;
@@ -271,6 +272,22 @@ public class DefaultSecurityManager implements SecurityManager {
     }
 
     @Override
+    public void checkPermitted(Principal account, Privilege privilege) throws UnAuthorizeException {
+        authorizer.checkPermitted(account, privilege);
+    }
+
+    @Override
+    public void checkPermittedAllObjectPrivileges(Principal account, Collection<Privilege> privileges) throws UnAuthorizeException {
+        authorizer.checkPermittedAllObjectPrivileges(account, privileges);
+    }
+
+    @Override
+    public void checkPermittedAllStringPrivileges(Principal account, Collection<String> privileges) throws UnAuthorizeException {
+        authorizer.checkPermittedAllStringPrivileges(account, privileges);
+    }
+
+
+    @Override
     public boolean hasRole(Principal principal, String role) {
         return authorizer.hasRole(principal, role);
     }
@@ -278,6 +295,16 @@ public class DefaultSecurityManager implements SecurityManager {
     @Override
     public boolean hasAllRoles(Principal principal, Collection<String> roleList) {
         return authorizer.hasAllRoles(principal, roleList);
+    }
+
+    @Override
+    public void checkRole(Principal account, String role) throws UnAuthorizeException {
+        authorizer.checkRole(account, role);
+    }
+
+    @Override
+    public void checkAllRoles(Principal account, Collection<String> roleList) throws UnAuthorizeException {
+        authorizer.checkAllRoles(account, roleList);
     }
 
     @Override

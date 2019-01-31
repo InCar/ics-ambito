@@ -13,7 +13,7 @@ import java.io.PrintWriter;
  * @description
  * @date 2019/1/28
  */
-public abstract class AbstractExceptionHandler implements SecurityExceptionHandler{
+public abstract class AbstractExceptionHandler implements SecurityFilterExceptionHandler {
 
     private Class<? extends SecurityException> exceptionClass;
 
@@ -54,10 +54,6 @@ public abstract class AbstractExceptionHandler implements SecurityExceptionHandl
 //                writer.close();
 //            }
         }
-    }
-
-    public static SecurityExceptionHandler newInstance(Class<? extends SecurityException> exceptionClass){
-        return new AbstractExceptionHandler(exceptionClass) {};
     }
 
 }

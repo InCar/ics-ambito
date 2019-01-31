@@ -45,6 +45,11 @@ public class CollectionUtils {
         return elements != null && elements.length != 0 ? Arrays.asList(elements) : Collections.emptyList();
     }
 
+    @SuppressWarnings("unchecked")
+    public static <E> List<E> asUnmodifiableList(E... elements) {
+        return Collections.unmodifiableList(asList(elements));
+    }
+
     public static boolean isNotEmpty(Map map) {
         return map != null && !map.isEmpty();
     }

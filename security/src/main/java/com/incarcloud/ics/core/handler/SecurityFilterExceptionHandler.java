@@ -9,6 +9,6 @@ import javax.servlet.http.HttpServletResponse;
  * @description
  * @date 2019/1/28
  */
-public interface SecurityExceptionHandler {
+public interface SecurityFilterExceptionHandler {
     void handle(HttpServletRequest httpServletRequest, HttpServletResponse servletResponse);
 }

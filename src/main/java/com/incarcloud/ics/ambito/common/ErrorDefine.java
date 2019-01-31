@@ -29,6 +29,7 @@ public enum ErrorDefine {
 
     REPEATED_PHONE("手机号重复","17"),
 
+
     AUTHENTICATE_FAILED("认证失败","50"),
 
     ACCOUNT_NOT_EXISTS("账号不存在","51"),
@@ -38,6 +39,8 @@ public enum ErrorDefine {
     PASSWORD_NOT_MATCH("密码错误","53"),
 
     UN_AUTHENTICATE("未认证","54"),
+
+    INVALID_SESSION("会话已失效","55"),
 
     UN_AUTHORIZATION("无访问权限","61"),
 
@@ -71,25 +74,4 @@ public enum ErrorDefine {
         return JsonMessage.fail(this.getMessage(), this.getCode(), errorStack);
     }
 
-    public static JsonMessage toErrorMessage(Exception e){
-        String stackTraceAsString = ExceptionUtils.getStackTraceAsString(e);
-        if(e instanceof AmbitoException){
-            for(ErrorDefine err : ErrorDefine.values()){
-                if(err.getCode().equals(((AmbitoException) e).getCode())){
-                    return err.toErrorMessage();
-                }
-            }
-        }
-        if(e instanceof SecurityException){
-            if(e instanceof AccountNotExistsException){
-                return ACCOUNT_NOT_EXISTS.toErrorMessage(stackTraceAsString);
-            }
-            if(e instanceof CredentialNotMatchException){
-                return PASSWORD_NOT_MATCH.toErrorMessage();
-            }
-            return AUTHENTICATE_FAILED.toErrorMessage(stackTraceAsString);
-        }
-
-        return UNKNOWN_EXCEPTION.toErrorMessage(stackTraceAsString);
-    }
 }
