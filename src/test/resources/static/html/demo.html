@@ -2,6 +2,9 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>用户</title>
     <link rel="stylesheet" type="text/css" href="../css/reset.css" />
     <link rel="stylesheet" type="text/css" href="../../dist/index.css" />
@@ -20,8 +23,8 @@
         <table id="demo" lay-even lay-filter="test" >
         </table>
     </div>
-    <div id="tree">
-
+    <div style="width:50%">
+        <table  id="tree" lay-filter="treeTable"></table>
     </div>
 
 <script src="../../dist/testbundle.js">
@@ -33,7 +36,36 @@
   </script>
 <script>
     new PermissionInfo.Tree({
-        treeName: "#tree",
+            elem: '#tree',
+            apiUrl: "",
+			params: {id: 1}, // 传入id
+			addParams: { // 新增参数
+			},
+            config: {
+                id: "treeTable"  //必須字段 唯一标识符lay-filter
+                ,idField:'orgCode' //必須字段 
+				,method:'get'
+				,cellMinWidth: 100
+				,treeId:'orgCode'//树形id字段名称
+				,treeUpId:'parentCode'//树形父id字段名称
+				,treeShowName:'orgName'//以树形式显示的字段
+				,cols: [
+					{width:100,title: '操作', align:'center'/*toolbar: '#barDemo'*/
+							,templet: function(d){
+							var addBtn='<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="add">添加</a>';
+							var delBtn='<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';
+							return addBtn+delBtn;
+					}
+					}
+					,{field:'orgName', edit:'text',width:300, title: '组织名称'}
+			     ]
+				,page:false
+				,parseData:function (res) {//数据加载后回调
+				}
+				,onClickRow:function (index, o) {
+					// console.log(o)
+			}
+        }
     })
    let tableDemo = new PermissionInfo.Table({
         tableName: "#demo",
