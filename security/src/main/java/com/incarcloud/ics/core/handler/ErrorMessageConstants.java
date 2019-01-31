@@ -9,6 +9,5 @@ package com.incarcloud.ics.core.handler;
 public class ErrorMessageConstants {
     public static final ErrorMessage UN_AUTHENTICATED = ErrorMessage.of("Unauthenticated", "50", "");
     public static final ErrorMessage UN_AUTHORIZED = ErrorMessage.of("Unauthorized", "51", "");
-    public static final ErrorMessage INVALIDE_SESSION = ErrorMessage.of("InvalidSession", "52", "");
 
 }

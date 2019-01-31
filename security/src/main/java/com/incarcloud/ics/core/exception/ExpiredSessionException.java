@@ -21,16 +21,13 @@ package com.incarcloud.ics.core.exception;
 
 public class ExpiredSessionException extends StoppedSessionException {
 
-
     public ExpiredSessionException() {
         super();
     }
 
-
     public ExpiredSessionException(String message) {
         super(message);
     }
-
 
     public ExpiredSessionException(Throwable cause) {
         super(cause);

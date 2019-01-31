@@ -24,7 +24,4 @@ public class SessionException extends SecurityException {
         super(cause);
     }
 
-    public SessionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }
