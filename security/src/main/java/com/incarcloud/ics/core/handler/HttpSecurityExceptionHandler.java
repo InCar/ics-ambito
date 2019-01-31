@@ -2,9 +2,7 @@ package com.incarcloud.ics.core.handler;
 
 import com.incarcloud.ics.core.exception.SecurityException;
 import com.incarcloud.ics.core.utils.Asserts;
-import com.incarcloud.ics.core.utils.ExceptionUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,8 +15,8 @@ import java.io.PrintWriter;
  */
 public class HttpSecurityExceptionHandler implements HttpExceptionHandler {
 
-    private static class Holder{
-        private static HttpSecurityExceptionHandler INSTANCE = new HttpSecurityExceptionHandler();
+    private static final class Holder{
+        private static final HttpSecurityExceptionHandler INSTANCE = new HttpSecurityExceptionHandler();
     }
 
     public static HttpExceptionHandler getInstance(){
@@ -32,23 +30,17 @@ public class HttpSecurityExceptionHandler implements HttpExceptionHandler {
         httpServletResponse.setContentType(contentType);
         ErrorMessage errorMessage = getErrorMessage(exception);
         PrintWriter writer = httpServletResponse.getWriter();
-        if(errorMessage != null){
-            writer.write(errorMessage.toJsonString());
-        }else {
+        if(errorMessage == null){
             errorMessage = ErrorMessage.unknownMessage();
-            writer.write(ErrorMessage.unknownMessage().toJsonString());
         }
+        writer.write(errorMessage.toJsonString());
         writer.flush();
         return errorMessage;
     }
 
 
     protected ErrorMessage getErrorMessage(SecurityException exception){
-        ErrorMessage err = SecurityExceptionMessage.getErrorMessage(exception.getClass());
-        if(err != null) {
-            err.setError(ExceptionUtils.getStackTraceAsString(exception));
-        }
-        return err;
+        return SecurityExceptionMessage.getErrorMessage(exception.getClass());
     }
 
 }

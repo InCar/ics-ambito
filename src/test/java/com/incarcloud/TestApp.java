@@ -1,7 +1,6 @@
 package com.incarcloud;
 
 
-import com.incarcloud.ics.ambito.config.SecurityBeanConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -24,7 +23,6 @@ public class TestApp {
         SpringApplication.run(TestApp.class);
     }
 
-
     @Bean
     public JdbcTemplate jdbcTemplate(){
         return new JdbcTemplate(newDataSource());
@@ -36,8 +34,5 @@ public class TestApp {
         return DataSourceBuilder.create().build();
     }
 
-    public SecurityBeanConfiguration securityConfigurationBean(){
-        return new SecurityBeanConfiguration();
-    }
 
 }

@@ -27,10 +27,9 @@ public class CustomControllerExceptionHandler {
 
     private Logger logger = Logger.getLogger(CustomControllerExceptionHandler.class.getName());
 
-
     @ExceptionHandler(value = Exception.class)
     public JsonMessage handleUnknownExceptions(final Exception ex) {
-        return handleMessageUndefinedException(ex);
+        return handleUndefinedException(ex);
     }
 
     @ExceptionHandler(value = AmbitoException.class)
@@ -40,19 +39,19 @@ public class CustomControllerExceptionHandler {
                 return err.toErrorMessage();
             }
         }
-        return handleMessageUndefinedException(ex);
+        return handleUndefinedException(ex);
     }
 
     @ExceptionHandler(value = SecurityException.class)
     public void handleSecurityExceptions(final SecurityException ex,
                                                 HttpServletResponse response) {
-        parseAndLogStacktrace(ex);
         try {
+            parseAndLogStacktrace(ex);
             HttpSecurityExceptionHandler.getInstance().handle(response, ex);
         } catch (IOException e) {
             e.printStackTrace();
+            handleUndefinedException(e);
         }
-
     }
 
     private String parseAndLogStacktrace(Exception ex){
@@ -61,7 +60,7 @@ public class CustomControllerExceptionHandler {
         return stackTraceAsString;
     }
 
-    private JsonMessage handleMessageUndefinedException(Exception ex){
+    private JsonMessage handleUndefinedException(Exception ex){
         return UNKNOWN_EXCEPTION.toErrorMessage(parseAndLogStacktrace(ex));
     }
 }

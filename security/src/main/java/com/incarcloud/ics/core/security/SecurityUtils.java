@@ -17,6 +17,7 @@ import javax.servlet.ServletResponse;
  * @date 2019/1/8
  */
 public abstract class SecurityUtils {
+
     private static SecurityManager securityManager;
 
     public static Subject getSubject() {

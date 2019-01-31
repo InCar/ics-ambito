@@ -1,8 +1,7 @@
-package com.incarcloud.ics.ambito.config;
+package com.incarcloud.ics.ambito.security.config;
 
 import com.incarcloud.ics.ambito.security.DatabaseSessionDAO;
 import com.incarcloud.ics.ambito.security.JdbcRealm;
-import com.incarcloud.ics.core.aspect.advisor.SecurityAnnotationMethodAdvisor;
 import com.incarcloud.ics.core.filter.AbstractAmbitoFilter;
 import com.incarcloud.ics.core.filter.FilterFactoryBean;
 import com.incarcloud.ics.core.realm.Realm;
@@ -12,29 +11,30 @@ import com.incarcloud.ics.core.security.SecurityUtils;
 import com.incarcloud.ics.core.session.DefaultWebSessionManager;
 import com.incarcloud.ics.core.session.SessionDAO;
 import com.incarcloud.ics.core.session.SessionManager;
-import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 
 /**
+ * @description 默认的权限配置类，如果想开启权限验证，需要继承该类并加上spring的@Configuration注解，对于自定义的类，可通过覆盖相应的方法
+ * 进行实例化，比如自定义了HbaseRealm，可以通过覆盖realm()方法实现，方法头可以不加@Bean,spring容器会自动搜索父类的realm方法有无此注解
+ *     protected Realm realm(){
+ *         return new HbaseRealm();
+ *     }
+ * 具体可以参考test目录下的com.incarcloud.AmbitoSecurityConfig类
+ * 也可以不继承此类，将权限验证所需的类自己注册到容器即可
  * @author ThomasChan
  * @version 1.0
- * @description
  * @date 2019/1/9
  */
-@Configuration
-public class SecurityBeanConfiguration {
+public abstract class DefaultSecurityConfiguration {
 
-    public SecurityBeanConfiguration() {
+    public DefaultSecurityConfiguration() {
     }
 
     @Bean
-    public SecurityManager securityManager(){
+    protected SecurityManager securityManager(){
         DefaultSecurityManager securityManager = new DefaultSecurityManager(realm());
         securityManager.setSessionManager(sessionManager());
         SecurityUtils.setSecurityManager(securityManager);
@@ -42,46 +42,39 @@ public class SecurityBeanConfiguration {
     }
 
     @Bean
-    public Realm realm(){
+    protected Realm realm(){
         return new JdbcRealm();
     }
 
     @Bean
     public FilterFactoryBean filterFactoryBean(){
         FilterFactoryBean filterFactoryBean = new FilterFactoryBean();
-        Map<String,String> filterChainDefinitions = new LinkedHashMap<>();
+        LinkedHashMap<String,String> filterChainDefinitions = new LinkedHashMap<>();
+        loadFilterChainDefinitions(filterChainDefinitions);
         filterChainDefinitions.put("/ics/user/login", "anon");
-        filterChainDefinitions.put("/ics/**", "authc");
         filterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitions);
         filterFactoryBean.setSecurityManager(securityManager());
         return filterFactoryBean;
     }
 
+    protected void loadFilterChainDefinitions(LinkedHashMap<String,String> filterChainDefinitions){
+    }
+
     @Bean
-    public AbstractAmbitoFilter filter(){
+    protected AbstractAmbitoFilter filter(){
         return (AbstractAmbitoFilter) filterFactoryBean().getObject();
     }
 
     @Bean
-    public SessionManager sessionManager(){
+    protected SessionManager sessionManager(){
         DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
         defaultWebSessionManager.setSessionDao(sessionDAO());
         return defaultWebSessionManager;
     }
 
     @Bean
-    public SessionDAO sessionDAO(){
+    protected SessionDAO sessionDAO(){
         return new DatabaseSessionDAO();
-    }
-
-    @Bean
-    public SecurityAnnotationMethodAdvisor securityAnnotationMethodAdvisor(){
-        return new SecurityAnnotationMethodAdvisor();
-    }
-
-    @Bean
-    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-        return new DefaultAdvisorAutoProxyCreator();
     }
 
 }

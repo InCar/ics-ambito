@@ -6,7 +6,7 @@ package com.incarcloud.ics.core.exception;
  * @description
  * @date 2019/1/8
  */
-public class SessionException extends SecurityException {
+public class SessionException extends AuthenticationException {
 
     public SessionException() {
         super();
