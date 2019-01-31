@@ -2,9 +2,6 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Cache-Control" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>用户</title>
     <link rel="stylesheet" type="text/css" href="../css/reset.css" />
     <link rel="stylesheet" type="text/css" href="../../dist/index.css" />
@@ -23,10 +20,10 @@
         <table id="demo" lay-even lay-filter="test" >
         </table>
     </div>
-    <div style="width:50%;display:inline-block;vertical-align: middle">
-        <table  id="tree" lay-filter="treeTable"></table>
+    <div id="tree">
+
     </div>
-    <span id="b" style="padding:10px;border:1px solid gray;display:inline-block;vertical-align: middle;cursor:pointer;">修改</span>
+
 <script src="../../dist/testbundle.js">
 </script>
 <script type="text/html" id="barDemo">
@@ -35,51 +32,9 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
   </script>
 <script>
-    let currentData = null;
-    let tree = new PermissionInfo.Tree({
-            elem: '#tree',
-            apiUrl: "",
-			params: {id: 1}, // 传入id
-			addParams: { // 新增参数
-			},
-            config: {
-                id: "treeTable"  //必須字段 唯一标识符lay-filter
-                ,idField:'orgCode' //必須字段 
-				,method:'get'
-				,cellMinWidth: 100
-				,treeId:'orgCode'//树形id字段名称
-				,treeUpId:'parentCode'//树形父id字段名称
-				,treeShowName:'orgName'//以树形式显示的字段
-				,cols: [
-					 {type:'numbers', title: '序号'}
-					,{field:'orgName', edit:'text',width:300, title: '组织名称'}
-					,{width:200,title: '操作', align:'center'/*toolbar: '#barDemo'*/
-                    ,templet: function(d){
-							var addBtn='<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="add">添加</a>';
-							var editBtn='<a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>';
-							var delBtn='<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';
-							return addBtn+editBtn+delBtn;
-					}
-					}
-			    ]
-				,page:false
-        },
-        clickRow: (data, index) =>{
-            currentData = data
-        },
-        // 使用level字段来改变收缩或者是展开，外部实现
-        setData: (res) =>{
-            res.data.map(item => {
-                if (item.level > 0) item.lay_is_open = false;
-            })
-        }
+    new PermissionInfo.Tree({
+        treeName: "#tree",
     })
-    // 修改数据
-    b.onclick = () => {
-        currentData.orgName = "人事部1";
-        currentData.orgCode = "rsb1";
-        tree.query("treeTable", currentData)
-    }
    let tableDemo = new PermissionInfo.Table({
         tableName: "#demo",
         id: "teste", // 表格唯一标识符
