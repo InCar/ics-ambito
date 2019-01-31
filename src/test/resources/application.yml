@@ -18,5 +18,5 @@ logging:
   level:
     org.springfromework.web: info
     org.hibernate: error
-    com.incarcloud.ics: FINE
+    com.incarcloud: ALL
 

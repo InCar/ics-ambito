@@ -24,7 +24,5 @@ public class UnknownSessionException extends SessionException {
         super(cause);
     }
 
-    public UnknownSessionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+
 }

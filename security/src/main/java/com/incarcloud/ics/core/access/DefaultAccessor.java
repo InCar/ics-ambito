@@ -31,7 +31,7 @@ public class DefaultAccessor implements Accessor{
 
     @Override
     public boolean isAccessibleForData(Principal principal, Serializable id, Class<?> aClass) {
-        Asserts.assertNotNull(aClass, "aClass");
+        Asserts.assertNotNull(aClass, "annotationClass");
         for(Realm realm : realmList){
             if(isAccessibleForRealm(principal, id, aClass, realm)){
                 return true;
@@ -41,7 +41,7 @@ public class DefaultAccessor implements Accessor{
     }
 
     protected boolean isAccessibleForRealm(Principal principal, Serializable id, Class<?> aClass, Realm realm){
-        Asserts.assertNotNull(aClass, "aClass");
+        Asserts.assertNotNull(aClass, "annotationClass");
         AccessInfo accessInfo = realm.getAccessInfo(principal);
         Collection<Serializable> collection = accessInfo.getAccessibleDataId().get(aClass.getName());
         return collection != null && collection.contains(id);

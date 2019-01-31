@@ -23,7 +23,6 @@ public class TestApp {
         SpringApplication.run(TestApp.class);
     }
 
-
     @Bean
     public JdbcTemplate jdbcTemplate(){
         return new JdbcTemplate(newDataSource());
@@ -34,11 +33,6 @@ public class TestApp {
     public DataSource newDataSource() {
         return DataSourceBuilder.create().build();
     }
-
-//    @Bean
-//    public AmbitoFilter shiroFilter(){
-//        return new AmbitoFilter();
-//    }
 
 
 }

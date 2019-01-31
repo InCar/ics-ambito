@@ -1,5 +1,6 @@
 package com.incarcloud.ics.core.authz;
 
+import com.incarcloud.ics.core.exception.UnAuthorizeException;
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.privilege.Privilege;
 import com.incarcloud.ics.core.realm.Realm;
@@ -47,6 +48,27 @@ public class DefaultAuthorizer implements Authorizer {
             }
         }
         return true;
+    }
+
+    @Override
+    public void checkPermitted(Principal account, Privilege privilege) throws UnAuthorizeException {
+        if(!isPermitted(account, privilege)){
+            throw new UnAuthorizeException("User ["+account.getUserIdentity()+"] has no privilege ["+privilege+"]");
+        }
+    }
+
+    @Override
+    public void checkPermittedAllObjectPrivileges(Principal account, Collection<Privilege> privileges) throws UnAuthorizeException {
+        if(!isPermittedAllObjectPrivileges(account, privileges)){
+            throw new UnAuthorizeException("User ["+account.getUserIdentity()+"] is not permitted of all privileges: ["+privileges+"]");
+        }
+    }
+
+    @Override
+    public void checkPermittedAllStringPrivileges(Principal account, Collection<String> privileges) throws UnAuthorizeException {
+        if(!isPermittedAllStringPrivileges(account, privileges)){
+            throw new UnAuthorizeException("User ["+account.getUserIdentity()+"] is not permitted of all privileges: ["+privileges+"]");
+        }
     }
 
     private boolean isPermittedOfRealm(Realm realm, Principal principal, Privilege privilege){
@@ -123,6 +145,20 @@ public class DefaultAuthorizer implements Authorizer {
             }
         }
         return true;
+    }
+
+    @Override
+    public void checkRole(Principal account, String role) throws UnAuthorizeException {
+        if(!hasRole(account, role)){
+            throw new UnAuthorizeException("User ["+account.getUserIdentity()+"] doesn't have role : ["+role+"]");
+        }
+    }
+
+    @Override
+    public void checkAllRoles(Principal account, Collection<String> roleList) throws UnAuthorizeException {
+        if(!hasAllRoles(account, roleList)){
+            throw new UnAuthorizeException("User "+account.getUserIdentity()+" doesn't have all role : "+roleList);
+        }
     }
 
     private boolean realmHasAllRole(Realm realm, Principal account, Collection<String> roles) {

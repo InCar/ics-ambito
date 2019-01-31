@@ -2,6 +2,8 @@ package com.incarcloud.ics.core.subject;
 
 import com.incarcloud.ics.core.authc.AuthenticateToken;
 import com.incarcloud.ics.core.exception.InvalidSessionException;
+import com.incarcloud.ics.core.exception.UnauthenticatedException;
+import com.incarcloud.ics.core.exception.UnAuthorizeException;
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.privilege.Privilege;
 import com.incarcloud.ics.core.security.SecurityManager;
@@ -72,36 +74,73 @@ public class DefaultSubject implements Subject {
 
     @Override
     public boolean isPermitted(Privilege privilege) {
+        assertAuthzCheckPossible();
         return securityManager.isPermitted(principal, privilege);
     }
 
     @Override
     public boolean isPermittedAllObjectPrvileges(Collection<Privilege> privileges) {
+        assertAuthzCheckPossible();
         return securityManager.isPermittedAllObjectPrivileges(principal, privileges);
     }
 
     @Override
     public boolean isPermittedAllStringPrivileges(Collection<String> privileges) {
+        assertAuthzCheckPossible();
         return securityManager.isPermittedAllStringPrivileges(principal, privileges);
     }
 
     @Override
+    public void checkPermitted(Privilege privilege) throws UnAuthorizeException {
+        assertAuthzCheckPossible();
+        securityManager.checkPermitted(principal, privilege);
+    }
+
+    @Override
+    public void checkPermittedAllObjectPrvileges(Collection<Privilege> privileges) throws UnAuthorizeException {
+        assertAuthzCheckPossible();
+        securityManager.checkPermittedAllObjectPrivileges(principal, privileges);
+    }
+
+    @Override
+    public void checkPermittedAllStringPrivileges(Collection<String> privileges) throws UnAuthorizeException {
+        assertAuthzCheckPossible();
+        securityManager.checkPermittedAllStringPrivileges(principal, privileges);
+    }
+
+    @Override
     public boolean hasRole(String role) {
+        assertAuthzCheckPossible();
         return securityManager.hasRole(principal, role);
     }
 
     @Override
+    public void checkRole(String roleIdentifier) throws UnAuthorizeException {
+        assertAuthzCheckPossible();
+        securityManager.checkRole(principal, roleIdentifier);
+    }
+
+    @Override
+    public void checkAllRoles(Collection<String> roleIdentifiers) throws UnAuthorizeException {
+        assertAuthzCheckPossible();
+        securityManager.checkAllRoles(principal, roleIdentifiers);
+    }
+
+    @Override
     public boolean hasAllRoles(Collection<String> roles) {
+        assertAuthzCheckPossible();
         return securityManager.hasAllRoles(principal, roles);
     }
 
     @Override
     public boolean isAccessibleForData(Serializable dataId, Class<?> clzz) {
+        assertAuthzCheckPossible();
         return securityManager.isAccessibleForData(principal, dataId, clzz);
     }
 
     @Override
     public Collection<String> getFilterCodes(Class<?> clzz) {
+        assertAuthzCheckPossible();
         return securityManager.getFilterCodes(principal, clzz);
     }
 
@@ -202,6 +241,14 @@ public class DefaultSubject implements Subject {
         public void stop() throws InvalidSessionException {
             super.stop();
             owner.sessionStop();
+        }
+    }
+
+    protected void assertAuthzCheckPossible() throws RuntimeException {
+        if (getPrincipal() == null) {
+            String msg = "This subject is anonymous - it does not have any identifying principals and " +
+                    "authorization operations require an identity to check against.";
+            throw new UnauthenticatedException(msg);
         }
     }
 }

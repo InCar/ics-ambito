@@ -1,7 +1,7 @@
 
 package com.incarcloud.ics.core.exception;
 
-public class UnauthenticatedException extends AuthorizationException {
+public class UnauthenticatedException extends AuthenticationException {
     public UnauthenticatedException() {
     }
 
