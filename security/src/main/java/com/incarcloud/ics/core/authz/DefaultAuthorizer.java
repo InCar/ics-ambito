@@ -76,12 +76,13 @@ public class DefaultAuthorizer implements Authorizer {
         if(authorizeInfo == null){
             return false;
         }
+        boolean permittedAtLeastOne = false;
         for(Privilege pri : authorizeInfo.getPrivileges()){
-            if(!pri.implies(privilege)){
-                return false;
+            if(pri.implies(privilege)){
+                permittedAtLeastOne = true;
             }
         }
-        return true;
+        return permittedAtLeastOne;
     }
 
     private boolean isPermittedAllObjectOfRealm(Realm realm, Principal principal, Collection<Privilege> privileges){

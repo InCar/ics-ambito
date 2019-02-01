@@ -1,7 +1,7 @@
 package com.incarcloud;
 
 import com.incarcloud.ics.ambito.security.JdbcRealm;
-import com.incarcloud.ics.ambito.security.config.AopEnableSecurityConfiguration;
+import com.incarcloud.ics.ambito.security.config.AopEnabledSecurityConfiguration;
 import com.incarcloud.ics.core.realm.Realm;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
  * @date 2019/1/9
  */
 @Configuration
-public class AmbitoSecurityConfig extends AopEnableSecurityConfiguration {
+public class AmbitoSecurityConfig extends AopEnabledSecurityConfiguration {
 
     @Override
     public Realm realm() {

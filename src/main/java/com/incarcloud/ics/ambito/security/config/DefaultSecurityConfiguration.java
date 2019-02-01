@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
  *     protected Realm realm(){
  *         return new HbaseRealm();
  *     }
- * 具体可以参考test目录下的com.incarcloud.AmbitoSecurityConfig类
  * 也可以不继承此类，将权限验证所需的类自己注册到容器即可
  * @author ThomasChan
  * @version 1.0
