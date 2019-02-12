@@ -5,6 +5,7 @@ import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.pojo.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,10 +14,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Transactional
 public class BaseServiceImpl<T> implements BaseService<T> {
-  
+    private static final transient Logger log = Logger.getLogger(BaseServiceImpl.class.getName());
+
     @Autowired
     BaseDao<T> baseDao;
       
@@ -29,8 +32,13 @@ public class BaseServiceImpl<T> implements BaseService<T> {
             readOnly=true)
     @Override  
     public T get(Serializable id) {
-        return baseDao.get(id);  
-    }  
+        try {
+            return baseDao.get(id);
+        }catch (EmptyResultDataAccessException e){
+            log.info(e.toString());
+        }
+        return null;
+    }
   
     /** 
      * 查询 
