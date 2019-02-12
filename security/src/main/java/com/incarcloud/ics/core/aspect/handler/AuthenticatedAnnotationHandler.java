@@ -21,7 +21,6 @@ public class AuthenticatedAnnotationHandler extends AnnotationHandler {
 
     @Override
     public void doAssertAuthMatch(Annotation annotation) throws SecurityException {
-
         Subject subject = getSubject();
         if(!subject.isAuthenticated()){
             throw new AuthenticationException("Current user "+subject.getPrincipal()+" is unauthenticated");
