@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -44,6 +43,7 @@ public class UserController {
 
     @Autowired
     private RoleService roleService;
+
     /**
      * 查询用户信息
      * @param id id
@@ -80,6 +80,7 @@ public class UserController {
             return JsonMessage.success(query);
         }
     }
+
 
 
     private void maskCredential(Collection<UserBean> collection){

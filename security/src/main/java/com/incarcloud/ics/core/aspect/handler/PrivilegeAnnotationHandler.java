@@ -35,9 +35,7 @@ public class PrivilegeAnnotationHandler extends AnnotationHandler {
         Subject subject = getSubject();
         if(targetAnno.logic().equals(Logic.AND)){
             subject.checkPermittedAllObjectPrvileges(objPrivileges);
-        }
-
-        if(targetAnno.logic().equals(Logic.OR)){
+        }else if(targetAnno.logic().equals(Logic.OR)){
             for(Privilege privilege : objPrivileges){
                 if(subject.isPermitted(privilege)){
                     return;

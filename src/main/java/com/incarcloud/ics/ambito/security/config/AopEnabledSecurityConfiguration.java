@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
  * @author ThomasChan
  * @date 2019/1/31
  */
-public abstract class AopEnableSecurityConfiguration extends DefaultSecurityConfiguration {
+public abstract class AopEnabledSecurityConfiguration extends DefaultSecurityConfiguration {
 
     @Bean
     protected SecurityAnnotationMethodAdvisor securityAnnotationMethodAdvisor(){
