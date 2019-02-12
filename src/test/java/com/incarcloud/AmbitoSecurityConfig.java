@@ -3,7 +3,6 @@ package com.incarcloud;
 import com.incarcloud.ics.ambito.security.JdbcRealm;
 import com.incarcloud.ics.ambito.security.config.AopEnabledSecurityConfiguration;
 import com.incarcloud.ics.core.realm.Realm;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.LinkedHashMap;
 
@@ -14,7 +13,7 @@ import java.util.LinkedHashMap;
  * @description
  * @date 2019/1/9
  */
-@Configuration
+//@Configuration
 public class AmbitoSecurityConfig extends AopEnabledSecurityConfiguration {
 
     @Override
@@ -28,6 +27,6 @@ public class AmbitoSecurityConfig extends AopEnabledSecurityConfiguration {
      */
     @Override
     protected void loadFilterChainDefinitions(LinkedHashMap<String, String> filterChainDefinitions) {
-//        filterChainDefinitions.put("/ics/**", "authc");
+        filterChainDefinitions.put("/ics/**", "anon");
     }
 }
