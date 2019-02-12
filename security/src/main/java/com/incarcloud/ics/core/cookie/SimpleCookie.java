@@ -12,12 +12,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.logging.Logger;
 
-/**
- * @author ThomasChan
- * @version 1.0
- * @description
- * @date 2019/1/12
- */
+
 public class SimpleCookie  implements Cookie{
     /**
      * {@code -1}, indicating the cookie should expire when the browser closes.

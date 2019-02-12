@@ -64,6 +64,7 @@ allprojects {
         servletVersion="4.0.1"
         mysqlJdbcVersion="8.0.11"
         springVersion="5.1.3.RELEASE"
+        skeletonVersion="3.5-SNAPSHOT"
     }
 }
 
@@ -75,7 +76,7 @@ repositories {
     dependencies{
         compile project("rdb")
         compile project("security")
-        compile("com.incarcloud.ics:ics-skeleton:3.5-SNAPSHOT")
+        compile("com.incarcloud.ics:ics-skeleton:${skeletonVersion}")
         // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
         compile ("javax.servlet:javax.servlet-api:${servletVersion}")
         // https://mvnrepository.com/artifact/mysql/mysql-connector-java

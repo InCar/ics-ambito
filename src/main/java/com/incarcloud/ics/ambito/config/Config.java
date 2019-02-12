@@ -1,6 +1,12 @@
 package com.incarcloud.ics.ambito.config;
 
 
+import com.incarcloud.ics.ambito.exception.AmbitoException;
+import com.incarcloud.ics.core.utils.PropertiesLoader;
+import com.incarcloud.skeleton.config.LogConfig;
+
+import java.util.Properties;
+
 /**
  * @author ThomasChan
  * @version 1.0
@@ -9,6 +15,18 @@ package com.incarcloud.ics.ambito.config;
  */
 public class Config {
 
+    private static final String DEFAULT_PROPERTIES_FILENAME = "ambito.properties";
+
+    private String propertiesFilename;
+
+    public static void loadConfig(){
+        Properties properties = new PropertiesLoader(DEFAULT_PROPERTIES_FILENAME).getProperties();
+        if(properties == null){
+            throw new AmbitoException("Failed to load config");
+        }
+
+    }
+
     /**
      * 是否递归删除组织，true表示递归删除�?有组织及其子组织，false表示只删除本组织
      */
@@ -16,7 +34,11 @@ public class Config {
     private CacheConfig authorizingCache = CacheConfig.defaultConfigOf("authorizingCache");
     private CacheConfig authenticateCache =  CacheConfig.defaultConfigOf("authenticateCache");
     private CacheConfig accessCache = CacheConfig.defaultConfigOf("accessCache");
-//    private LogConfig logConfig = new LogConfig();
+    private LogConfig logConfig = getLogConfig();
+
+    private LogConfig getLogConfig() {
+        return null;
+    }
 
 
     public Config() {

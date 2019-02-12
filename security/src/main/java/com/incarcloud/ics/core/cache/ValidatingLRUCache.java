@@ -107,15 +107,16 @@ public class ValidatingLRUCache<K,V> extends NamedLRUCache<K,V> {
 
 
     /**
-     * 每次put先更新缓存的开始时间戳
+     * 每次put后更新缓存的开始时间戳
      * @param key
      * @param value
      * @return
      */
     @Override
     protected V doPut(K key, V value) {
+        V v = super.doPut(key, value);
         startTimestampMap.put(key, new Date().getTime());
-        return super.doPut(key, value);
+        return v;
     }
 
 }
