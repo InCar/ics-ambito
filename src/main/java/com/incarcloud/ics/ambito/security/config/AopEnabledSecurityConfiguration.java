@@ -22,8 +22,14 @@ public abstract class AopEnabledSecurityConfiguration extends DefaultSecurityCon
         return new SecurityAnnotationMethodAdvisor();
     }
 
+
+
     @Bean
     protected DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-        return new DefaultAdvisorAutoProxyCreator();
+        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        //true表示基于类的代理，依赖于cglib库，false表示基于接口进行代理，
+        //依赖于jdk的动态代理，此处需要开启
+        defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
+        return defaultAdvisorAutoProxyCreator;
     }
 }
