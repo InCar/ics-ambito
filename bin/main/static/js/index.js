@@ -1,6 +1,8 @@
 
 import table from "./user"
 import tree from "./tree"
+import login from "./login"
+import vehicle from "./vehicle"
 
 // plugin.js
 ;(function(undefined) {
@@ -15,10 +17,18 @@ var PermissionInfo = {
 	},
 	Tree: function(options) {
 		this._initial(options);
+	},
+	Login: function(options) {
+		this._initial(options);
+	},
+	Vehicle: function(options) {
+		this._initial(options);
 	}
 }
 PermissionInfo.Table.prototype = table;
 PermissionInfo.Tree.prototype = tree;
+PermissionInfo.Login.prototype = login;
+PermissionInfo.Vehicle.prototype = vehicle;
 
  // 将插件对象暴露给全局对象
  _global = (function(){ return this || (0, eval)('this'); }());
