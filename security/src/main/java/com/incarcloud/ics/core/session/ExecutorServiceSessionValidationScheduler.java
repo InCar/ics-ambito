@@ -18,13 +18,15 @@
  */
 package com.incarcloud.ics.core.session;
 
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 
 /**
@@ -39,7 +41,7 @@ public class ExecutorServiceSessionValidationScheduler implements SessionValidat
     //TODO - complete JavaDoc
 
     /** Private internal log instance. */
-    private static final Logger log = Logger.getLogger(ExecutorServiceSessionValidationScheduler.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ExecutorServiceSessionValidationScheduler.class);
 
     ValidateSessionManager sessionManager;
     private ScheduledExecutorService service;
@@ -107,15 +109,15 @@ public class ExecutorServiceSessionValidationScheduler implements SessionValidat
     }
 
     public void run() {
-        if (log.isLoggable(Level.FINE)) {
-            log.fine("Executing session validation...");
-        }
+
+        log.debug("Executing session validation...");
+
         long startTime = System.currentTimeMillis();
         this.sessionManager.validateSessions();
         long stopTime = System.currentTimeMillis();
-        if (log.isLoggable(Level.FINE)) {
-            log.fine("Session validation completed successfully in " + (stopTime - startTime) + " milliseconds.");
-        }
+
+        log.debug("Session validation completed successfully in " + (stopTime - startTime) + " milliseconds.");
+
     }
     
     public void disableSessionValidation() {

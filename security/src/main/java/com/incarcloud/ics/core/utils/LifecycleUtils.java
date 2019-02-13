@@ -22,13 +22,14 @@ package com.incarcloud.ics.core.utils;
 import com.incarcloud.ics.core.exception.SecurityException;
 import com.incarcloud.ics.core.filter.Destroyable;
 import com.incarcloud.ics.core.filter.Initializable;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import java.util.Collection;
-import java.util.logging.Logger;
 
 public abstract class LifecycleUtils {
 
-    private static final Logger log = Logger.getLogger(LifecycleUtils.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(LifecycleUtils.class);
 
     public static void init(Object o) throws SecurityException {
         if (o instanceof Initializable) {

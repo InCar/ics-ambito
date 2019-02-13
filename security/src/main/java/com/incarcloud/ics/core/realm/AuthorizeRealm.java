@@ -59,12 +59,12 @@ public abstract class AuthorizeRealm extends AuthenticateRealm{
         }
         Object o = cache.get(identifier);
         if(o == null){
-            logger.fine("No data of [{"+identifier+"}] store in cache [{"+AUTHORIZE_CACHE_NAME+"}]!");
+            logger.debug("No data of [{"+identifier+"}] store in cache [{"+AUTHORIZE_CACHE_NAME+"}]!");
         }else {
             if(o instanceof AuthorizeInfo){
                 return (AuthorizeInfo) o;
             }else {
-                logger.fine("Cache data type [{"+o.getClass()+"}] mismatch with authenticationInfo!");
+                logger.debug("Cache data type [{"+o.getClass()+"}] mismatch with authenticationInfo!");
             }
         }
         return null;

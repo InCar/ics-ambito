@@ -8,6 +8,8 @@ import com.incarcloud.ics.core.servlet.AmbitoHttpServletRequest;
 import com.incarcloud.ics.core.servlet.AmbitoHttpServletResponse;
 import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.subject.Subject;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -16,11 +18,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.logging.Logger;
+
 
 public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
 
-    private Logger logger = Logger.getLogger(AbstractAmbitoFilter.class.getName());
+    private Logger logger = LoggerFactory.getLogger(AbstractAmbitoFilter.class);
     private FilterChainResolver filterChainResolver;
     private SecurityManager securityManager;
 
@@ -109,7 +111,7 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
                     try {
                         session.touch();
                     } catch (Throwable e) {
-                        logger.severe("session.touch() method invocation has failed.  Unable to updatethe corresponding session's last access time based on the incoming request.");
+                        logger.error("session.touch() method invocation has failed.  Unable to updatethe corresponding session's last access time based on the incoming request.");
                     }
                 }
             }
@@ -246,7 +248,7 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
 
         FilterChainResolver resolver = getFilterChainResolver();
         if (resolver == null) {
-            logger.fine("No FilterChain configured for the current request.  Using the default.");
+            logger.debug("No FilterChain configured for the current request.  Using the default.");
             return origChain;
         }
 
@@ -254,7 +256,7 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
         if (resolved != null) {
             chain = resolved;
         }else {
-            logger.fine("No FilterChain configured for the current request.  Using the default.");
+            logger.debug("No FilterChain configured for the current request.  Using the default.");
         }
         return chain;
     }

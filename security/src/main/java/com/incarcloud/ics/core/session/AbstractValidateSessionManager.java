@@ -1,18 +1,19 @@
 package com.incarcloud.ics.core.session;
 
-import com.incarcloud.ics.core.exception.UnAuthorizeException;
 import com.incarcloud.ics.core.exception.ExpiredSessionException;
 import com.incarcloud.ics.core.exception.InvalidSessionException;
 import com.incarcloud.ics.core.exception.SessionException;
+import com.incarcloud.ics.core.exception.UnAuthorizeException;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 
 public abstract class AbstractValidateSessionManager extends AbstractNativeSessionManager implements ValidateSessionManager {
 
-    private static final Logger logger = Logger.getLogger(AbstractValidateSessionManager.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AbstractValidateSessionManager.class);
     /**
      * 默认每个小时检测一次session是否过期
      */
@@ -86,7 +87,7 @@ public abstract class AbstractValidateSessionManager extends AbstractNativeSessi
     }
 
     protected void onExpiration(Session s, ExpiredSessionException ese, SessionKey key) {
-        logger.fine("Session with id [{"+s.getId()+"}] has expired.");
+        logger.debug("Session with id [{"+s.getId()+"}] has expired.");
         try {
             onExpiration(s);
 //            notifyExpiration(s);
@@ -106,7 +107,7 @@ public abstract class AbstractValidateSessionManager extends AbstractNativeSessi
             onExpiration(s, (ExpiredSessionException) ise, key);
             return;
         }
-        logger.fine("Session with id [{"+s.getId()+"}] is invalid.");
+        logger.debug("Session with id [{"+s.getId()+"}] is invalid.");
         try {
             onStop(s);
 //            notifyStop(s);
@@ -144,26 +145,25 @@ public abstract class AbstractValidateSessionManager extends AbstractNativeSessi
                     SessionKey key = new WebSessionKey(s.getId());
                     validate(s, key);
                 } catch (InvalidSessionException e) {
-                    if (logger.isLoggable(Level.FINE)) {
-                        boolean expired = (e instanceof ExpiredSessionException);
-                        String msg = "Invalidated session with id [" + s.getId() + "]" +
-                                (expired ? " (expired)" : " (stopped)");
-                        logger.fine(msg);
-                    }
+
+                    boolean expired = (e instanceof ExpiredSessionException);
+                    String msg = "Invalidated session with id [" + s.getId() + "]" +
+                            (expired ? " (expired)" : " (stopped)");
+                    logger.debug(msg);
+
                     invalidCount++;
                 }
             }
         }
 
-        if (logger.isLoggable(Level.INFO)) {
-            String msg = "Finished session validation.";
-            if (invalidCount > 0) {
-                msg += "  [" + invalidCount + "] sessions were stopped.";
-            } else {
-                msg += "  No sessions were stopped.";
-            }
-            logger.info(msg);
+
+        String msg = "Finished session validation.";
+        if (invalidCount > 0) {
+            msg += "  [" + invalidCount + "] sessions were stopped.";
+        } else {
+            msg += "  No sessions were stopped.";
         }
+        logger.info(msg);
     }
 
 
@@ -183,9 +183,9 @@ public abstract class AbstractValidateSessionManager extends AbstractNativeSessi
         // it is possible that that a scheduler was already created and set via 'setSessionValidationScheduler()'
         // but would not have been enabled/started yet
         if (!scheduler.isEnabled()) {
-            if (logger.isLoggable(Level.FINE)) {
-                logger.info("Enabling session validation scheduler...");
-            }
+
+            logger.debug("Enabling session validation scheduler...");
+
             scheduler.enableSessionValidation();
         }
     }
@@ -193,14 +193,14 @@ public abstract class AbstractValidateSessionManager extends AbstractNativeSessi
     protected SessionValidationScheduler createSessionValidationScheduler() {
         ExecutorServiceSessionValidationScheduler scheduler;
 
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine("No sessionValidationScheduler set.  Attempting to create default instance.");
-        }
+
+        logger.debug("No sessionValidationScheduler set.  Attempting to create default instance.");
+
         scheduler = new ExecutorServiceSessionValidationScheduler(this);
         scheduler.setInterval(getSessionValidateInterval());
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine("Created default SessionValidationScheduler instance of type [" + scheduler.getClass().getName() + "].");
-        }
+
+        logger.debug("Created default SessionValidationScheduler instance of type [" + scheduler.getClass().getName() + "].");
+
         return scheduler;
     }
 

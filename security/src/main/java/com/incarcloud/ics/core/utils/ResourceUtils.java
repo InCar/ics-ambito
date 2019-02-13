@@ -1,17 +1,20 @@
 package com.incarcloud.ics.core.utils;
 
 
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.logging.Logger;
+
 
 public class ResourceUtils {
     public static final String CLASSPATH_PREFIX = "classpath:";
     public static final String URL_PREFIX = "url:";
     public static final String FILE_PREFIX = "file:";
-    private static final Logger log = Logger.getLogger(ResourceUtils.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ResourceUtils.class);
 
     private ResourceUtils() {
     }
@@ -63,7 +66,7 @@ public class ResourceUtils {
     }
 
     private static InputStream loadFromFile(String path) throws IOException {
-        log.fine("Opening file [" + path + "]...");
+        log.debug("Opening file [" + path + "]...");
         return new FileInputStream(path);
     }
 
@@ -85,7 +88,7 @@ public class ResourceUtils {
             try {
                 is.close();
             } catch (IOException var2) {
-                log.warning("Error closing input stream.");
+                log.warn("Error closing input stream.");
             }
         }
 

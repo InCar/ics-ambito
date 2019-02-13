@@ -8,6 +8,8 @@ import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.SysOrgUserService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,8 @@ import java.util.List;
 @RequestMapping(value = "/ics/orgUser")
 @RestController
 public class SysOrgUserController {
+
+    Logger logger = LoggerFactory.getLogger(SysOrgUserController.class);
 
     @Autowired
     private SysOrgUserService sysOrgUserService;

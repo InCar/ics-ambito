@@ -19,13 +19,14 @@
 package com.incarcloud.ics.core.filter;
 
 
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A Servlet Filter that enables AOP-style &quot;around&quot; advice for a ServletRequest via
@@ -41,7 +42,7 @@ public abstract class AdviceFilter extends OncePerRequestFilter {
     /**
      * The static logger available to this class only
      */
-    private static final Logger log = Logger.getLogger(AdviceFilter.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(AdviceFilter.class);
 
     /**
      * Returns {@code true} if the filter chain should be allowed to continue, {@code false} otherwise.
@@ -129,18 +130,15 @@ public abstract class AdviceFilter extends OncePerRequestFilter {
         try {
 
             boolean continueChain = preHandle(request, response);
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("Invoked preHandle method.  Continuing chain?: [" + continueChain + "]");
-            }
 
+            log.debug("Invoked preHandle method.  Continuing chain?: [" + continueChain + "]");
             if (continueChain) {
                 executeChain(request, response, chain);
             }
 
             postHandle(request, response);
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("Successfully invoked postHandle method");
-            }
+
+            log.debug("Successfully invoked postHandle method");
 
         } catch (Exception e) {
             exception = e;
@@ -170,14 +168,13 @@ public abstract class AdviceFilter extends OncePerRequestFilter {
         Exception exception = existing;
         try {
             afterCompletion(request, response, exception);
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("Successfully invoked afterCompletion method.");
-            }
+            log.debug("Successfully invoked afterCompletion method.");
+
         } catch (Exception e) {
             if (exception == null) {
                 exception = e;
             } else {
-                log.fine("afterCompletion implementation threw an exception.  This will be ignored to " +
+                log.debug("afterCompletion implementation threw an exception.  This will be ignored to " +
                         "allow the original source exception to be propagated.");
             }
         }
@@ -187,12 +184,10 @@ public abstract class AdviceFilter extends OncePerRequestFilter {
             } else if (exception instanceof IOException) {
                 throw (IOException) exception;
             } else {
-                if (log.isLoggable(Level.FINE)) {
-                    String msg = "Filter execution resulted in an unexpected Exception " +
-                            "(not IOException or ServletException as the Filter API recommends).  " +
-                            "Wrapping in ServletException and propagating.";
-                    log.fine(msg);
-                }
+                String msg = "Filter execution resulted in an unexpected Exception " +
+                        "(not IOException or ServletException as the Filter API recommends).  " +
+                        "Wrapping in ServletException and propagating.";
+                log.debug(msg);
                 throw new ServletException(exception);
             }
         }

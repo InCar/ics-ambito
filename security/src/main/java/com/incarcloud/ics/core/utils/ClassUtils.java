@@ -1,22 +1,22 @@
 
 package com.incarcloud.ics.core.utils;
 
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
+
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 @SuppressWarnings("unchecked")
 public class ClassUtils {
 
 
-    private static final Logger log = Logger.getLogger(ClassUtils.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ClassUtils.class);
 
     private static final ClassLoaderAccessor THREAD_CL_ACCESSOR = new ExceptionIgnoringAccessor() {
         @Override
@@ -53,8 +53,8 @@ public class ClassUtils {
             is = SYSTEM_CL_ACCESSOR.getResourceStream(name);
         }
 
-        if (is == null && log.isLoggable(Level.FINE)) {
-            log.fine("Resource [" + name + "] was not found via the thread context, current, or " +
+        if (is == null && log.isDebugEnabled()) {
+            log.debug("Resource [" + name + "] was not found via the thread context, current, or " +
                     "system/application ClassLoaders.  All heuristics have been exhausted.  Returning null.");
         }
 
@@ -67,16 +67,16 @@ public class ClassUtils {
         Class clazz = THREAD_CL_ACCESSOR.loadClass(fqcn);
 
         if (clazz == null) {
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("Unable to load class named [" + fqcn +
+            if (log.isDebugEnabled()) {
+                log.debug("Unable to load class named [" + fqcn +
                         "] from the thread context ClassLoader.  Trying the current ClassLoader...");
             }
             clazz = CLASS_CL_ACCESSOR.loadClass(fqcn);
         }
 
         if (clazz == null) {
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("Unable to load class named [" + fqcn + "] from the current ClassLoader.  " +
+            if (log.isDebugEnabled()) {
+                log.debug("Unable to load class named [" + fqcn + "] from the current ClassLoader.  " +
                         "Trying the system/application ClassLoader...");
             }
             clazz = SYSTEM_CL_ACCESSOR.loadClass(fqcn);
@@ -179,8 +179,8 @@ public class ClassUtils {
                 try {
                     clazz = cl.loadClass(fqcn);
                 } catch (ClassNotFoundException e) {
-                    if (log.isLoggable(Level.FINE)) {
-                        log.fine("Unable to load clazz named [" + fqcn + "] from class loader [" + cl + "]");
+                    if (log.isDebugEnabled()) {
+                        log.debug("Unable to load clazz named [" + fqcn + "] from class loader [" + cl + "]");
                     }
                 }
             }
@@ -200,8 +200,8 @@ public class ClassUtils {
             try {
                 return doGetClassLoader();
             } catch (Throwable t) {
-                if (log.isLoggable(Level.FINE)) {
-                    log.fine("Unable to acquire ClassLoader.");
+                if (log.isDebugEnabled()) {
+                    log.debug("Unable to acquire ClassLoader.");
                 }
             }
             return null;

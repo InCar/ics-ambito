@@ -4,8 +4,9 @@ import com.incarcloud.ics.core.authc.LogoutAware;
 import com.incarcloud.ics.core.cache.Cache;
 import com.incarcloud.ics.core.cache.CacheManager;
 import com.incarcloud.ics.core.principal.Principal;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
-import java.util.logging.Logger;
 
 /**
  * @Description
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
  */
 public abstract class CacheRealm implements Realm, LogoutAware {
 
-    protected Logger logger = Logger.getLogger(getClass().getName());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private String realmName;
     private CacheManager cacheManager;
     private boolean isCacheEnabled;

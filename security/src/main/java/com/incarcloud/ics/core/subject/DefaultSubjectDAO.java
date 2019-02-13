@@ -8,11 +8,12 @@ package com.incarcloud.ics.core.subject;
 
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.session.Session;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
-import java.util.logging.Logger;
 
 public class DefaultSubjectDAO implements SubjectDAO {
-    private static final Logger log = Logger.getLogger(DefaultSubjectDAO.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(DefaultSubjectDAO.class);
 
     public DefaultSubjectDAO() {
     }
@@ -26,7 +27,7 @@ public class DefaultSubjectDAO implements SubjectDAO {
         if (this.isSessionStorageEnabled(subject)) {
             this.saveToSession(subject);
         } else {
-            log.fine("Session storage of subject state for Subject [{"+subject+"}] has been disabled: identity and authentication state are expected to be initialized on every request or invocation.");
+            log.debug("Session storage of subject state for Subject [{"+subject+"}] has been disabled: identity and authentication state are expected to be initialized on every request or invocation.");
         }
 
         return subject;

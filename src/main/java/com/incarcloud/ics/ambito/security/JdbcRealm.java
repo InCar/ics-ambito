@@ -23,6 +23,8 @@ import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.privilege.WildcardPrivilege;
 import com.incarcloud.ics.core.realm.AccessRealm;
 import com.incarcloud.ics.core.role.SimpleAuthorizeInfo;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -39,6 +41,8 @@ import java.util.stream.Collectors;
  */
 @Component
 public class JdbcRealm extends AccessRealm {
+
+    private static Logger logger = LoggerFactory.getLogger(JdbcRealm.class);
 
     @Autowired
     private UserService userService;
@@ -58,6 +62,7 @@ public class JdbcRealm extends AccessRealm {
 
     @Override
     protected AuthenticateInfo doGetAuthenticateInfo(AuthenticateToken authenticateToken) throws AuthenticationException {
+        logger.debug("test");
         List<UserBean> users = userService.query(new StringCondition("username", authenticateToken.getPrincipal(), StringCondition.Handler.EQUAL));
         if(users.isEmpty()){
             throw new AccountNotExistsException("No account with username "+ authenticateToken.getPrincipal());
@@ -89,6 +94,7 @@ public class JdbcRealm extends AccessRealm {
 
     @Override
     protected AccessInfo doGetAccessInfo(Principal principal) {
+
         Collection<String> orgCodes = getOrgCodeByStrategy(principal);
         //获取用户拥有数据权限的所有实体类的实例id集合
         Map<String, Collection<Serializable>> classCollectionMap = new HashMap<>();

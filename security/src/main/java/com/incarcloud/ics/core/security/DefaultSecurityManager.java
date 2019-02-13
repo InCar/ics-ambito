@@ -18,6 +18,8 @@ import com.incarcloud.ics.core.realm.Realm;
 import com.incarcloud.ics.core.servlet.AmbitoHttpServletRequest;
 import com.incarcloud.ics.core.session.*;
 import com.incarcloud.ics.core.subject.*;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -25,8 +27,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * @author ThomasChan
@@ -36,7 +37,7 @@ import java.util.logging.Logger;
  */
 public class DefaultSecurityManager implements SecurityManager {
 
-    private Logger logger = Logger.getLogger(DefaultSecurityManager.class.getName());
+    private Logger logger = LoggerFactory.getLogger(DefaultSecurityManager.class);
     private Authorizer authorizer;
     private Authenticator authenticator;
     private Accessor accessor;
@@ -87,19 +88,15 @@ public class DefaultSecurityManager implements SecurityManager {
             }
             deleteSubject(subject);
         }catch (Exception e){
-            if (logger.isLoggable(Level.FINE)) {
-                java.lang.String msg = "Unable to cleanly unbind Subject.  Ignoring (logging out).";
-                logger.fine(msg);
-            }
+            String msg = "Unable to cleanly unbind Subject.  Ignoring (logging out).";
+            logger.debug(msg);
         }finally {
             try {
                 stopSession(subject);
             }catch (Exception e){
-                if (logger.isLoggable(Level.FINE)) {
-                    java.lang.String msg = "Unable to cleanly stop Session for Subject [" + subject.getPrincipal() + "] " +
-                            "Ignoring (logging out).";
-                    logger.fine(msg);
-                }
+                java.lang.String msg = "Unable to cleanly stop Session for Subject [" + subject.getPrincipal() + "] " +
+                        "Ignoring (logging out).";
+                logger.debug(msg);
             }
 
         }
@@ -193,7 +190,7 @@ public class DefaultSecurityManager implements SecurityManager {
     protected SubjectContext resolvePrincipals(SubjectContext context) {
         Principal principals = context.resolvePrincipals();
         if (principals == null) {
-            logger.fine("No identity (Principal) found in the context");
+            logger.debug("No identity (Principal) found in the context");
         }else {
             context.setPrincipal(principals);
         }
@@ -202,7 +199,7 @@ public class DefaultSecurityManager implements SecurityManager {
 
     private SubjectContext resolveSession(SubjectContext context) {
         if (context.resolveSession() != null) {
-            logger.fine("Context already contains a session.  Returning.");
+            logger.debug("Context already contains a session.  Returning.");
             return context;
         }
         try {
@@ -211,7 +208,7 @@ public class DefaultSecurityManager implements SecurityManager {
                 context.setSession(session);
             }
         } catch (SessionException e) {
-            logger.fine("Resolved SubjectContext context session is invalid.  Ignoring and creating an anonymous " +
+            logger.debug("Resolved SubjectContext context session is invalid.  Ignoring and creating an anonymous " +
                     "(session-less) Subject instance.");
         }
         return context;
@@ -243,10 +240,10 @@ public class DefaultSecurityManager implements SecurityManager {
 
     protected SubjectContext ensureSecurityManager(SubjectContext context) {
         if (context.resolveSecurityManager() != null) {
-            logger.fine("Context already contains a SecurityManager instance.  Returning.");
+            logger.debug("Context already contains a SecurityManager instance.  Returning.");
             return context;
         }
-        logger.fine("No SecurityManager found in context.  Adding self reference.");
+        logger.debug("No SecurityManager found in context.  Adding self reference.");
         context.setSecurityManager(this);
         return context;
     }

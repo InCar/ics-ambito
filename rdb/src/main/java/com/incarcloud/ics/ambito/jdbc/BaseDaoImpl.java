@@ -5,6 +5,8 @@ import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.pojo.PageResult;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.ambito.utils.StringUtils;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,12 +15,11 @@ import org.springframework.jdbc.core.RowMapper;
 import java.io.Serializable;
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.logging.Logger;
 
 @SuppressWarnings({"unchecked","rawtypes"})
 public class BaseDaoImpl<T> implements BaseDao<T> {
       
-    private static Logger LOGGER = Logger.getLogger(BaseDaoImpl.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(BaseDaoImpl.class);
 
     @Autowired
     JdbcTemplate jdbcTemplate;

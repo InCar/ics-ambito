@@ -1,9 +1,10 @@
 package com.incarcloud.ics.core.authc;
 
 import com.incarcloud.ics.core.realm.Realm;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * @author ThomasChan
@@ -13,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class AtLeastOneSuccessStrategy implements AuthenticateStrategy {
 
-    private Logger logger = Logger.getLogger(AtLeastOneSuccessStrategy.class.getName());
+    private Logger logger = LoggerFactory.getLogger(AtLeastOneSuccessStrategy.class);
 
     public AtLeastOneSuccessStrategy() {
     }

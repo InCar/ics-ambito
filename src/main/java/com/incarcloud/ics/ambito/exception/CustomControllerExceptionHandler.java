@@ -5,15 +5,16 @@ import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.utils.ExceptionUtils;
 import com.incarcloud.ics.core.exception.SecurityException;
 import com.incarcloud.ics.core.handler.HttpSecurityExceptionHandler;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.logging.Logger;
 
-import static com.incarcloud.ics.ambito.common.ErrorDefine.*;
+import static com.incarcloud.ics.ambito.common.ErrorDefine.UNKNOWN_EXCEPTION;
 
 /**
  * @author ThomasChan
@@ -25,7 +26,7 @@ import static com.incarcloud.ics.ambito.common.ErrorDefine.*;
 @ResponseBody
 public class CustomControllerExceptionHandler {
 
-    private Logger logger = Logger.getLogger(CustomControllerExceptionHandler.class.getName());
+    private Logger logger = LoggerFactory.getLogger(CustomControllerExceptionHandler.class);
 
     @ExceptionHandler(value = Exception.class)
     public JsonMessage handleUnknownExceptions(final Exception ex) {
@@ -49,7 +50,6 @@ public class CustomControllerExceptionHandler {
             parseAndLogStacktrace(ex);
             HttpSecurityExceptionHandler.getInstance().handle(response, ex);
         } catch (IOException e) {
-            e.printStackTrace();
             handleUndefinedException(e);
         }
     }

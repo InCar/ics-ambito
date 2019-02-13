@@ -3,7 +3,6 @@ package com.incarcloud.ics.ambito.service.impl;
 import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
-import com.incarcloud.ics.ambito.config.Config;
 import com.incarcloud.ics.ambito.entity.SysOrgBean;
 import com.incarcloud.ics.ambito.entity.SysOrgUserBean;
 import com.incarcloud.ics.ambito.entity.UserBean;
@@ -14,13 +13,18 @@ import com.incarcloud.ics.ambito.service.SysOrgUserService;
 import com.incarcloud.ics.ambito.service.SysOrgVehicleService;
 import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
+import com.incarcloud.ics.config.Config;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.*;
-import java.util.logging.Logger;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +35,7 @@ import java.util.stream.Collectors;
 @Service
 public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements SysOrgService {
 
-    private Logger logger = Logger.getLogger(SysOrgServiceImpl.class.getName());
+    private Logger logger = LoggerFactory.getLogger(SysOrgServiceImpl.class);
 
     @Autowired
     private SysOrgUserService sysOrgUserService;
@@ -119,7 +123,7 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
             }
         }
         //允许递归删除
-        if(Config.getDefaultConfig().isDeleteOrgRecursion()){
+        if(Config.getConfig().isDeleteOrgRecursion()){
             //叶子节点，直接删除,并解除绑定关系
             if(isLeaf(sysOrgBean)){
                 this.delete(sysOrgBean);

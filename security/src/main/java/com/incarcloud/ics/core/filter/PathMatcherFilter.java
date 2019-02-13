@@ -3,17 +3,19 @@ package com.incarcloud.ics.core.filter;
 import com.incarcloud.ics.core.filterChain.PathConfigProcessor;
 import com.incarcloud.ics.core.utils.StringUtils;
 import com.incarcloud.ics.core.utils.WebUtils;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+
 
 public abstract class PathMatcherFilter extends PreHandlerFilter implements PathConfigProcessor {
 
-    private Logger logger = Logger.getLogger(PathMatcherFilter.class.getName());
+    private Logger logger = LoggerFactory.getLogger(PathMatcherFilter.class);
 
     private PatternMatcher pathMatcher = new AntPathMatcher();
     protected Map<String, Object> appliedPaths = new LinkedHashMap<String, Object>();
@@ -29,7 +31,7 @@ public abstract class PathMatcherFilter extends PreHandlerFilter implements Path
             // If the path does match, then pass on to the subclass implementation for specific checks
             //(first match 'wins'):
             if (pathsMatch(path, request)) {
-                logger.fine("Current requestURI matches pattern '{"+path+"}'.  Determining filter chain execution...");
+                logger.debug("Current requestURI matches pattern '{"+path+"}'.  Determining filter chain execution...");
                 Object config = this.appliedPaths.get(path);
                 return isFilterChainContinued(request, response, path, config);
             }
@@ -66,7 +68,7 @@ public abstract class PathMatcherFilter extends PreHandlerFilter implements Path
 
     protected boolean pathsMatch(String path, ServletRequest request) {
         String requestURI = getPathWithinApplication(request);
-        logger.fine("Attempting to match pattern '{"+path+"}' with current requestURI '{"+requestURI+"}'...");
+        logger.debug("Attempting to match pattern '{"+path+"}' with current requestURI '{"+requestURI+"}'...");
         return pathsMatch(path, requestURI);
     }
 

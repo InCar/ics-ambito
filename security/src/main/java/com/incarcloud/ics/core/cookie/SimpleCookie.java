@@ -1,6 +1,8 @@
 package com.incarcloud.ics.core.cookie;
 
 import com.incarcloud.ics.core.utils.StringUtils;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,14 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.logging.Logger;
 
-/**
- * @author ThomasChan
- * @version 1.0
- * @description
- * @date 2019/1/12
- */
+
 public class SimpleCookie  implements Cookie{
     /**
      * {@code -1}, indicating the cookie should expire when the browser closes.
@@ -46,7 +42,7 @@ public class SimpleCookie  implements Cookie{
     protected static final String SECURE_ATTRIBUTE_NAME = "Secure";
     protected static final String HTTP_ONLY_ATTRIBUTE_NAME = "HttpOnly";
 
-    private static final transient Logger log = Logger.getLogger(SimpleCookie.class.getName());
+    private static final transient Logger log = LoggerFactory.getLogger(SimpleCookie.class);
 
     private String name;
     private String value;
@@ -174,7 +170,7 @@ public class SimpleCookie  implements Cookie{
         if (path == null) {
             path = ROOT_PATH;
         }
-        log.fine("calculated path: {"+path+"}");
+        log.debug("calculated path: {"+path+"}");
         return path;
     }
 
@@ -346,7 +342,7 @@ public class SimpleCookie  implements Cookie{
 
         addCookieHeader(response, name, value, comment, domain, path, maxAge, version, secure, httpOnly);
 
-        log.fine("Removed '{"+name+"}' cookie by setting maxAge=0");
+        log.debug("Removed '{"+name+"}' cookie by setting maxAge=0");
     }
 
     public String readValue(HttpServletRequest request, HttpServletResponse ignored) {
@@ -357,13 +353,13 @@ public class SimpleCookie  implements Cookie{
             // Validate that the cookie is used at the correct place.
             String path = StringUtils.clean(getPath());
             if (path != null && !pathMatches(path, request.getRequestURI())) {
-                log.warning("Found '{"+name+"}' cookie at path '{"+request.getRequestURI()+"}', but should be only used for '{"+path+"}'");
+                log.warn("Found '{"+name+"}' cookie at path '{"+request.getRequestURI()+"}', but should be only used for '{"+path+"}'");
             } else {
                 value = cookie.getValue();
-                log.fine("Found '{"+name+"}' cookie value [{"+value+"}]");
+                log.warn("Found '{"+name+"}' cookie value [{"+value+"}]");
             }
         } else {
-            log.fine("No '{"+name+"}' cookie value");
+            log.warn("No '{"+name+"}' cookie value");
         }
 
         return value;

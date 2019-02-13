@@ -1,22 +1,23 @@
 package com.incarcloud.ics.core.subject;
 
 import com.incarcloud.ics.core.authc.AuthenticateInfo;
-import com.incarcloud.ics.core.principal.Principal;
-import com.incarcloud.ics.core.security.SecurityManager;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
 import com.incarcloud.ics.core.exception.UnavailableSecurityManagerException;
+import com.incarcloud.ics.core.principal.Principal;
+import com.incarcloud.ics.core.security.SecurityManager;
+import com.incarcloud.ics.core.security.SecurityUtils;
 import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.utils.MapContext;
-import com.incarcloud.ics.core.security.SecurityUtils;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class DefaultSubjectContext extends MapContext implements SubjectContext {
-    private Logger logger = Logger.getLogger(DefaultSubjectContext.class.getName());
+    private Logger logger = LoggerFactory.getLogger(DefaultSubjectContext.class);
     private static final long serialVersionUID = 4228303924423812100L;
     private static final String SESSION = DefaultSubjectContext.class.getName() + ".SESSION";
     private static final String IS_AUTHENTICATED = DefaultSubjectContext.class.getName() + ".IS_AUTHENTICATED";
@@ -164,9 +165,7 @@ public class DefaultSubjectContext extends MapContext implements SubjectContext 
             try {
                 securityManager = SecurityUtils.getSecurityManager();
             } catch (UnavailableSecurityManagerException e) {
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("No SecurityManager available via SecurityUtils.  Heuristics exhausted. " );
-                }
+                logger.debug("No SecurityManager available via SecurityUtils.  Heuristics exhausted. " );
             }
         }
         return securityManager;
