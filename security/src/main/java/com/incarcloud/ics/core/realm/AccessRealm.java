@@ -9,7 +9,6 @@ import com.incarcloud.ics.core.utils.ClassResolverUtils;
 import com.incarcloud.ics.core.utils.StringUtils;
 
 import java.util.Set;
-import java.util.logging.Level;
 
 /**
  * @author ThomasChan
@@ -52,7 +51,7 @@ public abstract class AccessRealm extends AuthorizeRealm {
             if(accessInfo != null) {
                 cacheAccessInfo(accessInfo, principal);
             }else {
-                logger.fine("No access data of found for user[{"+principal.getUserIdentity()+"}] !");
+                logger.debug("No access data of found for user[{"+principal.getUserIdentity()+"}] !");
             }
         }
         return accessInfo;
@@ -72,12 +71,12 @@ public abstract class AccessRealm extends AuthorizeRealm {
         }
         Object o = cache.get(identifier);
         if(o == null){
-            logger.fine("No data of [{"+identifier+"}] store in cache [{"+ACCESS_INFO_CACHE_NAME+"}]!");
+            logger.debug("No data of [{"+identifier+"}] store in cache [{"+ACCESS_INFO_CACHE_NAME+"}]!");
         }else {
             if(o instanceof AccessInfo){
                 return (AccessInfo) o;
             }else {
-                logger.fine("Cache data tableName [{"+o.getClass()+"}] mismatch with authenticationInfo!");
+                logger.debug("Cache data tableName [{"+o.getClass()+"}] mismatch with authenticationInfo!");
             }
         }
         return null;
@@ -100,15 +99,13 @@ public abstract class AccessRealm extends AuthorizeRealm {
                 aClass.getDeclaredField(FILTER_FIELD_NAME);
                 return true;
             } catch (NoSuchFieldException e) {
-                if(logger.isLoggable(Level.FINE)){
-                    logger.fine("No filed with tableName " + FILTER_FIELD_NAME + " in class " + aClass.getName());
-                }
+
+                logger.info("No filed with tableName " + FILTER_FIELD_NAME + " in class " + aClass.getName());
+
                 return false;
             }
         }else {
-            if (logger.isLoggable(Level.INFO)) {
-                logger.fine("The entity class need access control must configured with annotation " + RequireAccessControl.class.getName());
-            }
+            logger.debug("The entity class need access control must configured with annotation " + RequireAccessControl.class.getName());
             return false;
         }
     }

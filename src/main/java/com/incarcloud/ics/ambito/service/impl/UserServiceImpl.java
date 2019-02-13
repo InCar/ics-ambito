@@ -13,18 +13,19 @@ import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.ambito.utils.StringUtils;
 import com.incarcloud.ics.core.crypo.AbstractDigestHelper;
 import com.incarcloud.ics.core.crypo.DigestHelper;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
 @Service
 public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserService {
 
-    private static Logger LOGGER = Logger.getLogger(UserServiceImpl.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private UserDao userDao;

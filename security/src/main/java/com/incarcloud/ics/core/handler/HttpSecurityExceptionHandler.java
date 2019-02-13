@@ -15,6 +15,9 @@ import java.io.PrintWriter;
  */
 public class HttpSecurityExceptionHandler implements HttpExceptionHandler {
 
+    /**
+     * 延迟加载，线程安全的单例
+     */
     private static final class Holder{
         private static final HttpSecurityExceptionHandler INSTANCE = new HttpSecurityExceptionHandler();
     }

@@ -1,5 +1,5 @@
 
-package com.incarcloud.ics.ambito.utils.logger;
+package com.incarcloud.ics.log;
 
 public interface Logger {
     boolean isFatalEnabled();

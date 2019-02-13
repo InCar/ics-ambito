@@ -2,8 +2,8 @@ package com.incarcloud.ics.core.subject;
 
 import com.incarcloud.ics.core.authc.AuthenticateToken;
 import com.incarcloud.ics.core.exception.InvalidSessionException;
-import com.incarcloud.ics.core.exception.UnauthenticatedException;
 import com.incarcloud.ics.core.exception.UnAuthorizeException;
+import com.incarcloud.ics.core.exception.UnauthenticatedException;
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.privilege.Privilege;
 import com.incarcloud.ics.core.security.SecurityManager;
@@ -12,12 +12,14 @@ import com.incarcloud.ics.core.session.ProxiedSession;
 import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.session.SessionContext;
 import com.incarcloud.ics.core.utils.StringUtils;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.logging.Logger;
+
 
 
 /**
@@ -28,7 +30,7 @@ import java.util.logging.Logger;
  */
 public class DefaultSubject implements Subject {
 
-    private Logger logger = Logger.getLogger(DefaultSubject.class.getName());
+    private Logger logger = LoggerFactory.getLogger(DefaultSubject.class);
 
     protected SecurityManager securityManager;
     protected Session session;

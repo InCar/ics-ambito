@@ -1,12 +1,14 @@
 package com.incarcloud.ics.core.filter;
 
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * @author ThomasChan
@@ -15,7 +17,7 @@ import java.util.logging.Logger;
  * @date 2019/1/25
  */
 public abstract class PreHandlerFilter extends OncePerRequestFilter {
-    private Logger log = Logger.getLogger(PreHandlerFilter.class.getName());
+    private Logger log = LoggerFactory.getLogger(PreHandlerFilter.class);
 
     public void doFilterInternal(ServletRequest request, ServletResponse response, FilterChain chain)
             throws ServletException, IOException {
@@ -23,9 +25,9 @@ public abstract class PreHandlerFilter extends OncePerRequestFilter {
         try {
 
             boolean continueChain = preHandle(request, response);
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("Invoked preHandle method.  Continuing chain?: [" + continueChain + "]");
-            }
+
+            log.debug("Invoked preHandle method.  Continuing chain?: [" + continueChain + "]");
+
             if (continueChain) {
                 executeChain(request, response, chain);
             }

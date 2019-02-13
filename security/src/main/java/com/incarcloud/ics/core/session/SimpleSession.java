@@ -23,6 +23,8 @@ import com.incarcloud.ics.core.exception.ExpiredSessionException;
 import com.incarcloud.ics.core.exception.InvalidSessionException;
 import com.incarcloud.ics.core.exception.StoppedSessionException;
 import com.incarcloud.ics.core.utils.CollectionUtils;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,7 +32,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.*;
-import java.util.logging.Logger;
+
 
 public class SimpleSession implements ValidatingSession, Serializable {
 
@@ -41,7 +43,7 @@ public class SimpleSession implements ValidatingSession, Serializable {
     // a new number in this case, use the JDK's 'serialver' program to generate it.
     private static final long serialVersionUID = -7125642695178165650L;
 
-    private transient static final Logger log = Logger.getLogger(SimpleSession.class.getName());
+    private transient static final Logger log = LoggerFactory.getLogger(SimpleSession.class);
 
     protected static final long MILLIS_PER_SECOND = 1000;
     protected static final long MILLIS_PER_MINUTE = 60 * MILLIS_PER_SECOND;

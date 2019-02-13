@@ -1,14 +1,11 @@
 package com.incarcloud.ics.core.aspect.intercepter;
 
 import com.incarcloud.ics.core.aspect.MethodInvocation;
-import com.incarcloud.ics.core.utils.CollectionUtils;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 import org.aopalliance.intercept.MethodInterceptor;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author ThomasChan
@@ -18,7 +15,7 @@ import java.util.logging.Logger;
  */
 public class AopAnnotationsMethodInterceptor extends AnnotationsMethodInterceptor implements MethodInterceptor {
 
-    private Logger log = Logger.getLogger(AopAnnotationsMethodInterceptor.class.getName());
+    private Logger log = LoggerFactory.getLogger(AopAnnotationsMethodInterceptor.class);
 
     private MethodInvocation proxy(org.aopalliance.intercept.MethodInvocation aopMethodInvocation){
 

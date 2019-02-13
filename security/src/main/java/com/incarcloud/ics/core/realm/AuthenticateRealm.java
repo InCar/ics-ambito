@@ -80,12 +80,12 @@ public abstract class AuthenticateRealm extends CacheRealm {
         }
         Object o = cache.get(identifier);
         if(o == null){
-            logger.fine("No data of [{"+identifier+"}] store in cache [{"+AUTHENTICATE_CACHE_NAME+"}]!");
+            logger.debug("No data of [{"+identifier+"}] store in cache [{"+AUTHENTICATE_CACHE_NAME+"}]!");
         }else {
             if(o instanceof AuthenticateInfo){
                 return (AuthenticateInfo) o;
             }else {
-                logger.fine("Cache data type [{"+o.getClass()+"}] mismatch with authenticationInfo!");
+                logger.debug("Cache data type [{"+o.getClass()+"}] mismatch with authenticationInfo!");
             }
         }
         return null;

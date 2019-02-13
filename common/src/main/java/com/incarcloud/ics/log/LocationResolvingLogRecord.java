@@ -1,10 +1,13 @@
-package com.incarcloud.ics.ambito.utils.logger;
+package com.incarcloud.ics.log;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+/**
+ * 用于对获取具体类名及方法进行打印，直接从apache.commons.logging包中复制过来
+ */
 public class LocationResolvingLogRecord extends LogRecord {
-        private static final String FQCN = IcsDelegateLogger.class.getName();
+        private static final String FQCN = DelegatingLogger.class.getName();
         private volatile boolean resolved;
 
         public LocationResolvingLogRecord(Level level, String msg) {
@@ -42,11 +45,11 @@ public class LocationResolvingLogRecord extends LogRecord {
             String sourceClassName = null;
             String sourceMethodName = null;
             boolean found = false;
-            StackTraceElement[] var5 = stack;
-            int var6 = stack.length;
+            StackTraceElement[] stackTraceElements = stack;
+            int length = stack.length;
 
-            for(int var7 = 0; var7 < var6; ++var7) {
-                StackTraceElement element = var5[var7];
+            for(int i = 0; i < length; ++i) {
+                StackTraceElement element = stackTraceElements[i];
                 String className = element.getClassName();
                 if (FQCN.equals(className)) {
                     found = true;

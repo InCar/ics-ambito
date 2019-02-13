@@ -19,12 +19,15 @@
 package com.incarcloud.ics.core.filter;
 
 
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.IOException;
-import java.util.logging.Logger;
+
 
 /**
  * Filter base class that guarantees to be just executed once per request,
@@ -48,7 +51,7 @@ public abstract class OncePerRequestFilter extends NameableFilter {
     /**
      * Private internal log instance.
      */
-    private static final Logger log = Logger.getLogger(OncePerRequestFilter.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(OncePerRequestFilter.class);
 
     /**
      * Suffix that gets appended to the filter name for the "already filtered" request attribute.

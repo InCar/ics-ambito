@@ -62,6 +62,8 @@ public class UserController {
                                    @RequestParam(required = false)String createUser,
                                    @RequestParam(required = false)Integer pageNum,
                                    @RequestParam(required = false)Integer pageSize){
+        String a = null;
+        a.toString();
         Condition cond = Condition.and(
                 new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
                 new StringCondition("username", username, StringCondition.Handler.ALL_LIKE),
@@ -69,7 +71,6 @@ public class UserController {
                 new StringCondition("realName", realName, StringCondition.Handler.ALL_LIKE),
                 new StringCondition("phone", phone, StringCondition.Handler.ALL_LIKE)
         );
-
         if(pageNum == null || pageSize == null){
             List<UserBean> query = userService.query(cond);
             maskCredential(query);

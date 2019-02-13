@@ -1,16 +1,21 @@
-package com.incarcloud.ics.ambito.utils.logger;
+package com.incarcloud.ics.log;
 
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-public class IcsDelegateLogger implements Logger, Serializable {
+public class DelegatingLogger implements Logger, Serializable {
         private String name;
         private transient java.util.logging.Logger logger;
 
-        public IcsDelegateLogger(String name) {
+        public DelegatingLogger(String name) {
             this.name = name;
             this.logger = java.util.logging.Logger.getLogger(name);
+        }
+
+        public DelegatingLogger(String name, java.util.logging.Logger logger) {
+            this.name = name;
+            this.logger = logger;
         }
 
         public boolean isFatalEnabled() {
@@ -102,6 +107,6 @@ public class IcsDelegateLogger implements Logger, Serializable {
         }
 
         protected Object readResolve() {
-            return new IcsDelegateLogger(this.name);
+            return new DelegatingLogger(this.name);
         }
     }

@@ -5,11 +5,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import java.util.logging.Logger;
 
 @Component
 public class SpringUtils implements ApplicationContextAware {
-    private static Logger logger = Logger.getLogger(SpringUtils.class.getName());
 
     private static ApplicationContext applicationContext = null;
 

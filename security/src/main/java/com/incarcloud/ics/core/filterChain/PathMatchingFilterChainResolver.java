@@ -9,16 +9,17 @@ package com.incarcloud.ics.core.filterChain;
 import com.incarcloud.ics.core.filter.AntPathMatcher;
 import com.incarcloud.ics.core.filter.PatternMatcher;
 import com.incarcloud.ics.core.utils.WebUtils;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.util.Iterator;
-import java.util.logging.Logger;
 
 public class PathMatchingFilterChainResolver implements FilterChainResolver {
-    private static final transient Logger log = Logger.getLogger(PathMatchingFilterChainResolver.class.getName());
+    private static final transient Logger log = LoggerFactory.getLogger(PathMatchingFilterChainResolver.class);
     private FilterChainManager filterChainManager;
     private PatternMatcher pathMatcher = new AntPathMatcher();
 

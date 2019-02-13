@@ -3,6 +3,9 @@
  */
 package com.incarcloud.ics.core.utils;
 
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
+
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +17,7 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
-import java.util.logging.Logger;
+
 
 
 /**
@@ -25,7 +28,7 @@ public class ClassResolverUtils {
 	/*
 	 * An instance of Log to use for logging in this class.
 	 */
-	private static final Logger logger = Logger.getLogger(ClassResolverUtils.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(ClassResolverUtils.class);
 
 	/**
 	 * A simple interface that specifies how to test classes to determine if they
@@ -197,7 +200,7 @@ public class ClassResolverUtils {
 				}
 			}
 		} catch (IOException ioe) {
-			logger.severe("Could not read package: " + packageName);
+			logger.error("Could not read package: " + packageName);
 		}
 
 		return this;
@@ -224,14 +227,14 @@ public class ClassResolverUtils {
 		try {
 			String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');
 			ClassLoader loader = getClassLoader();
-			logger.fine("Checking to see if class " + externalName + " matches criteria [" + test + "]");
+			logger.debug("Checking to see if class " + externalName + " matches criteria [" + test + "]");
 
 			Class<?> type = loader.loadClass(externalName);
 			if (test.matches(type)) {
 				matches.add((Class<?>) type);
 			}
 		} catch (Exception t) {
-			logger.warning("Could not examine class '" + fqn + "'" + " due to a "
+			logger.warn("Could not examine class '" + fqn + "'" + " due to a "
 					+ t.getClass().getName() + " with message: " + t.getMessage());
 		}
 	}
@@ -243,7 +246,7 @@ public class ClassResolverUtils {
  * @author Ben Gunter
  */
 abstract class VFS {
-	private static final Logger logger = Logger.getLogger(ClassResolverUtils.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(ClassResolverUtils.class);
 
 	/** The built-in implementations. */
 	public static final Class<?>[] IMPLEMENTATIONS = { JBoss6VFS.class, DefaultVFS.class };
@@ -276,18 +279,18 @@ abstract class VFS {
 			try {
 				vfs = impl.newInstance();
 				if (vfs == null || !vfs.isValid()) {
-					logger.fine("VFS implementation " + impl.getName() + " is not valid in this environment.");
+					logger.debug("VFS implementation " + impl.getName() + " is not valid in this environment.");
 				}
 			} catch (InstantiationException e) {
-				logger.severe("Failed to instantiate " + impl);
+				logger.error("Failed to instantiate " + impl);
 				return null;
 			} catch (IllegalAccessException e) {
-				logger.severe("Failed to instantiate " + impl);
+				logger.error("Failed to instantiate " + impl);
 				return null;
 			}
 		}
 
-		logger.fine("Using VFS adapter " + vfs.getClass().getName());
+		logger.debug("Using VFS adapter " + vfs.getClass().getName());
 		return VFS.instance = vfs;
 	}
 
@@ -309,7 +312,7 @@ abstract class VFS {
 			return Thread.currentThread().getContextClassLoader().loadClass(className);
 			//      return ReflectUtil.findClass(className);
 		} catch (ClassNotFoundException e) {
-			logger.fine("Class not found: " + className);
+			logger.debug("Class not found: " + className);
 			return null;
 		}
 	}
@@ -329,10 +332,10 @@ abstract class VFS {
 				return clazz.getMethod(methodName, parameterTypes);
 			}
 		} catch (SecurityException e) {
-			logger.severe("Security exception looking for method " + clazz.getName() + "." + methodName + ".  Cause: " + e);
+			logger.error("Security exception looking for method " + clazz.getName() + "." + methodName + ".  Cause: " + e);
 			return null;
 		} catch (NoSuchMethodException e) {
-			logger.severe("Method not found " + clazz.getName() + "." + methodName + "." + methodName + ".  Cause: " + e);
+			logger.error("Method not found " + clazz.getName() + "." + methodName + "." + methodName + ".  Cause: " + e);
 			return null;
 		}
 	}
@@ -413,7 +416,7 @@ abstract class VFS {
  * @author Ben Gunter
  */
 class DefaultVFS extends VFS {
-	private static final Logger log = Logger.getLogger(ClassResolverUtils.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(ClassResolverUtils.class);
 
 	/** The magic header that indicates a JAR (ZIP) file. */
 	private static final byte[] JAR_MAGIC = { 'P', 'K', 3, 4 };
@@ -434,7 +437,7 @@ class DefaultVFS extends VFS {
 			URL jarUrl = findJarForResource(url);
 			if (jarUrl != null) {
 				is = jarUrl.openStream();
-				log.fine("Listing " + url);
+				log.debug("Listing " + url);
 				resources = listResources(new JarInputStream(is), path);
 			} else {
 				List<String> children = new ArrayList<String>();
@@ -445,9 +448,9 @@ class DefaultVFS extends VFS {
 						is = url.openStream();
 						@SuppressWarnings("resource")
 						JarInputStream jarInput = new JarInputStream(is);
-						log.fine("Listing " + url);
+						log.debug("Listing " + url);
 						for (JarEntry entry; (entry = jarInput.getNextJarEntry()) != null;) {
-							log.fine("Jar entry: " + entry.getName());
+							log.debug("Jar entry: " + entry.getName());
 							children.add(entry.getName());
 						}
 					} else {
@@ -463,7 +466,7 @@ class DefaultVFS extends VFS {
 						BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 						List<String> lines = new ArrayList<String>();
 						for (String line; (line = reader.readLine()) != null;) {
-							log.fine("Reader entry: " + line);
+							log.debug("Reader entry: " + line);
 							lines.add(line);
 							if (getResources(path + "/" + line).isEmpty()) {
 								lines.clear();
@@ -472,7 +475,7 @@ class DefaultVFS extends VFS {
 						}
 
 						if (!lines.isEmpty()) {
-							log.fine("Listing " + url);
+							log.debug("Listing " + url);
 							children.addAll(lines);
 						}
 					}
@@ -484,9 +487,9 @@ class DefaultVFS extends VFS {
 					 */
 					if ("file".equals(url.getProtocol())) {
 						File file = new File(url.getFile());
-						log.fine("Listing directory " + file.getAbsolutePath());
+						log.debug("Listing directory " + file.getAbsolutePath());
 						if (file.isDirectory()) {
-							log.fine("Listing " + url);
+							log.debug("Listing " + url);
 							children = Arrays.asList(file.list());
 						}
 					} else {
@@ -550,7 +553,7 @@ class DefaultVFS extends VFS {
 
 				// Check file tableName
 				if (name.startsWith(path)) {
-					log.fine("Found resource: " + name);
+					log.debug("Found resource: " + name);
 					resources.add(name.substring(1)); // Trim leading slash
 				}
 			}
@@ -569,13 +572,13 @@ class DefaultVFS extends VFS {
 	 * @throws MalformedURLException
 	 */
 	protected URL findJarForResource(URL url) throws MalformedURLException {
-		log.fine("Find JAR URL: " + url);
+		log.debug("Find JAR URL: " + url);
 
 		// If the file part of the URL is itself a URL, then that URL probably points to the JAR
 		try {
 			for (;;) {
 				url = new URL(url.getFile());
-				log.fine("Inner URL: " + url);
+				log.debug("Inner URL: " + url);
 			}
 		} catch (MalformedURLException e) {
 			// This will happen at some point and serves as a break in the loop
@@ -586,9 +589,9 @@ class DefaultVFS extends VFS {
 		int index = jarUrl.lastIndexOf(".jar");
 		if (index >= 0) {
 			jarUrl.setLength(index + 4);
-			log.fine("Extracted JAR URL: " + jarUrl);
+			log.debug("Extracted JAR URL: " + jarUrl);
 		} else {
-			log.fine("Not a JAR: " + jarUrl);
+			log.debug("Not a JAR: " + jarUrl);
 			return null;
 		}
 
@@ -599,7 +602,7 @@ class DefaultVFS extends VFS {
 				return testUrl;
 			} else {
 				// WebLogic fix: check if the URL's file exists in the filesystem.
-				log.fine("Not a JAR: " + jarUrl);
+				log.debug("Not a JAR: " + jarUrl);
 				jarUrl.replace(0, jarUrl.length(), testUrl.getFile());
 				File file = new File(jarUrl.toString());
 
@@ -613,7 +616,7 @@ class DefaultVFS extends VFS {
 				}
 
 				if (file.exists()) {
-					log.fine("Trying real file: " + file.getAbsolutePath());
+					log.debug("Trying real file: " + file.getAbsolutePath());
 					testUrl = file.toURI().toURL();
 					if (isJar(testUrl)) {
 						return testUrl;
@@ -621,10 +624,10 @@ class DefaultVFS extends VFS {
 				}
 			}
 		} catch (MalformedURLException e) {
-			log.warning("Invalid JAR URL: " + jarUrl);
+			log.warn("Invalid JAR URL: " + jarUrl);
 		}
 
-		log.fine("Not a JAR: " + jarUrl);
+		log.debug("Not a JAR: " + jarUrl);
 		return null;
 	}
 
@@ -661,7 +664,7 @@ class DefaultVFS extends VFS {
 			is = url.openStream();
 			is.read(buffer, 0, JAR_MAGIC.length);
 			if (Arrays.equals(buffer, JAR_MAGIC)) {
-				log.fine("Found JAR: " + url);
+				log.debug("Found JAR: " + url);
 				return true;
 			}
 		} catch (Exception e) {
@@ -686,7 +689,7 @@ class DefaultVFS extends VFS {
  * @author Ben Gunter
  */
 class JBoss6VFS extends VFS {
-	private static final Logger log = Logger.getLogger(ClassResolverUtils.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(ClassResolverUtils.class);
 
 	/** A class that mimics a tiny subset of the JBoss VirtualFile class. */
 	static class VirtualFile {
@@ -704,7 +707,7 @@ class JBoss6VFS extends VFS {
 				return invoke(getPathNameRelativeTo, virtualFile, parent.virtualFile);
 			} catch (IOException e) {
 				// This exception is not thrown by the called method
-				log.severe("This should not be possible. VirtualFile.getPathNameRelativeTo() threw IOException.");
+				log.error("This should not be possible. VirtualFile.getPathNameRelativeTo() threw IOException.");
 				return null;
 			}
 		}
@@ -778,7 +781,7 @@ class JBoss6VFS extends VFS {
 	 */
 	protected static void checkReturnType(Method method, Class<?> expected) {
 		if (method != null && !expected.isAssignableFrom(method.getReturnType())) {
-			log.severe("Method " + method.getClass().getName() + "." + method.getName() + "(..) should return " + expected.getName() + " but returns " //
+			log.error("Method " + method.getClass().getName() + "." + method.getName() + "(..) should return " + expected.getName() + " but returns " //
 					+ method.getReturnType().getName() + " instead.");
 			setInvalid();
 		}
@@ -787,7 +790,7 @@ class JBoss6VFS extends VFS {
 	/** Mark this {@link VFS} as invalid for the current environment. */
 	protected static void setInvalid() {
 		if (JBoss6VFS.valid != null && JBoss6VFS.valid) {
-			log.fine("JBoss 6 VFS API is not available in this environment.");
+			log.debug("JBoss 6 VFS API is not available in this environment.");
 			JBoss6VFS.valid = false;
 		}
 	}

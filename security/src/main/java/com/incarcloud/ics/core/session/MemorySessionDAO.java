@@ -21,13 +21,15 @@ package com.incarcloud.ics.core.session;
 
 import com.incarcloud.ics.core.exception.UnknownSessionException;
 import com.incarcloud.ics.core.utils.CollectionUtils;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Logger;
+
 
 /**
  * 该类是基于内存的SessionDAO实现，直接会话保存在ConcurrentMap中，对于拥有大量会话的应用不建议使用，可能会造成OutOfMemory异常，
@@ -35,7 +37,7 @@ import java.util.logging.Logger;
  */
 public class MemorySessionDAO extends AbstractSessionDAO {
 
-    private static final Logger log = Logger.getLogger(MemorySessionDAO.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(MemorySessionDAO.class);
 
     private ConcurrentMap<Serializable, Session> sessions;
 

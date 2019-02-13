@@ -18,13 +18,15 @@
  */
 package com.incarcloud.ics.core.utils;
 
-import com.incarcloud.ics.core.subject.Subject;
 import com.incarcloud.ics.core.security.SecurityManager;
+import com.incarcloud.ics.core.subject.Subject;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+
 
 
 /**
@@ -47,7 +49,7 @@ public abstract class ThreadContext {
     /**
      * Private internal log instance.
      */
-    private static final Logger log = Logger.getLogger(ThreadContext.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ThreadContext.class);
 
     public static final String SECURITY_MANAGER_KEY = ThreadContext.class.getName() + "_SECURITY_MANAGER_KEY";
     public static final String SUBJECT_KEY = ThreadContext.class.getName() + "_SUBJECT_KEY";
