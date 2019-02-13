@@ -62,8 +62,6 @@ public class UserController {
                                    @RequestParam(required = false)String createUser,
                                    @RequestParam(required = false)Integer pageNum,
                                    @RequestParam(required = false)Integer pageSize){
-        String a = null;
-        a.toString();
         Condition cond = Condition.and(
                 new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
                 new StringCondition("username", username, StringCondition.Handler.ALL_LIKE),
