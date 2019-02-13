@@ -623,7 +623,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     }
 
     private void log(String sql, List<Object> params){
-        LOGGER.info("SQL: " + sql);
-        LOGGER.info("PARAMS: " + Arrays.toString(params.toArray()));
+        LOGGER.debug("SQL: " + sql);
+        LOGGER.debug("PARAMS: " + Arrays.toString(params.toArray()));
     }
 }  
