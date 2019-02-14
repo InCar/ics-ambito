@@ -1,8 +1,11 @@
 package com.incarcloud.ics.core.cache;
 
 
+import com.incarcloud.ics.config.Config;
 import com.incarcloud.ics.core.exception.CacheException;
 import com.incarcloud.ics.core.utils.Asserts;
+import com.incarcloud.ics.log.Logger;
+import com.incarcloud.ics.log.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,6 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SuppressWarnings("unchecked")
 public class LocalCacheManager<K,V> implements CacheManager{
+
+    private static Logger logger = LoggerFactory.getLogger(LocalCacheManager.class);
 
     private ConcurrentHashMap<String, Cache<K,V>> cacheMap;
     private long globalTimeToLive;
@@ -36,7 +41,14 @@ public class LocalCacheManager<K,V> implements CacheManager{
         Asserts.assertNotBlank(name);
         Cache<K,V> cache = cacheMap.get(name);
         if(cache == null){
-            cache = createCache(name);
+            Config config = Config.getConfig();
+            if(config == null) {
+                cache = createCache(name);
+            }else {
+                Config.CacheConfig cacheConfig = config.getCacheConfig(name);
+                logger.debug("Use cache config : " + cacheConfig);
+                cache = createCache(name, cacheConfig);
+            }
             Cache<K,V> exists = cacheMap.putIfAbsent(name, cache) ;
             if(exists != null){
                 cache = exists;
@@ -46,13 +58,17 @@ public class LocalCacheManager<K,V> implements CacheManager{
     }
 
     /**
-     * 默认创建可过期的ValidatingLRUCache缓存
+     * 根据全局配置创建缓存
      * @param name
      * @return
      * @throws CacheException
      */
     protected Cache createCache(String name) throws CacheException {
         return new ValidatingLRUCache(this.isEternal(), name, this.getGlobalMaxSize(), this.getGlobalTimeToLive());
+    }
+
+    protected Cache createCache(String name, Config.CacheConfig cacheConfig) throws CacheException {
+        return new ValidatingLRUCache(cacheConfig.isEternal(), name, cacheConfig.getMaxSize(), cacheConfig.getTimeToLiveSeconds());
     }
 
     public int getGlobalMaxSize() {

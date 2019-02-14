@@ -3,6 +3,10 @@ package com.incarcloud.ics.config;
 
 import com.incarcloud.skeleton.config.LogConfig;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
  * @author ThomasChan
  * @version 1.0
@@ -20,19 +24,9 @@ public class Config {
     private boolean deleteOrgRecursion;
 
     /**
-     * 功能权限数据缓存配置
+     * 缓存配置
      */
-    private CacheConfig authorizingCache;
-
-    /**
-     * 认证数据缓存配置
-     */
-    private CacheConfig authenticateCache;
-
-    /**
-     * 数据权限缓存配置
-     */
-    private CacheConfig accessCache;
+    private Map<String,CacheConfig> cacheConfigMap;
 
     /**
      * 日志配置
@@ -48,10 +42,9 @@ public class Config {
 
     private Config(ConfigBuilder builder) {
         this.deleteOrgRecursion = builder.deleteOrgRecursion;
-        this.authenticateCache = builder.authenticateCache;
-        this.authorizingCache = builder.authorizingCache;
-        this.accessCache = builder.accessCache;
         this.logConfig = builder.logConfig;
+        this.organizationType = builder.organizationType;
+        this.cacheConfigMap = builder.cacheConfigMap;
     }
 
     public static Config getConfig(){
@@ -74,77 +67,46 @@ public class Config {
         return deleteOrgRecursion;
     }
 
-    public void setDeleteOrgRecursion(boolean deleteOrgRecursion) {
-        this.deleteOrgRecursion = deleteOrgRecursion;
-    }
-
-    public CacheConfig getAuthorizingCache() {
-        return authorizingCache;
-    }
-
-    public void setAuthorizingCache(CacheConfig authorizingCache) {
-        this.authorizingCache = authorizingCache;
-    }
-
-    public CacheConfig getAuthenticateCache() {
-        return authenticateCache;
-    }
-
-    public void setAuthenticateCache(CacheConfig authenticateCache) {
-        this.authenticateCache = authenticateCache;
-    }
-
-    public CacheConfig getAccessCache() {
-        return accessCache;
-    }
-
-    public void setAccessCache(CacheConfig accessCache) {
-        this.accessCache = accessCache;
+    public CacheConfig getCacheConfig(String cacheName) {
+        return cacheConfigMap.getOrDefault(cacheName, new CacheConfig(cacheName));
     }
 
     public LogConfig getLogConfig() {
         return logConfig;
     }
 
-    public void setLogConfig(LogConfig logConfig) {
-        this.logConfig = logConfig;
-    }
-
     public OrganizationType getOrganizationType() {
         return organizationType;
-    }
-
-    public void setOrganizationType(OrganizationType organizationType) {
-        this.organizationType = organizationType;
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Config{");
         sb.append("deleteOrgRecursion=").append(deleteOrgRecursion);
-        sb.append(", authorizingCache=").append(authorizingCache);
-        sb.append(", authenticateCache=").append(authenticateCache);
-        sb.append(", accessCache=").append(accessCache);
+        sb.append(", cacheConfigMap=").append(cacheConfigMap);
         sb.append(", logConfig=").append(logConfig);
+        sb.append(", organizationType=").append(organizationType);
         sb.append('}');
         return sb.toString();
     }
 
     public static class ConfigBuilder{
         private boolean deleteOrgRecursion;
-        private CacheConfig authorizingCache;
-        private CacheConfig authenticateCache;
-        private CacheConfig accessCache;
         private LogConfig logConfig;
         private OrganizationType organizationType;
+        private Map<String,CacheConfig> cacheConfigMap;
 
         public ConfigBuilder() {
             this.deleteOrgRecursion = false;
-            this.authenticateCache = CacheConfig.getDefaultConfigOfCache("authorizingCache");
-            this.authorizingCache = CacheConfig.getDefaultConfigOfCache("authenticateCache");
-            this.accessCache = CacheConfig.getDefaultConfigOfCache("accessCache");
             this.logConfig = Config.getDefaultLogConfig();
             this.organizationType = OrganizationType.STANDARD;
+            this.cacheConfigMap = Arrays.stream(
+                    new CacheConfig[]{
+                    CacheConfig.getDefaultConfigOfCache("authorizingCache"),
+                    CacheConfig.getDefaultConfigOfCache("authenticateCache"),
+                    CacheConfig.getDefaultConfigOfCache("accessCache")}
+                    )
+                    .collect(Collectors.toMap(CacheConfig::getCacheName, e->e));
         }
 
         public ConfigBuilder setDeleteOrgRecursion(boolean deleteOrgRecursion) {
@@ -152,18 +114,8 @@ public class Config {
             return this;
         }
 
-        public ConfigBuilder setAuthorizingCache(CacheConfig authorizingCache) {
-            this.authorizingCache = authorizingCache;
-            return this;
-        }
-
-        public ConfigBuilder setAuthenticateCache(CacheConfig authenticateCache) {
-            this.authenticateCache = authenticateCache;
-            return this;
-        }
-
-        public ConfigBuilder setAccessCache(CacheConfig accessCache) {
-            this.accessCache = accessCache;
+        public ConfigBuilder setCacheConfigMap(Map<String, CacheConfig> cacheConfigMap) {
+            this.cacheConfigMap = cacheConfigMap;
             return this;
         }
 
@@ -189,8 +141,8 @@ public class Config {
     public static class CacheConfig{
         private final String cacheName;
         private boolean isEternal;
-        private long maxSize;
-        private long timeToLiveSeconds;
+        private int maxSize;
+        private int timeToLiveSeconds;
 
         public static CacheConfig getDefaultConfigOfCache(String cacheName){
             return new CacheConfig(cacheName);
@@ -223,19 +175,19 @@ public class Config {
             isEternal = eternal;
         }
 
-        public long getMaxSize() {
+        public int getMaxSize() {
             return maxSize;
         }
 
-        public void setMaxSize(long maxSize) {
+        public void setMaxSize(int maxSize) {
             this.maxSize = maxSize;
         }
 
-        public long getTimeToLiveSeconds() {
+        public int getTimeToLiveSeconds() {
             return timeToLiveSeconds;
         }
 
-        public void setTimeToLiveSeconds(long timeToLiveSeconds) {
+        public void setTimeToLiveSeconds(int timeToLiveSeconds) {
             this.timeToLiveSeconds = timeToLiveSeconds;
         }
 
@@ -253,8 +205,8 @@ public class Config {
         public static class CacheConfigBuilder {
             private String cacheName;
             private boolean isEternal;
-            private long maxSize;
-            private long timeToLiveSeconds;
+            private int maxSize;
+            private int timeToLiveSeconds;
 
             public CacheConfigBuilder(String cacheName) {
                 this.cacheName = cacheName;
@@ -268,12 +220,12 @@ public class Config {
                 return this;
             }
 
-            public CacheConfigBuilder setMaxSize(long maxSize) {
+            public CacheConfigBuilder setMaxSize(int maxSize) {
                 this.maxSize = maxSize;
                 return this;
             }
 
-            public CacheConfigBuilder setTimeToLiveSeconds(long timeToLiveSeconds) {
+            public CacheConfigBuilder setTimeToLiveSeconds(int timeToLiveSeconds) {
                 this.timeToLiveSeconds = timeToLiveSeconds;
                 return this;
             }

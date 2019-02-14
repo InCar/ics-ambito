@@ -2,8 +2,10 @@ package com.incarcloud.ics.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 
 public class PropertiesLoader {
@@ -74,33 +76,30 @@ public class PropertiesLoader {
         properties.putAll(custom);
         //properties转化为config
         return Config.getBuilder()
-                .setAuthenticateCache(
+                .setCacheConfigMap(Arrays.stream(new Config.CacheConfig[]{
                         Config.CacheConfig.getBuilder("authenticateCache")
-                                .setIsEternal(Boolean.parseBoolean(properties.getProperty("authenticateCache.isEternal","true")))
-                                .setMaxSize(Integer.parseInt(properties.getProperty("authenticateCache.maxSize","1000")))
-                                .setTimeToLiveSeconds(Integer.parseInt(properties.getProperty("authenticateCache.timeToLiveSeconds","3600")))
-                                .build()
-
-                )
-                .setAuthorizingCache(
+                                .setIsEternal(Boolean.parseBoolean(properties.getProperty("authenticateConfig.isEternal")))
+                                .setMaxSize(Integer.parseInt(properties.getProperty("authenticateConfig.maxSize")))
+                                .setTimeToLiveSeconds(Integer.parseInt(properties.getProperty("authenticateConfig.timeToLiveSeconds")))
+                                .build(),
                         Config.CacheConfig.getBuilder("authorizingCache")
-                                .setIsEternal(Boolean.parseBoolean(properties.getProperty("authorizingCache.isEternal","true")))
-                                .setMaxSize(Integer.parseInt(properties.getProperty("authorizingCache.maxSize","1000")))
-                                .setTimeToLiveSeconds(Integer.parseInt(properties.getProperty("authorizingCache.timeToLiveSeconds", "3600")))
+                                .setIsEternal(Boolean.parseBoolean(properties.getProperty("authorizingConfig.isEternal")))
+                                .setMaxSize(Integer.parseInt(properties.getProperty("authorizingConfig.maxSize")))
+                                .setTimeToLiveSeconds(Integer.parseInt(properties.getProperty("authorizingConfig.timeToLiveSeconds")))
+                                .build(),
+                        Config.CacheConfig.getBuilder("accessCache")
+                                .setIsEternal(Boolean.parseBoolean(properties.getProperty("accessConfig.isEternal")))
+                                .setMaxSize(Integer.parseInt(properties.getProperty("accessConfig.maxSize")))
+                                .setTimeToLiveSeconds(Integer.parseInt(properties.getProperty("accessConfig.timeToLiveSeconds")))
                                 .build()
-                )
-                .setAccessCache(Config.CacheConfig.getBuilder("accessCache")
-                        .setIsEternal(Boolean.parseBoolean(properties.getProperty("accessCache.isEternal", "true")))
-                        .setMaxSize(Integer.parseInt(properties.getProperty("accessCache.maxSize", "1000")))
-                        .setTimeToLiveSeconds(Integer.parseInt(properties.getProperty("accessCache.timeToLiveSeconds", "3600")))
-                        .build())
+                }).collect(Collectors.toMap(Config.CacheConfig::getCacheName, e->e)))
                 .setLogConfig(Config.getDefaultLogConfig()
-                        .withEnableConsoleLog(Boolean.parseBoolean(properties.getProperty("logConfig.enableConsoleLog", "true")))
-                        .withEnableFileLog(Boolean.parseBoolean(properties.getProperty("logConfig.enableFileLog", "true")))
-                        .withEnableLog(Boolean.parseBoolean(properties.getProperty("logConfig.enableLog", "true")))
-                        .withFileLogDir(properties.getProperty("logConfig.fileLogDir", "log"))
+                        .withEnableConsoleLog(Boolean.parseBoolean(properties.getProperty("logConfig.enableConsoleLog")))
+                        .withEnableFileLog(Boolean.parseBoolean(properties.getProperty("logConfig.enableFileLog")))
+                        .withEnableLog(Boolean.parseBoolean(properties.getProperty("logConfig.enableLog")))
+                        .withFileLogDir(properties.getProperty("logConfig.fileLogDir"))
                         .withLevel(parseLevel(properties)))
-                .setDeleteOrgRecursion(Boolean.parseBoolean(properties.getProperty("deleteOrgRecursion", "true")))
+                .setDeleteOrgRecursion(Boolean.parseBoolean(properties.getProperty("deleteOrgRecursion")))
                 .setOrganizationType(parseOrganizationType(properties))
                 .build();
     }
@@ -109,7 +108,7 @@ public class PropertiesLoader {
         if(properties == null) {
             return Config.OrganizationType.STANDARD;
         }
-        String type = properties.getProperty("organizationType", "STANDARD");
+        String type = properties.getProperty("organizationType");
         if(type.equals("SIMPLE")){
             return Config.OrganizationType.SIMPLE;
         }else {

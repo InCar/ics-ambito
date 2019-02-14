@@ -29,7 +29,7 @@ public class ValidatingLRUCache<K,V> extends NamedLRUCache<K,V> {
     private long timeToLiveSeconds;
 
     /**
-     * 用于保存缓存的开始时间戳，判断缓存是否失效
+     * 保存缓存的开始时间戳，用于判断缓存是否失效
      */
     private final Map<K,Long> startTimestampMap;
 
@@ -50,7 +50,7 @@ public class ValidatingLRUCache<K,V> extends NamedLRUCache<K,V> {
 
 
     /**
-     * 判断缓存是否失效
+     * 判断缓存是否有效
      * @param key
      * @return
      */
@@ -59,8 +59,13 @@ public class ValidatingLRUCache<K,V> extends NamedLRUCache<K,V> {
             return true;
         }
         long timeToLiveSeconds = getTimeToLiveSeconds();
+        //小于或等于0时，等同于eternal=true表示该缓存永不失效
         if(timeToLiveSeconds <= 0){
             return true;
+        }
+        //没有开始时间，表明该key没有进行缓存
+        if(getStartTimestamp(key) == null){
+            return false;
         }
         return getTimeToLiveSeconds() > getAlreadyLiveSeconds(key);
     }
