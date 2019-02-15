@@ -2,4 +2,3 @@ rootProject.name = 'ambito'
 include 'rdb'
 include 'security'
 include 'common'
-

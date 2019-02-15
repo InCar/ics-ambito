@@ -3,14 +3,10 @@ package com.incarcloud.ics.ambito.controller;
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
-import com.incarcloud.ics.ambito.dao.ResourceDao;
 import com.incarcloud.ics.ambito.entity.ResourceBean;
-import com.incarcloud.ics.ambito.entity.RoleBean;
-import com.incarcloud.ics.ambito.exception.AmbitoException;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.ResourceService;
-import com.incarcloud.ics.ambito.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,4 +74,7 @@ public class ResourceController {
         resourceService.delete(id);
         return JsonMessage.success();
     }
+
+
+
 }

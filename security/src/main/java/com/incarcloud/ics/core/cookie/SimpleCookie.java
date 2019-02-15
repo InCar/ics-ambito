@@ -356,7 +356,7 @@ public class SimpleCookie  implements Cookie{
                 log.warn("Found '{"+name+"}' cookie at path '{"+request.getRequestURI()+"}', but should be only used for '{"+path+"}'");
             } else {
                 value = cookie.getValue();
-                log.warn("Found '{"+name+"}' cookie value [{"+value+"}]");
+                log.debug("Found '{"+name+"}' cookie value [{"+value+"}]");
             }
         } else {
             log.warn("No '{"+name+"}' cookie value");

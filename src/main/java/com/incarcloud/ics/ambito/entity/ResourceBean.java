@@ -15,7 +15,8 @@ import java.util.List;
 public class ResourceBean extends BaseBean{
 
     private static final long serialVersionUID = -7946151979932000051L;
-
+    public static final byte MENU = 0;
+    public static final byte BUTTON = 1;
     private String code;
 
     private String parentCode;
@@ -39,6 +40,7 @@ public class ResourceBean extends BaseBean{
     private Byte isDisplay;
 
     private List<ResourceBean> resourceBeans;
+
 
     public String getRemark() {
         return remark;

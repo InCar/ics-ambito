@@ -29,18 +29,24 @@ public abstract class AccessRealm extends AuthorizeRealm {
 
     public AccessRealm(OrgAccessType orgAccessType, String packageName) {
         this.orgAccessType = orgAccessType;
-        initNeedAccessControlClass(packageName);
+        getNeedAccessControlClass(packageName);
     }
 
+    public OrgAccessType getOrgAccessType() {
+        return orgAccessType;
+    }
 
-    protected void initNeedAccessControlClass(String packageName){
+    public void setOrgAccessType(OrgAccessType orgAccessType) {
+        this.orgAccessType = orgAccessType;
+    }
+
+    protected void getNeedAccessControlClass(String packageName){
         if(StringUtils.isBlank(packageName)){
             this.needAccessControlClass = ClassResolverUtils.findAnnotated(RequireAccessControl.class, "com.incarcloud", "com.incar");
         }else {
             this.needAccessControlClass = ClassResolverUtils.findAnnotated(RequireAccessControl.class, packageName);
         }
     }
-
 
     @Override
     public AccessInfo getAccessInfo(Principal principal) {
@@ -81,7 +87,6 @@ public abstract class AccessRealm extends AuthorizeRealm {
         }
         return null;
     }
-
 
     protected void doClearCache(Principal principal){
         super.doClearCache(principal);

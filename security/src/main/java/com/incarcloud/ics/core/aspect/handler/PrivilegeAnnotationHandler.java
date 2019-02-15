@@ -34,7 +34,7 @@ public class PrivilegeAnnotationHandler extends AnnotationHandler {
         List<Privilege> objPrivileges = Stream.of(privileges).map(WildcardPrivilege::new).collect(Collectors.toList());
         Subject subject = getSubject();
         if(targetAnno.logic().equals(Logic.AND)){
-            subject.checkPermittedAllObjectPrvileges(objPrivileges);
+            subject.checkPermittedAllObjectPrivileges(objPrivileges);
         }else if(targetAnno.logic().equals(Logic.OR)){
             for(Privilege privilege : objPrivileges){
                 if(subject.isPermitted(privilege)){

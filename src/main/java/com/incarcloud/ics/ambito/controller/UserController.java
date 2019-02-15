@@ -4,12 +4,14 @@ import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
+import com.incarcloud.ics.ambito.entity.ResourceBean;
 import com.incarcloud.ics.ambito.entity.SysOrgBean;
 import com.incarcloud.ics.ambito.entity.UserBean;
 import com.incarcloud.ics.ambito.entity.VehicleArchivesBean;
 import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.pojo.PageResult;
+import com.incarcloud.ics.ambito.service.ResourceService;
 import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.core.aspect.anno.Logic;
@@ -23,9 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -44,6 +46,9 @@ public class UserController {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private ResourceService resourceService;
+
     /**
      * 查询用户信息
      * @param id id
@@ -61,7 +66,9 @@ public class UserController {
                                    @RequestParam(required = false)String realName,
                                    @RequestParam(required = false)String createUser,
                                    @RequestParam(required = false)Integer pageNum,
-                                   @RequestParam(required = false)Integer pageSize){
+                                   @RequestParam(required = false)Integer pageSize,
+                                   HttpServletResponse response
+                                   ){
         Condition cond = Condition.and(
                 new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
                 new StringCondition("username", username, StringCondition.Handler.ALL_LIKE),
@@ -198,13 +205,23 @@ public class UserController {
         Assert.isTrue(!subject.hasRole("user"), "");
         Assert.isTrue(subject.isPermitted(new WildcardPrivilege("abc")), "");
         Assert.isTrue(subject.isPermitted(new WildcardPrivilege("bcd")), "");
-        Assert.isTrue(subject.isPermittedAllObjectPrvileges(Arrays.asList(new WildcardPrivilege("bcd"), new WildcardPrivilege("abc"))), "");
+        Assert.isTrue(subject.isPermittedAllObjectPrivileges(Arrays.asList(new WildcardPrivilege("bcd"), new WildcardPrivilege("abc"))), "");
         Assert.isTrue(!subject.isAccessibleForData(1L, VehicleArchivesBean.class),"");
         Assert.isTrue(subject.isAccessibleForData(2L, VehicleArchivesBean.class),"");
         Assert.isTrue(subject.isAccessibleForData(7L, SysOrgBean.class),"");
         return JsonMessage.success();
     }
 
+//    @GetMapping(value = "/testCookie")
+//    public JsonMessage test1(HttpServletResponse response){
+//        Cookie cookie = new Cookie("test1", "1");
+//        cookie.setPath("/");
+//        response.addCookie(cookie);
+//        Cookie cookie1 = new Cookie("test2", "2");
+//        cookie1.setPath("incarcloud.com");
+//        response.addCookie(cookie1);
+//        return JsonMessage.success();
+//    }
 
 
     @GetMapping(value = "/getOrgs")
@@ -215,6 +232,20 @@ public class UserController {
         }
         Collection<String> accessibleOrg = subject.getFilterCodes(VehicleArchivesBean.class);
         return JsonMessage.success(accessibleOrg);
+    }
+
+
+    /**
+     * 获取每个按钮是否显示
+     * @param
+     * @return
+     */
+    @GetMapping(value = "/buttonDisplayFlags")
+    public JsonMessage buttonDisplayFlags(@RequestParam String menuCode){
+        Subject subject = SecurityUtils.getSubject();
+        List<ResourceBean>  buttons = resourceService.getButtonsOfMenu(menuCode);
+        Map<String, Boolean> collect = buttons.stream().collect(Collectors.toMap(ResourceBean::getCode, e -> subject.isPermitted(new WildcardPrivilege(e.getCode()))));
+        return JsonMessage.success(collect);
     }
 
 }

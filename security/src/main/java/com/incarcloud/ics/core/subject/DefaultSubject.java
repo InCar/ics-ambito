@@ -81,7 +81,7 @@ public class DefaultSubject implements Subject {
     }
 
     @Override
-    public boolean isPermittedAllObjectPrvileges(Collection<Privilege> privileges) {
+    public boolean isPermittedAllObjectPrivileges(Collection<Privilege> privileges) {
         assertAuthzCheckPossible();
         return securityManager.isPermittedAllObjectPrivileges(principal, privileges);
     }
@@ -99,7 +99,7 @@ public class DefaultSubject implements Subject {
     }
 
     @Override
-    public void checkPermittedAllObjectPrvileges(Collection<Privilege> privileges) throws UnAuthorizeException {
+    public void checkPermittedAllObjectPrivileges(Collection<Privilege> privileges) throws UnAuthorizeException {
         assertAuthzCheckPossible();
         securityManager.checkPermittedAllObjectPrivileges(principal, privileges);
     }

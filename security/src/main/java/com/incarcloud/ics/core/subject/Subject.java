@@ -21,10 +21,10 @@ import java.util.Collection;
  */
 public interface Subject {
     boolean isPermitted(Privilege privilege);
-    boolean isPermittedAllObjectPrvileges(Collection<Privilege> privileges);
+    boolean isPermittedAllObjectPrivileges(Collection<Privilege> privileges);
     boolean isPermittedAllStringPrivileges(Collection<String> privileges);
     void checkPermitted(Privilege privilege) throws UnAuthorizeException;
-    void checkPermittedAllObjectPrvileges(Collection<Privilege> privileges) throws UnAuthorizeException;
+    void checkPermittedAllObjectPrivileges(Collection<Privilege> privileges) throws UnAuthorizeException;
     void checkPermittedAllStringPrivileges(Collection<String> privileges) throws UnAuthorizeException;
     boolean hasRole(String roleIdentifier);
     void checkRole(String roleIdentifier) throws UnAuthorizeException;

@@ -95,7 +95,7 @@ public class JdbcRealm extends AccessRealm {
     @Override
     protected AccessInfo doGetAccessInfo(Principal principal) {
 
-        Collection<String> orgCodes = getOrgCodeByStrategy(principal);
+        Collection<String> orgCodes = getAccessibleOrgCodes(principal);
         //获取用户拥有数据权限的所有实体类的实例id集合
         Map<String, Collection<Serializable>> classCollectionMap = new HashMap<>();
         this.needAccessControlClass.forEach(aClass -> {
@@ -105,8 +105,8 @@ public class JdbcRealm extends AccessRealm {
     }
 
 
-    private Collection<String> getOrgCodeByStrategy(Principal principal){
-        switch (this.orgAccessType){
+    private Collection<String> getAccessibleOrgCodes(Principal principal){
+        switch (this.getOrgAccessType()){
             case BELONG:{
                 return sysOrgService.getUserBelongOrgCodes(principal.getUserIdentity());
             }

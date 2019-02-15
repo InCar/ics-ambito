@@ -15,4 +15,6 @@ public interface ResourceService extends BaseService<ResourceBean> {
     List<ResourceBean> getMenusOfRole(long roleId);
     List<ResourceBean> getPrivilegeOfRole(long roleId);
     List<ResourceBean> getResourcesOfRoles(List<Long> roleIds);
+
+    List<ResourceBean> getButtonsOfMenu(String menuCode);
 }
