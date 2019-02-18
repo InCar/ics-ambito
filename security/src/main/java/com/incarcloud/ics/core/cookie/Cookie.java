@@ -3,12 +3,7 @@ package com.incarcloud.ics.core.cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * @author ThomasChan
- * @version 1.0
- * @description
- * @date 2019/1/12
- */
+
 public interface Cookie {
     /**
      * The value of deleted cookie (with the maxAge 0).

@@ -194,7 +194,9 @@ public class DefaultSubject implements Subject {
     @Override
     public void logout() {
         try {
+            logger.debug("Try to logout");
             securityManager.logout(this);
+            logger.debug("Logout success!");
         }finally {
             this.session = null;
             this.isAuthenticated = false;
