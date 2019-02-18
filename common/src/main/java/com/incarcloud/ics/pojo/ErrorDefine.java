@@ -1,11 +1,6 @@
-package com.incarcloud.ics.ambito.common;
+package com.incarcloud.ics.pojo;
 
-import com.incarcloud.ics.ambito.exception.AmbitoException;
-import com.incarcloud.ics.ambito.pojo.JsonMessage;
-import com.incarcloud.ics.ambito.utils.ExceptionUtils;
-import com.incarcloud.ics.core.exception.AccountNotExistsException;
-import com.incarcloud.ics.core.exception.SecurityException;
-import com.incarcloud.ics.core.exception.CredentialNotMatchException;
+import com.incarcloud.ics.exception.AmbitoException;
 
 /**
  * @author ThomasChan
@@ -23,11 +18,15 @@ public enum ErrorDefine {
 
     REPEATED_CODE("13", "编号重复"),
 
+    REPEATED_FIELD("14", "字段重复"),
+
     UNDELETABLE("15","无法删除"),
 
     REPEATED_USERNAME("16","用户名重复"),
 
     REPEATED_PHONE("17","手机号重复"),
+
+    REPEATED_VIN_CODE("18","手机号重复"),
 
     ACCOUNT_NOT_EXISTS("51","账号不存在"),
 

@@ -1,12 +1,14 @@
 package com.incarcloud.ics.ambito.exception;
 
-import com.incarcloud.ics.ambito.common.ErrorDefine;
-import com.incarcloud.ics.ambito.pojo.JsonMessage;
+
 import com.incarcloud.ics.ambito.utils.ExceptionUtils;
 import com.incarcloud.ics.core.exception.SecurityException;
 import com.incarcloud.ics.core.handler.HttpSecurityExceptionHandler;
+import com.incarcloud.ics.exception.AmbitoException;
 import com.incarcloud.ics.log.Logger;
 import com.incarcloud.ics.log.LoggerFactory;
+import com.incarcloud.ics.pojo.ErrorDefine;
+import com.incarcloud.ics.pojo.JsonMessage;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.incarcloud.ics.ambito.common.ErrorDefine.UNKNOWN_EXCEPTION;
+import static com.incarcloud.ics.pojo.ErrorDefine.UNKNOWN_EXCEPTION;
 
 /**
  * @author ThomasChan
@@ -37,6 +39,7 @@ public class CustomControllerExceptionHandler {
     public JsonMessage handleAmbitoExceptions(final AmbitoException ex) {
         for(ErrorDefine err : ErrorDefine.values()){
             if(err.getCode().equals(ex.getCode())){
+                parseAndLogStacktrace(ex);
                 return err.toErrorMessage();
             }
         }
@@ -53,6 +56,7 @@ public class CustomControllerExceptionHandler {
             handleUndefinedException(e);
         }
     }
+
 
     private String parseAndLogStacktrace(Exception ex){
         String stackTraceAsString = ExceptionUtils.getStackTraceAsString(ex);

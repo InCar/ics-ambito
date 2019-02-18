@@ -2,7 +2,10 @@ package com.incarcloud.ics.ambito.entity;
 
 
 import com.incarcloud.ics.ambito.jdbc.Table;
+import com.incarcloud.ics.ambito.jdbc.Unique;
 import com.incarcloud.ics.core.access.RequireAccessControl;
+import com.incarcloud.ics.pojo.ErrorDefine;
+
 import java.util.Date;
 
 /**
@@ -14,6 +17,7 @@ public class VehicleArchivesBean extends ExtendableBean{
 
     private static final long serialVersionUID = 5885808001619406335L;
 
+    @Unique(message = ErrorDefine.REPEATED_VIN_CODE)
     private String vinCode; //vin编码
     private String carSeries; //车系
     private String carType; //车辆型号

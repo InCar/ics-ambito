@@ -2,6 +2,8 @@ package com.incarcloud.ics.ambito.entity;
 
 
 import com.incarcloud.ics.ambito.jdbc.Table;
+import com.incarcloud.ics.ambito.jdbc.Unique;
+import com.incarcloud.ics.pojo.ErrorDefine;
 
 import java.util.List;
 
@@ -15,32 +17,44 @@ import java.util.List;
 public class ResourceBean extends BaseBean{
 
     private static final long serialVersionUID = -7946151979932000051L;
-    public static final byte MENU = 0;
-    public static final byte BUTTON = 1;
-    private String code;
 
-    private String parentCode;
+    //父级id
+    private Long parentId;
 
-    private String parentCodes;
+    //所有父级id，以/分隔
+    private String parentIds;
 
+    //资源名称
+    @Unique(message = ErrorDefine.REPEATED_NAME)
     private String resourceName;
 
-    private Byte type;
+    //类型 menu=菜单，button=按钮
+    private ResourceType type = ResourceType.menu;
 
+    //排序s
     private Integer sort;
 
+    //url
     private String url;
 
+    //图标
     private String icon;
 
-    private Integer isDefault;
-
+    //备注
     private String remark;
 
-    private Byte isDisplay;
+    //是否展示
+    private Boolean isDisplay = Boolean.TRUE;
+
+    //权限标识
+    private String permission;
+
+    //等级
+    private byte level;
 
     private List<ResourceBean> resourceBeans;
 
+    public enum ResourceType { menu, button }
 
     public String getRemark() {
         return remark;
@@ -50,45 +64,12 @@ public class ResourceBean extends BaseBean{
         this.remark = remark;
     }
 
-
     public String getResourceName() {
         return resourceName;
     }
 
     public void setResourceName(String resourceName) {
         this.resourceName = resourceName;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getParentCode() {
-        return parentCode;
-    }
-
-    public void setParentCode(String parentCode) {
-        this.parentCode = parentCode;
-    }
-
-    public String getParentCodes() {
-        return parentCodes;
-    }
-
-    public void setParentCodes(String parentCodes) {
-        this.parentCodes = parentCodes;
-    }
-
-    public Byte getType() {
-        return type;
-    }
-
-    public void setType(Byte type) {
-        this.type = type;
     }
 
     public Integer getSort() {
@@ -115,18 +96,6 @@ public class ResourceBean extends BaseBean{
         this.icon = icon;
     }
 
-    public Integer getIsDefault() {
-        return isDefault;
-    }
-
-    public void setIsDefault(Integer isDefault) {
-        this.isDefault = isDefault;
-    }
-
-    public void setIsDisplay(Byte isDisplay) {
-        this.isDisplay = isDisplay;
-    }
-
     public List<ResourceBean> getResourceBeans() {
         return resourceBeans;
     }
@@ -135,11 +104,51 @@ public class ResourceBean extends BaseBean{
         this.resourceBeans = resourceBeans;
     }
 
-    public byte getIsDisplay() {
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getParentIds() {
+        return parentIds;
+    }
+
+    public void setParentIds(String parentIds) {
+        this.parentIds = parentIds;
+    }
+
+    public ResourceType getType() {
+        return type;
+    }
+
+    public void setType(ResourceType type) {
+        this.type = type;
+    }
+
+    public Boolean getIsDisplay() {
         return isDisplay;
     }
 
-    public void setIsDisplay(byte isDisplay) {
-        this.isDisplay = isDisplay;
+    public void setIsDisplay(Boolean display) {
+        isDisplay = display;
+    }
+
+    public String getPermission() {
+        return permission;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
+
+    public byte getLevel() {
+        return level;
+    }
+
+    public void setLevel(byte level) {
+        this.level = level;
     }
 }

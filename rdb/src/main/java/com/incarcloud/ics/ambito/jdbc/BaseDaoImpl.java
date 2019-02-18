@@ -24,9 +24,17 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    protected Class<T> entityClass = (Class<T>) getEntityClass(this.getClass());
-  
-    private RowMapper<T> rowMapper = new BeanPropertyRowMapper<T>(entityClass);
+    private UniqueChecker uniqueChecker;
+    protected Class<T> entityClass;
+    private RowMapper<T> rowMapper;
+
+    public BaseDaoImpl() {
+        this.entityClass = (Class<T>) getEntityClass(this.getClass());
+        this.uniqueChecker = new UniqueChecker(entityClass, this);
+        this.rowMapper = new BeanPropertyRowMapper<T>(entityClass);
+    }
+
+
 
     private String getTableName(){
         Table annotation = entityClass.getAnnotation(Table.class);
@@ -252,6 +260,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      */
     @Override
     public int update(T t){
+        this.getUniqueChecker().uniqueCheckBeforeSave(t);
         SqlEntity sqlEntity = getUpdateSql(t);
         log(sqlEntity.getSql(), sqlEntity.getParams());
         return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());
@@ -264,6 +273,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      */
     @Override
     public int update(T value,T template){
+        this.getUniqueChecker().uniqueCheckBeforeSave(value);
         SqlEntity sqlEntity = getUpdateSql(value,template);
         log(sqlEntity.getSql(), sqlEntity.getParams());
         return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());
@@ -276,6 +286,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      */
     @Override
     public int save(T t) {
+        this.getUniqueChecker().uniqueCheckBeforeSave(t);
         SqlEntity sqlEntity = getSaveSql(t);
         log(sqlEntity.getSql(), sqlEntity.getParams());
         return jdbcTemplate.update(sqlEntity.getSql(), sqlEntity.getParams().toArray());
@@ -626,4 +637,14 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         LOGGER.debug("SQL: " + sql);
         LOGGER.debug("PARAMS: " + Arrays.toString(params.toArray()));
     }
+
+    public UniqueChecker getUniqueChecker() {
+        return uniqueChecker;
+    }
+
+    public void setUniqueChecker(UniqueChecker uniqueChecker) {
+        this.uniqueChecker = uniqueChecker;
+    }
+
+
 }  

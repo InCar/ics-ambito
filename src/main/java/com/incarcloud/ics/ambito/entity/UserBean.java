@@ -1,6 +1,8 @@
 package com.incarcloud.ics.ambito.entity;
 
 import com.incarcloud.ics.ambito.jdbc.Table;
+import com.incarcloud.ics.ambito.jdbc.Unique;
+import com.incarcloud.ics.pojo.ErrorDefine;
 
 import java.util.List;
 
@@ -15,6 +17,7 @@ public class UserBean  extends ExtendableBean{
 
     private static final long serialVersionUID = 5952695047462635088L;
 
+    @Unique(message = ErrorDefine.REPEATED_USERNAME)
     private String username;
 
     private String password;
@@ -25,6 +28,7 @@ public class UserBean  extends ExtendableBean{
 
     private String email;
 
+    @Unique(message = ErrorDefine.REPEATED_PHONE)
     private String phone;
 
     private String remark;

@@ -2,6 +2,8 @@ package com.incarcloud.ics.ambito.entity;
 
 
 import com.incarcloud.ics.ambito.jdbc.Table;
+import com.incarcloud.ics.ambito.jdbc.Unique;
+import com.incarcloud.ics.pojo.ErrorDefine;
 
 /**
  * @author ThomasChan
@@ -14,10 +16,12 @@ public class RoleBean extends BaseBean{
 
     private static final long serialVersionUID = -3182001906942428991L;
 
+    @Unique(message = ErrorDefine.REPEATED_NAME)
     private String roleName;
 
     private String remark;
 
+    @Unique(message = ErrorDefine.REPEATED_CODE)
     private String roleCode;
 
     public String getRoleName() {

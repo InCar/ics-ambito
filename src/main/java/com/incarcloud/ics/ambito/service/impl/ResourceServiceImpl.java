@@ -10,7 +10,9 @@ import com.incarcloud.ics.ambito.service.ResourceService;
 import com.incarcloud.ics.ambito.service.RoleResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -79,22 +81,40 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceBean> implement
 
     /**
      * 获取某个菜单下的所有按钮
-     * @param menuCode
+     * @param id
      * @return
      */
     @Override
-    public List<ResourceBean> getButtonsOfMenu(String menuCode) {
-        List<ResourceBean> resourceBeans = this.query(new NumberCondition("code", menuCode));
-        if(resourceBeans.isEmpty()){
+    public List<ResourceBean> getButtonsOfMenu(Long id) {
+        ResourceBean menu = this.get(id);
+        if(menu == null){
             return Collections.emptyList();
         }
-        ResourceBean menu = resourceBeans.get(0);
-
         List<ResourceBean> btnBeans = this.query(Condition.and(
-                new StringCondition("parentCodes", menu.getParentCodes(), StringCondition.Handler.RIGHT_LIKE),
-                new NumberCondition("type", ResourceBean.BUTTON)
+                new StringCondition("parentIds", menu.getParentIds(), StringCondition.Handler.RIGHT_LIKE),
+                new StringCondition("type", ResourceBean.ResourceType.menu)
             )
         );
         return btnBeans;
+    }
+
+    @Override
+    @Transactional
+    public int delete(Serializable id) {
+        ResourceBean resourceBean = this.get(id);
+        if(resourceBean.getType().equals(ResourceBean.ResourceType.menu)){
+            List<ResourceBean> children = this.query(Condition.and(
+                    new NumberCondition("type", ResourceBean.ResourceType.menu),
+                    new NumberCondition("parentId", id),
+                    new StringCondition("parentIds", resourceBean.getParentIds(), StringCondition.Handler.RIGHT_LIKE)
+            ));
+            //删除所有子资源
+            children.forEach(e->super.delete(e.getId()));
+            super.delete(id);
+            return children.size() + 1;
+        }else {
+            super.delete(id);
+        }
+        return 1;
     }
 }

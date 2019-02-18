@@ -1,4 +1,4 @@
-package com.incarcloud.ics.ambito.exception;
+package com.incarcloud.ics.exception;
 
 /**
  * @author ThomasChan

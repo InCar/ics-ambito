@@ -2,7 +2,9 @@ package com.incarcloud.ics.ambito.entity;
 
 
 import com.incarcloud.ics.ambito.jdbc.Table;
+import com.incarcloud.ics.ambito.jdbc.Unique;
 import com.incarcloud.ics.core.access.RequireAccessControl;
+import com.incarcloud.ics.pojo.ErrorDefine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +36,11 @@ public class SysOrgBean extends ExtendableBean{
     public  static final String CODE_SPERATOR = ",";
 
     // 机构名称
+    @Unique(message = ErrorDefine.REPEATED_NAME)
     private String orgName;
 
     // 机构编码
+    @Unique(message = ErrorDefine.REPEATED_CODE)
     private String orgCode;
 
     //父级code

@@ -87,7 +87,7 @@ public class JdbcRealm extends AccessRealm {
             resourceBeans.addAll(privilegeOfRole);
         }
         authorizeInfo.setPrivileges(resourceBeans.stream().map(e->{
-            return new WildcardPrivilege(e.getCode());
+            return new WildcardPrivilege(e.getPermission());
         }).collect(Collectors.toSet()));
         return authorizeInfo;
     }

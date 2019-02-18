@@ -1,21 +1,20 @@
 package com.incarcloud.ics.ambito.service.impl;
 
-import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.SysOrgBean;
 import com.incarcloud.ics.ambito.entity.SysOrgUserBean;
 import com.incarcloud.ics.ambito.entity.UserBean;
-import com.incarcloud.ics.ambito.exception.AmbitoException;
 import com.incarcloud.ics.ambito.jdbc.BaseServiceImpl;
 import com.incarcloud.ics.ambito.service.SysOrgService;
 import com.incarcloud.ics.ambito.service.SysOrgUserService;
 import com.incarcloud.ics.ambito.service.SysOrgVehicleService;
 import com.incarcloud.ics.ambito.service.UserService;
-import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.config.Config;
+import com.incarcloud.ics.exception.AmbitoException;
 import com.incarcloud.ics.log.Logger;
 import com.incarcloud.ics.log.LoggerFactory;
+import com.incarcloud.ics.pojo.ErrorDefine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,8 +55,6 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
             sysOrgBean.setIsLeaf((byte)1);
             return super.save(sysOrgBean);
         }
-        //检查
-        checkBeforeSave(sysOrgBean);
 
         //设置parentCodes/level/ifLeaf
         SysOrgBean parent = getOrgByCode(sysOrgBean.getParentCode());
@@ -94,19 +91,19 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
         }
     }
 
-    private void checkBeforeSave(SysOrgBean sysOrgBean){
-        //判断名称是否重复
-        List<SysOrgBean> nameExists = getOrgsByCode(sysOrgBean.getOrgCode());
-        if(CollectionUtils.isNotEmpty(nameExists)){
-            throw ErrorDefine.REPEATED_NAME.toAmbitoException();
-        }
-
-        //判断code是否重复
-        List<SysOrgBean> codeExists = getOrgsByCode(sysOrgBean.getOrgCode());
-        if(CollectionUtils.isNotEmpty(codeExists)){
-            throw ErrorDefine.REPEATED_CODE.toAmbitoException();
-        }
-    }
+//    private void checkBeforeSave(SysOrgBean sysOrgBean){
+//        //判断名称是否重复
+//        List<SysOrgBean> nameExists = getOrgsByCode(sysOrgBean.getOrgCode());
+//        if(CollectionUtils.isNotEmpty(nameExists)){
+//            throw ErrorDefine.REPEATED_NAME.toAmbitoException();
+//        }
+//
+//        //判断code是否重复
+//        List<SysOrgBean> codeExists = getOrgsByCode(sysOrgBean.getOrgCode());
+//        if(CollectionUtils.isNotEmpty(codeExists)){
+//            throw ErrorDefine.REPEATED_CODE.toAmbitoException();
+//        }
+//    }
 
 
 

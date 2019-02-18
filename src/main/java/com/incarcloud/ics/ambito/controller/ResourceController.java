@@ -4,11 +4,14 @@ import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.ResourceBean;
-import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.ResourceService;
+import com.incarcloud.ics.pojo.ErrorDefine;
+import com.incarcloud.ics.pojo.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
@@ -33,9 +36,9 @@ public class ResourceController {
      */
     @GetMapping(value = "/list")
     public JsonMessage getList(@RequestParam(required = false)Long id,
-                                   @RequestParam(required = false)String resourceName,
-                                   @RequestParam(required = false)Integer page,
-                                   @RequestParam(required = false)Integer pageSize){
+                               @RequestParam(required = false)String resourceName,
+                               @RequestParam(required = false)Integer page,
+                               @RequestParam(required = false)Integer pageSize){
         Condition cond = Condition.and(
                 new StringCondition("resourceName", resourceName, StringCondition.Handler.ALL_LIKE),
                 new NumberCondition("id", id, NumberCondition.Handler.EQUAL)
@@ -56,13 +59,42 @@ public class ResourceController {
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody ResourceBean resourceBean){
         if(resourceBean.getId() == null){
-            resourceService.save(resourceBean);
+            resourceService.save(preHandle(resourceBean));
         }else {
+            ResourceBean oldOne = resourceService.get(resourceBean.getId());
+            if(!oldOne.getResourceName().equals(resourceBean.getResourceName())){
+                uniqueCheck(resourceBean);
+            }
             resourceService.update(resourceBean);
         }
         return JsonMessage.success();
     }
 
+
+    private ResourceBean preHandle(ResourceBean resourceBean) {
+        uniqueCheck(resourceBean);
+        if(resourceBean.getParentId() == null || resourceBean.getParentId() == 0){
+            resourceBean.setParentId(0L);
+            resourceBean.setLevel((byte)0);
+        }else {
+            ResourceBean parent = resourceService.get(resourceBean.getParentId());
+            resourceBean.setLevel((byte) (parent.getLevel()+1));
+        }
+        return resourceBean;
+    }
+
+
+    private void uniqueCheck(ResourceBean resourceBean){
+        List<ResourceBean> resourceBeans = resourceService.query(
+                Condition.and(
+                        new StringCondition("resourceName", resourceBean.getResourceName()),
+                        new NumberCondition("parentId", resourceBean.getParentId())
+                )
+        );
+        if(!resourceBeans.isEmpty()){
+            throw ErrorDefine.REPEATED_NAME.toAmbitoException();
+        }
+    }
 
     /**
      * 删除资源
@@ -70,7 +102,7 @@ public class ResourceController {
      * @return
      */
     @DeleteMapping(value = "/delete/{id}")
-    public JsonMessage deleteUser(@PathVariable long id){
+    public JsonMessage deleteResources(@PathVariable long id){
         resourceService.delete(id);
         return JsonMessage.success();
     }

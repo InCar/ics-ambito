@@ -1,6 +1,5 @@
 package com.incarcloud.ics.ambito.service.impl;
 
-import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.dao.UserDao;
 import com.incarcloud.ics.ambito.entity.*;
@@ -41,15 +40,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
 
     @Override
     public UserBean register(UserBean user) {
-        StringCondition username = new StringCondition("username", user.getUsername(), StringCondition.Handler.EQUAL);
-        List<UserBean> userBeans = userDao.query(username);
-        if(CollectionUtils.isNotEmpty(userBeans)){
-            throw ErrorDefine.REPEATED_USERNAME.toAmbitoException();
-        }
-        userBeans  = userDao.query(new StringCondition("phone", user.getPhone(), StringCondition.Handler.EQUAL));
-        if(CollectionUtils.isNotEmpty(userBeans)){
-            throw ErrorDefine.REPEATED_PHONE.toAmbitoException();
-        }
         //生成随机salt
         String salt = StringUtils.getRandomSecureSalt();
         //使用随机salt混合密码进行md5加密
@@ -58,7 +48,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         //保存加密后的密码，格式为base64
         user.setPassword(digestHelper.digestToBase64());
         userDao.save(user);
-        userBeans = query(username);
+
+        StringCondition username = new StringCondition("username", user.getUsername(), StringCondition.Handler.EQUAL);
+        List<UserBean> userBeans = query(username);
         UserBean existing = userBeans.get(0);
         //保存用户所属组织
         List<Long> orgs = user.getOrgIds();

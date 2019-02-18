@@ -1,6 +1,4 @@
-package com.incarcloud.ics.ambito.pojo;
-
-import com.incarcloud.ics.ambito.common.ErrorDefine;
+package com.incarcloud.ics.pojo;
 
 import java.io.Serializable;
 

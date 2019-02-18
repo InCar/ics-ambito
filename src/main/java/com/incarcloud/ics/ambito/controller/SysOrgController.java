@@ -4,10 +4,10 @@ import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.SysOrgBean;
-import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.SysOrgService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
+import com.incarcloud.ics.pojo.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +31,11 @@ public class SysOrgController {
     private SysOrgService sysOrgService;
 
     @GetMapping(value = "/list")
-    public JsonMessage getList( @RequestParam(required = false)Long id,
-                                @RequestParam(required = false)String orgName,
-                                @RequestParam(required = false)String parentId,
-                                @RequestParam(required = false)Integer pageNum,
-                                @RequestParam(required = false)Integer pageSize){
+    public JsonMessage getList(@RequestParam(required = false)Long id,
+                               @RequestParam(required = false)String orgName,
+                               @RequestParam(required = false)String parentId,
+                               @RequestParam(required = false)Integer pageNum,
+                               @RequestParam(required = false)Integer pageSize){
         Condition cond = Condition.and(
                 new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
                 new StringCondition("orgName", orgName, StringCondition.Handler.ALL_LIKE),

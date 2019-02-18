@@ -3,20 +3,14 @@ package com.incarcloud.ics.ambito.controller;
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
-import com.incarcloud.ics.ambito.entity.ResourceBean;
 import com.incarcloud.ics.ambito.entity.RoleBean;
-import com.incarcloud.ics.ambito.entity.RoleResourceBean;
-import com.incarcloud.ics.ambito.exception.AmbitoException;
-import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.ResourceService;
 import com.incarcloud.ics.ambito.service.RoleResourceService;
 import com.incarcloud.ics.ambito.service.RoleService;
+import com.incarcloud.ics.pojo.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -51,8 +45,8 @@ public class RoleController {
                                    @RequestParam(required = false)Integer page,
                                    @RequestParam(required = false)Integer pageSize){
         Condition cond = Condition.and(
-                new StringCondition("rolename", roleName, StringCondition.Handler.ALL_LIKE),
-                new NumberCondition("id", id, NumberCondition.Handler.EQUAL)
+                new StringCondition("roleName", roleName, StringCondition.Handler.ALL_LIKE),
+                new NumberCondition("id", id)
         );
         if(page == null || pageSize == null){
             return JsonMessage.success(roleService.query(cond));
@@ -70,13 +64,41 @@ public class RoleController {
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody RoleBean roleBean){
         if(roleBean.getId() == null){
+//            uniqueCheck(roleBean);
             roleService.save(roleBean);
         }else {
+//            RoleBean oldBean = roleService.get(roleBean.getId());
+//            boolean roleCodeChange = !oldBean.getRoleCode().equals(roleBean.getRoleCode());
+//            if(roleCodeChange){
+//                roleCodeCheck(roleBean.getRoleCode());
+//            }
+//            boolean roleNameChange = !oldBean.getRoleName().equals(roleBean.getRoleName());
+//            if(roleNameChange){
+//                roleNameCheck(roleBean.getRoleName());
+//            }
             roleService.update(roleBean);
         }
         return JsonMessage.success();
     }
 
+//    private void uniqueCheck(RoleBean roleBean){
+//        roleCodeCheck(roleBean.getRoleCode());
+//        roleNameCheck(roleBean.getRoleName());
+//    }
+//
+//    private void roleNameCheck(String roleName){
+//        List<RoleBean> roleBeanList = roleService.query( new StringCondition("roleName", roleName));
+//        if(!roleBeanList.isEmpty()){
+//            throw ErrorDefine.REPEATED_NAME.toAmbitoException();
+//        }
+//    }
+//
+//    private void roleCodeCheck(String roleCode){
+//        List<RoleBean> roleBeanList = roleService.query( new StringCondition("roleCode", roleCode));
+//        if(!roleBeanList.isEmpty()){
+//            throw ErrorDefine.REPEATED_CODE.toAmbitoException();
+//        }
+//    }
 
     /**
      * 删除角色

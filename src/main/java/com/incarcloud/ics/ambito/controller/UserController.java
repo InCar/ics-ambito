@@ -1,6 +1,5 @@
 package com.incarcloud.ics.ambito.controller;
 
-import com.incarcloud.ics.ambito.common.ErrorDefine;
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
@@ -8,7 +7,6 @@ import com.incarcloud.ics.ambito.entity.ResourceBean;
 import com.incarcloud.ics.ambito.entity.SysOrgBean;
 import com.incarcloud.ics.ambito.entity.UserBean;
 import com.incarcloud.ics.ambito.entity.VehicleArchivesBean;
-import com.incarcloud.ics.ambito.pojo.JsonMessage;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.pojo.PageResult;
 import com.incarcloud.ics.ambito.service.ResourceService;
@@ -21,12 +19,17 @@ import com.incarcloud.ics.core.privilege.WildcardPrivilege;
 import com.incarcloud.ics.core.security.SecurityUtils;
 import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.subject.Subject;
+import com.incarcloud.ics.pojo.ErrorDefine;
+import com.incarcloud.ics.pojo.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -212,17 +215,6 @@ public class UserController {
         return JsonMessage.success();
     }
 
-//    @GetMapping(value = "/testCookie")
-//    public JsonMessage test1(HttpServletResponse response){
-//        Cookie cookie = new Cookie("test1", "1");
-//        cookie.setPath("/");
-//        response.addCookie(cookie);
-//        Cookie cookie1 = new Cookie("test2", "2");
-//        cookie1.setPath("incarcloud.com");
-//        response.addCookie(cookie1);
-//        return JsonMessage.success();
-//    }
-
 
     @GetMapping(value = "/getOrgs")
     public JsonMessage getOrgs(){
@@ -241,11 +233,13 @@ public class UserController {
      * @return
      */
     @GetMapping(value = "/buttonDisplayFlags")
-    public JsonMessage buttonDisplayFlags(@RequestParam String menuCode){
+    public JsonMessage buttonDisplayFlags(@RequestParam Long menuId){
         Subject subject = SecurityUtils.getSubject();
-        List<ResourceBean>  buttons = resourceService.getButtonsOfMenu(menuCode);
-        Map<String, Boolean> collect = buttons.stream().collect(Collectors.toMap(ResourceBean::getCode, e -> subject.isPermitted(new WildcardPrivilege(e.getCode()))));
+        List<ResourceBean>  buttons = resourceService.getButtonsOfMenu(menuId);
+        Map<Long, Boolean> collect = buttons.stream().collect(Collectors.toMap(ResourceBean::getId, e -> subject.isPermitted(new WildcardPrivilege(e.getPermission()))));
         return JsonMessage.success(collect);
     }
+
+
 
 }
