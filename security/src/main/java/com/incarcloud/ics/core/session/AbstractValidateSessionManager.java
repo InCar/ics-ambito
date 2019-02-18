@@ -90,7 +90,6 @@ public abstract class AbstractValidateSessionManager extends AbstractNativeSessi
         logger.debug("Session with id [{"+s.getId()+"}] has expired.");
         try {
             onExpiration(s);
-//            notifyExpiration(s);
         } finally {
             afterExpired(s);
         }
@@ -110,7 +109,6 @@ public abstract class AbstractValidateSessionManager extends AbstractNativeSessi
         logger.debug("Session with id [{"+s.getId()+"}] is invalid.");
         try {
             onStop(s);
-//            notifyStop(s);
         } finally {
             afterStopped(s);
         }

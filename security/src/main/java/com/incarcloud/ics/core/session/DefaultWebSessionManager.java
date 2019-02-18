@@ -298,4 +298,11 @@ public class DefaultWebSessionManager extends AbstractValidateSessionManager imp
         return uri; //what remains is the value
     }
 
+    @Override
+    protected void afterExpired(Session s) {
+        if(isDeleteInvalidSessions()) {
+            sessionDao.delete(s);
+        }
+    }
+
 }

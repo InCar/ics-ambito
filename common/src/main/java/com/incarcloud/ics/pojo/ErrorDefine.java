@@ -36,7 +36,7 @@ public enum ErrorDefine {
 
     INVALID_SESSION("55","会话已失效"),
 
-    UN_AUTHENTICATED("401","未通过认证"),
+    UN_AUTHENTICATED("401","请先登录！"),
 
     UN_AUTHORIZATION("403","无访问权限"),
 

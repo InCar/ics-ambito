@@ -228,10 +228,8 @@ public class SimpleSession implements ValidatingSession, Serializable {
             Date expireTime = new Date(expireTimeMillis);
             return lastAccessTime.before(expireTime);
         } else {
-//            if (log.isTraceEnabled()) {
-//                log.trace("No timeout for session with id [" + getId() +
-//                        "].  Session is not considered expired.");
-//            }
+            log.debug("No timeout for session with id [" + getId() +
+                    "].  Session is not considered expired.");
         }
 
         return false;
@@ -263,9 +261,7 @@ public class SimpleSession implements ValidatingSession, Serializable {
                     ".  Current time: " + df.format(new Date()) +
                     ".  Session timeout is set to " + timeout / MILLIS_PER_SECOND + " seconds (" +
                     timeout / MILLIS_PER_MINUTE + " minutes)";
-//            if (log.isTraceEnabled()) {
-//                log.trace(msg);
-//            }
+            log.trace(msg);
             throw new ExpiredSessionException(msg);
         }
     }
