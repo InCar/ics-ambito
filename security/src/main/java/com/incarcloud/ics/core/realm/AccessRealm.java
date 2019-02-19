@@ -1,7 +1,7 @@
 package com.incarcloud.ics.core.realm;
 
 import com.incarcloud.ics.core.access.AccessInfo;
-import com.incarcloud.ics.core.access.RequireAccessControl;
+import com.incarcloud.ics.core.access.DataFilter;
 import com.incarcloud.ics.core.cache.Cache;
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.utils.Asserts;
@@ -20,8 +20,9 @@ public abstract class AccessRealm extends AuthorizeRealm {
 
     private static final String ACCESS_INFO_CACHE_NAME = "accessInfoCache";
     protected OrgAccessType orgAccessType;
-    protected static final String FILTER_FIELD_NAME = "orgCode";
+    protected static final String FILTER_COLUMN_NAME = "orgCode";
     protected Set<Class<?>> needAccessControlClass;
+    private String filterColumnName;
 
     public AccessRealm() {
         this(OrgAccessType.MANAGE, null);
@@ -29,7 +30,16 @@ public abstract class AccessRealm extends AuthorizeRealm {
 
     public AccessRealm(OrgAccessType orgAccessType, String packageName) {
         this.orgAccessType = orgAccessType;
+        this.filterColumnName = FILTER_COLUMN_NAME;
         getNeedAccessControlClass(packageName);
+    }
+
+    public String getFilterColumnName() {
+        return filterColumnName;
+    }
+
+    public void setFilterColumnName(String filterColumnName) {
+        this.filterColumnName = filterColumnName;
     }
 
     public OrgAccessType getOrgAccessType() {
@@ -42,9 +52,9 @@ public abstract class AccessRealm extends AuthorizeRealm {
 
     protected void getNeedAccessControlClass(String packageName){
         if(StringUtils.isBlank(packageName)){
-            this.needAccessControlClass = ClassResolverUtils.findAnnotated(RequireAccessControl.class, "com.incarcloud", "com.incar");
+            this.needAccessControlClass = ClassResolverUtils.findAnnotated(DataFilter.class, "com.incarcloud", "com.incar");
         }else {
-            this.needAccessControlClass = ClassResolverUtils.findAnnotated(RequireAccessControl.class, packageName);
+            this.needAccessControlClass = ClassResolverUtils.findAnnotated(DataFilter.class, packageName);
         }
     }
 
@@ -99,19 +109,17 @@ public abstract class AccessRealm extends AuthorizeRealm {
     protected abstract AccessInfo doGetAccessInfo(Principal principal);
 
     protected boolean isAccessControlSupported(Class<?> aClass){
-        if(aClass.isAnnotationPresent(RequireAccessControl.class)){
+        if(!aClass.isAnnotationPresent(DataFilter.class)){
+            return false;
+        }else {
             try {
-                aClass.getDeclaredField(FILTER_FIELD_NAME);
+                aClass.getDeclaredField(getFilterColumnName());
                 return true;
             } catch (NoSuchFieldException e) {
-
-                logger.info("No filed with tableName " + FILTER_FIELD_NAME + " in class " + aClass.getName());
-
+                logger.info("Entity need data filter must configure with filed ["+getFilterColumnName()+"]");
                 return false;
             }
-        }else {
-            logger.debug("The entity class need access control must configured with annotation " + RequireAccessControl.class.getName());
-            return false;
         }
+
     }
 }

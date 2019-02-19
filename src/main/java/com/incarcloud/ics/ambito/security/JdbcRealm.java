@@ -11,7 +11,7 @@ import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.ambito.utils.StringUtils;
 import com.incarcloud.ics.core.access.AccessInfo;
-import com.incarcloud.ics.core.access.RequireAccessControl;
+import com.incarcloud.ics.core.access.DataFilter;
 import com.incarcloud.ics.core.access.SimpleAccessInfo;
 import com.incarcloud.ics.core.authc.AuthenticateInfo;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
@@ -62,7 +62,6 @@ public class JdbcRealm extends AccessRealm {
 
     @Override
     protected AuthenticateInfo doGetAuthenticateInfo(AuthenticateToken authenticateToken) throws AuthenticationException {
-        logger.debug("test");
         List<UserBean> users = userService.query(new StringCondition("username", authenticateToken.getPrincipal(), StringCondition.Handler.EQUAL));
         if(users.isEmpty()){
             throw new AccountNotExistsException("No account with username "+ authenticateToken.getPrincipal());
@@ -137,15 +136,18 @@ public class JdbcRealm extends AccessRealm {
     }
 
     private List<Object> getDataIds(Collection<String> orgCodes, String tableName) {
-        String str = orgCodes.stream().map(e -> "?").collect(Collectors.joining("'"));
-        String columnName = StringUtils.camelToUnderline(FILTER_FIELD_NAME);
+        if(orgCodes.isEmpty()){
+            return Collections.emptyList();
+        }
+        String str = orgCodes.stream().map(e -> "?").collect(Collectors.joining(","));
+        String columnName = StringUtils.camelToUnderline(super.getFilterColumnName());
         String sqlBuilder = "select id from " + tableName + " where " + columnName + " in " + "(" + str + ")";
         return jdbcTemplate.query(sqlBuilder, (rs, rowNum) -> rs.getObject(1), orgCodes.toArray());
     }
 
     private String getTableName(Class<?> aEntityClass) {
         //获取表名
-        RequireAccessControl accessTable = aEntityClass.getAnnotation(RequireAccessControl.class);
+        DataFilter accessTable = aEntityClass.getAnnotation(DataFilter.class);
         return accessTable.tableName();
     }
 }

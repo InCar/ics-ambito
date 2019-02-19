@@ -2,6 +2,7 @@ package com.incarcloud.ics.ambito.security.config;
 
 import com.incarcloud.ics.ambito.security.DatabaseSessionDAO;
 import com.incarcloud.ics.ambito.security.JdbcRealm;
+import com.incarcloud.ics.config.Config;
 import com.incarcloud.ics.core.filter.AbstractAmbitoFilter;
 import com.incarcloud.ics.core.filter.FilterFactoryBean;
 import com.incarcloud.ics.core.realm.Realm;
@@ -31,6 +32,8 @@ public abstract class DefaultSecurityConfiguration {
 
     public DefaultSecurityConfiguration() {
     }
+
+    private Config config = Config.getConfig();
 
     @Bean
     protected SecurityManager securityManager(){

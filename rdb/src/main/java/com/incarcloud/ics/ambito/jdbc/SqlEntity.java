@@ -39,13 +39,13 @@ public class SqlEntity {
     @SuppressWarnings("unchecked")
     public void addParam(Object o){
         if(o instanceof Collection){
-            addAllParam((List<Object>)o);
+            addAllParam((Collection<Object>) o);
         }else {
             params.add(o);
         }
     }
 
-    public void addAllParam(List<Object> params){
+    public void addAllParam(Collection<Object> params){
         this.params.addAll(params);
     }
 }

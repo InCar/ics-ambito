@@ -32,14 +32,12 @@ public class VehicleArchivesController {
                                       @RequestParam(required = false) Integer pageSize) {
         Subject subject = SecurityUtils.getSubject();
         Collection<String> accessibleOrgs = subject.getFilterCodes(VehicleArchivesBean.class);
-
         Condition condition = Condition.and(
                 new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
                 new StringCondition("vin_code", vinCode, StringCondition.Handler.ALL_LIKE),
                 new StringCondition("plate_no", plateNo, StringCondition.Handler.ALL_LIKE),
                 new StringCondition("org_code", accessibleOrgs, StringCondition.Handler.IN)
         );
-
 
         if (pageNum == null || pageSize == null) {
             return JsonMessage.success(vehicleArchivesService.query(condition));
