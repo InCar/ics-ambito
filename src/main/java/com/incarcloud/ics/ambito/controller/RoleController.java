@@ -64,41 +64,13 @@ public class RoleController {
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody RoleBean roleBean){
         if(roleBean.getId() == null){
-//            uniqueCheck(roleBean);
             roleService.save(roleBean);
         }else {
-//            RoleBean oldBean = roleService.get(roleBean.getId());
-//            boolean roleCodeChange = !oldBean.getRoleCode().equals(roleBean.getRoleCode());
-//            if(roleCodeChange){
-//                roleCodeCheck(roleBean.getRoleCode());
-//            }
-//            boolean roleNameChange = !oldBean.getRoleName().equals(roleBean.getRoleName());
-//            if(roleNameChange){
-//                roleNameCheck(roleBean.getRoleName());
-//            }
             roleService.update(roleBean);
         }
         return JsonMessage.success();
     }
 
-//    private void uniqueCheck(RoleBean roleBean){
-//        roleCodeCheck(roleBean.getRoleCode());
-//        roleNameCheck(roleBean.getRoleName());
-//    }
-//
-//    private void roleNameCheck(String roleName){
-//        List<RoleBean> roleBeanList = roleService.query( new StringCondition("roleName", roleName));
-//        if(!roleBeanList.isEmpty()){
-//            throw ErrorDefine.REPEATED_NAME.toAmbitoException();
-//        }
-//    }
-//
-//    private void roleCodeCheck(String roleCode){
-//        List<RoleBean> roleBeanList = roleService.query( new StringCondition("roleCode", roleCode));
-//        if(!roleBeanList.isEmpty()){
-//            throw ErrorDefine.REPEATED_CODE.toAmbitoException();
-//        }
-//    }
 
     /**
      * 删除角色

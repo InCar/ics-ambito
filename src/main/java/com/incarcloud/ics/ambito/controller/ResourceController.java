@@ -6,12 +6,9 @@ import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.ResourceBean;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.ResourceService;
-import com.incarcloud.ics.pojo.ErrorDefine;
 import com.incarcloud.ics.pojo.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 /**
@@ -61,10 +58,6 @@ public class ResourceController {
         if(resourceBean.getId() == null){
             resourceService.save(preHandle(resourceBean));
         }else {
-            ResourceBean oldOne = resourceService.get(resourceBean.getId());
-            if(!oldOne.getResourceName().equals(resourceBean.getResourceName())){
-                uniqueCheck(resourceBean);
-            }
             resourceService.update(resourceBean);
         }
         return JsonMessage.success();
@@ -72,7 +65,6 @@ public class ResourceController {
 
 
     private ResourceBean preHandle(ResourceBean resourceBean) {
-        uniqueCheck(resourceBean);
         if(resourceBean.getParentId() == null || resourceBean.getParentId() == 0){
             resourceBean.setParentId(0L);
             resourceBean.setLevel((byte)0);
@@ -83,18 +75,6 @@ public class ResourceController {
         return resourceBean;
     }
 
-
-    private void uniqueCheck(ResourceBean resourceBean){
-        List<ResourceBean> resourceBeans = resourceService.query(
-                Condition.and(
-                        new StringCondition("resourceName", resourceBean.getResourceName()),
-                        new NumberCondition("parentId", resourceBean.getParentId())
-                )
-        );
-        if(!resourceBeans.isEmpty()){
-            throw ErrorDefine.REPEATED_NAME.toAmbitoException();
-        }
-    }
 
     /**
      * 删除资源

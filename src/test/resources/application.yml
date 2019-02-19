@@ -1,9 +1,7 @@
 server:
   port: 8081
-ics:
-  prefix: /ambito
-spring.resources.chain.cache: false
-
+#  servlet:
+#    context-path: /ics
 
 spring:
    profiles:
