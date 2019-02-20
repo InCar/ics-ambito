@@ -24,6 +24,8 @@ public interface UserService extends BaseService<UserBean> {
 
     UserBean getMyInfo();
 
+    Object query(Long id, String username, String phone, String realName, String createUser, Integer pageNum, Integer pageSize);
+
 
 //    UserBean detail(Long userId);
 }

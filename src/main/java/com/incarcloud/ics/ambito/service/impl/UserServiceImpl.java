@@ -1,9 +1,12 @@
 package com.incarcloud.ics.ambito.service.impl;
 
+import com.incarcloud.ics.ambito.condition.Condition;
+import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.dao.UserDao;
 import com.incarcloud.ics.ambito.entity.*;
 import com.incarcloud.ics.ambito.jdbc.BaseServiceImpl;
+import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.ResourceService;
 import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.SysOrgUserService;
@@ -22,6 +25,7 @@ import com.incarcloud.ics.pojo.ErrorDefine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,6 +104,31 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         }
         Session session = subject.getSession();
         return (UserBean) session.getAttribute("myInfo");
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object query(Long id, String username, String phone, String realName, String createUser, Integer pageNum, Integer pageSize) {
+        Condition cond = Condition.and(
+                new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
+                new StringCondition("username", username, StringCondition.Handler.ALL_LIKE),
+                new StringCondition("createUser", createUser, StringCondition.Handler.ALL_LIKE),
+                new StringCondition("realName", realName, StringCondition.Handler.ALL_LIKE),
+                new StringCondition("phone", phone, StringCondition.Handler.ALL_LIKE)
+        );
+        Object o = null;
+        if(pageNum == null || pageSize == null){
+            o = query(cond);
+        }else {
+            o = queryPage(new Page(pageNum, pageSize), cond);
+        }
+        if(o instanceof Collection){
+            ((Collection<UserBean>)o).forEach(e->{
+                e.setSalt(null);
+                e.setPassword(null);
+            });
+        }
+        return o;
     }
 
 }

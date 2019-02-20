@@ -1,14 +1,9 @@
 package com.incarcloud.ics.ambito.controller;
 
-import com.incarcloud.ics.ambito.condition.Condition;
-import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
-import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.ResourceBean;
 import com.incarcloud.ics.ambito.entity.SysOrgBean;
 import com.incarcloud.ics.ambito.entity.UserBean;
 import com.incarcloud.ics.ambito.entity.VehicleArchivesBean;
-import com.incarcloud.ics.ambito.pojo.Page;
-import com.incarcloud.ics.ambito.pojo.PageResult;
 import com.incarcloud.ics.ambito.service.ResourceService;
 import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.UserService;
@@ -24,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -68,35 +62,12 @@ public class UserController {
                                    @RequestParam(required = false)String realName,
                                    @RequestParam(required = false)String createUser,
                                    @RequestParam(required = false)Integer pageNum,
-                                   @RequestParam(required = false)Integer pageSize,
-                                   HttpServletResponse response
+                                   @RequestParam(required = false)Integer pageSize
                                    ){
-        Condition cond = Condition.and(
-                new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
-                new StringCondition("username", username, StringCondition.Handler.ALL_LIKE),
-                new StringCondition("createUser", createUser, StringCondition.Handler.ALL_LIKE),
-                new StringCondition("realName", realName, StringCondition.Handler.ALL_LIKE),
-                new StringCondition("phone", phone, StringCondition.Handler.ALL_LIKE)
-        );
-        if(pageNum == null || pageSize == null){
-            List<UserBean> query = userService.query(cond);
-            maskCredential(query);
-            return JsonMessage.success(query);
-        }else {
-            PageResult<UserBean> query = userService.queryPage(new Page(pageNum, pageSize), cond);
-            maskCredential(query.getContent());
-            return JsonMessage.success(query);
-        }
+        Object res = userService.query(id, username, phone, realName, createUser, pageNum, pageSize);
+        return JsonMessage.success(res);
     }
 
-
-
-    private void maskCredential(Collection<UserBean> collection){
-        collection.forEach(e->{
-            e.setSalt(null);
-            e.setPassword(null);
-        });
-    }
 
 
     /**
