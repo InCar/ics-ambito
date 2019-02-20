@@ -1,6 +1,7 @@
 package com.incarcloud.ics.core.cache;
 
 
+import com.incarcloud.ics.config.CacheConfig;
 import com.incarcloud.ics.config.Config;
 import com.incarcloud.ics.core.exception.CacheException;
 import com.incarcloud.ics.core.utils.Asserts;
@@ -45,7 +46,7 @@ public class LocalCacheManager<K,V> implements CacheManager{
             if(config == null) {
                 cache = createCache(name);
             }else {
-                Config.CacheConfig cacheConfig = config.getCacheConfig(name);
+                CacheConfig cacheConfig = config.getCacheConfig(name);
                 logger.debug("Use cache config : " + cacheConfig);
                 cache = createCache(name, cacheConfig);
             }
@@ -67,7 +68,7 @@ public class LocalCacheManager<K,V> implements CacheManager{
         return new ValidatingLRUCache(this.isEternal(), name, this.getGlobalMaxSize(), this.getGlobalTimeToLive());
     }
 
-    protected Cache createCache(String name, Config.CacheConfig cacheConfig) throws CacheException {
+    protected Cache createCache(String name, CacheConfig cacheConfig) throws CacheException {
         return new ValidatingLRUCache(cacheConfig.isEternal(), name, cacheConfig.getMaxSize(), cacheConfig.getTimeToLiveSeconds());
     }
 

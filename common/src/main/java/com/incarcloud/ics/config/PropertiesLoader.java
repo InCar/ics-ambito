@@ -76,23 +76,23 @@ public class PropertiesLoader {
         properties.putAll(custom);
         //properties转化为config
         return Config.getBuilder()
-                .setCacheConfigMap(Arrays.stream(new Config.CacheConfig[]{
-                        Config.CacheConfig.getBuilder("authenticateCache")
+                .setCacheConfigMap(Arrays.stream(new CacheConfig[]{
+                        CacheConfig.getBuilder("authenticateCache")
                                 .setIsEternal(Boolean.parseBoolean(properties.getProperty("authenticateConfig.isEternal")))
                                 .setMaxSize(Integer.parseInt(properties.getProperty("authenticateConfig.maxSize")))
                                 .setTimeToLiveSeconds(Integer.parseInt(properties.getProperty("authenticateConfig.timeToLiveSeconds")))
                                 .build(),
-                        Config.CacheConfig.getBuilder("authorizingCache")
+                        CacheConfig.getBuilder("authorizingCache")
                                 .setIsEternal(Boolean.parseBoolean(properties.getProperty("authorizingConfig.isEternal")))
                                 .setMaxSize(Integer.parseInt(properties.getProperty("authorizingConfig.maxSize")))
                                 .setTimeToLiveSeconds(Integer.parseInt(properties.getProperty("authorizingConfig.timeToLiveSeconds")))
                                 .build(),
-                        Config.CacheConfig.getBuilder("accessCache")
+                        CacheConfig.getBuilder("accessCache")
                                 .setIsEternal(Boolean.parseBoolean(properties.getProperty("accessConfig.isEternal")))
                                 .setMaxSize(Integer.parseInt(properties.getProperty("accessConfig.maxSize")))
                                 .setTimeToLiveSeconds(Integer.parseInt(properties.getProperty("accessConfig.timeToLiveSeconds")))
                                 .build()
-                }).collect(Collectors.toMap(Config.CacheConfig::getCacheName, e->e)))
+                }).collect(Collectors.toMap(CacheConfig::getCacheName, e->e)))
                 .setLogConfig(Config.getDefaultLogConfig()
                         .withEnableConsoleLog(Boolean.parseBoolean(properties.getProperty("logConfig.enableConsoleLog")))
                         .withEnableFileLog(Boolean.parseBoolean(properties.getProperty("logConfig.enableFileLog")))
