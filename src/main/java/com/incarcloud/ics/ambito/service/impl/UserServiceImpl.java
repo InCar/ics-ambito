@@ -10,10 +10,15 @@ import com.incarcloud.ics.ambito.service.SysOrgUserService;
 import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.ambito.utils.StringUtils;
+import com.incarcloud.ics.core.authc.UsernamePasswordToken;
 import com.incarcloud.ics.core.crypo.AbstractDigestHelper;
 import com.incarcloud.ics.core.crypo.DigestHelper;
+import com.incarcloud.ics.core.security.SecurityUtils;
+import com.incarcloud.ics.core.session.Session;
+import com.incarcloud.ics.core.subject.Subject;
 import com.incarcloud.ics.log.Logger;
 import com.incarcloud.ics.log.LoggerFactory;
+import com.incarcloud.ics.pojo.ErrorDefine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +74,32 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         List<RoleBean> rolesOfUser = roleService.getRolesOfUser(userId);
         List<Long> roles = rolesOfUser.stream().map(BaseBean::getId).collect(Collectors.toList());
         return resourceService.getResourcesOfRoles(roles);
+    }
+
+    @Override
+    public UserBean login(UsernamePasswordToken usernamePasswordToken) {
+        Subject subject = SecurityUtils.getSubject();
+        subject.login(usernamePasswordToken);
+        Session session = subject.getSession();
+        List<UserBean> userBeans = query(new StringCondition("username", usernamePasswordToken.getPrincipal(), StringCondition.Handler.EQUAL));
+        session.setAttribute("myInfo", userBeans.get(0));
+        return userBeans.get(0);
+    }
+
+    @Override
+    public void logout() {
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
+    }
+
+    @Override
+    public UserBean getMyInfo() {
+        Subject subject = SecurityUtils.getSubject();
+        if(!subject.isAuthenticated()){
+            throw ErrorDefine.UN_AUTHENTICATED.toAmbitoException();
+        }
+        Session session = subject.getSession();
+        return (UserBean) session.getAttribute("myInfo");
     }
 
 }

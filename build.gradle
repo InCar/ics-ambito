@@ -1,6 +1,6 @@
 allprojects {
     group 'com.incarcloud.ics'
-    version '1.0-SNAPSHOT'
+    version '2.2-SNAPSHOT'
 
     apply plugin: 'java'
     apply plugin: 'maven-publish'
@@ -75,7 +75,6 @@ repositories {
     dependencies{
         compile project("rdb")
         compile project("security")
-        compile("com.incarcloud.ics:ics-skeleton:${skeletonVersion}")
         // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
         compile ("javax.servlet:javax.servlet-api:${servletVersion}")
         // https://mvnrepository.com/artifact/mysql/mysql-connector-java

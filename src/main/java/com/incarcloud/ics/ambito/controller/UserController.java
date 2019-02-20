@@ -17,7 +17,6 @@ import com.incarcloud.ics.core.aspect.anno.RequiresRoles;
 import com.incarcloud.ics.core.authc.UsernamePasswordToken;
 import com.incarcloud.ics.core.privilege.WildcardPrivilege;
 import com.incarcloud.ics.core.security.SecurityUtils;
-import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.subject.Subject;
 import com.incarcloud.ics.pojo.ErrorDefine;
 import com.incarcloud.ics.pojo.JsonMessage;
@@ -162,13 +161,9 @@ public class UserController {
      */
     @PostMapping(value = "/login")
     public JsonMessage login(@RequestBody UsernamePasswordToken usernamePasswordToken){
-        Subject subject = SecurityUtils.getSubject();
-        subject.login(usernamePasswordToken);
-        Session session = subject.getSession();
-        List<UserBean> userBeans = userService.query(new StringCondition("username", usernamePasswordToken.getPrincipal(), StringCondition.Handler.EQUAL));
-        session.setAttribute("myInfo", userBeans.get(0));
-        return JsonMessage.success();
+        return JsonMessage.success(userService.login(usernamePasswordToken));
     }
+
 
     /**
      * 登出
@@ -176,8 +171,7 @@ public class UserController {
      */
     @PostMapping(value = "/logout")
     public JsonMessage logout(){
-        Subject subject = SecurityUtils.getSubject();
-        subject.logout();
+        userService.logout();
         return JsonMessage.success();
     }
 
@@ -188,12 +182,7 @@ public class UserController {
      */
     @GetMapping(value = "/myInfo")
     public JsonMessage myInfo(){
-        Subject subject = SecurityUtils.getSubject();
-        if(!subject.isAuthenticated()){
-            return ErrorDefine.UN_AUTHENTICATED.toErrorMessage();
-        }
-        Session session = subject.getSession();
-        return JsonMessage.success(session.getAttribute("myInfo"));
+        return JsonMessage.success(userService.getMyInfo());
     }
 
 

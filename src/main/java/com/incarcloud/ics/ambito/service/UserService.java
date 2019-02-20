@@ -3,6 +3,7 @@ package com.incarcloud.ics.ambito.service;
 import com.incarcloud.ics.ambito.entity.ResourceBean;
 import com.incarcloud.ics.ambito.entity.UserBean;
 import com.incarcloud.ics.ambito.jdbc.BaseService;
+import com.incarcloud.ics.core.authc.UsernamePasswordToken;
 
 import java.util.List;
 
@@ -16,6 +17,13 @@ public interface UserService extends BaseService<UserBean> {
     UserBean register(UserBean user);
 
     List<ResourceBean> getUserMenus(Long userId);
+
+    UserBean login(UsernamePasswordToken usernamePasswordToken);
+
+    void logout();
+
+    UserBean getMyInfo();
+
 
 //    UserBean detail(Long userId);
 }
