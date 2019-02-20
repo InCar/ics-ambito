@@ -1,10 +1,10 @@
 package com.incarcloud.ics.ambito.utils.sqlInit;
 
 
+import com.incarcloud.ics.ambito.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.io.*;
 
@@ -17,13 +17,13 @@ public class InitSqlScript {
     /**
      * 初始化sql到数据库
      */
-    public void executeSqlFile() {
-
+    public void executeSqlFile() throws IOException {
         //加载sql文件的路径
-        String file = "src/main/resources/db/migration/";
-        File[] files = new File(file).listFiles();
-
-        for (File file1 : files) {
+        String filename = "/src/main/resources/db/migration/";
+        File f = new File("");
+        String absolutePath = f.getAbsolutePath()+ filename;
+        File dir = new File(absolutePath);
+        for (File file1 : dir.listFiles()) {
             if (file1.isFile() && file1.exists()) { //判断文件是否存在
                 //初始化sql到数据库
                 String sqlStr = readFileByLines(file1.getPath());
