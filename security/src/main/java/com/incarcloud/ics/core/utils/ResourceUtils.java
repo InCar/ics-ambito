@@ -7,7 +7,13 @@ import com.incarcloud.ics.log.LoggerFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 
 public class ResourceUtils {
@@ -92,5 +98,49 @@ public class ResourceUtils {
             }
         }
 
+    }
+
+    public static DirectoryStream<Path> getResourcesAsStreamOfJar(Class clazz, String folder){
+        try{
+            URL jar = clazz.getProtectionDomain().getCodeSource().getLocation();
+            Path jarFile = Paths.get(jar.toString().substring("file:".length()));
+            FileSystem fs = FileSystems.newFileSystem(jarFile, null);
+            return Files.newDirectoryStream(fs.getPath(folder));
+        }catch(IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public static List<InputStream> getResourcesAsStreams(Class clazz, String folder){
+        ClassLoader classLoader = clazz.getClassLoader();
+        URI uri = null;
+        try {
+            uri = Objects.requireNonNull(classLoader.getResource(folder)).toURI();
+        } catch (URISyntaxException | NullPointerException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        List<InputStream> inputStreamList = new ArrayList<>();
+        if(uri.getScheme().contains("jar")){
+            /** jar case */
+            DirectoryStream<Path> directoryStream = getResourcesAsStreamOfJar(clazz, folder);
+            for(Path p: directoryStream){
+                InputStream is = clazz.getResourceAsStream(p.toString());
+                inputStreamList.add(is);
+            }
+        }else {
+            /** IDE case */
+            Path path = Paths.get(uri);
+            try {
+                DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
+                for(Path p : directoryStream){
+                    InputStream is = new FileInputStream(p.toFile());
+                    inputStreamList.add(is);
+                }
+            } catch (IOException _e) {
+                throw new RuntimeException(_e.getMessage());
+            }
+        }
+        return inputStreamList;
     }
 }
