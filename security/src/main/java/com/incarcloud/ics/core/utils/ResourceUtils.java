@@ -13,7 +13,6 @@ import java.net.URL;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 public class ResourceUtils {
@@ -111,12 +110,23 @@ public class ResourceUtils {
         }
     }
 
+    /**
+     * 读取resources目录下某文件夹里的所有文件
+     * @param clazz  类型
+     * @param folder 文件夹路径
+     * @return 文件夹中所有文件的输入流集合
+     */
     public static List<InputStream> getResourcesAsStreams(Class clazz, String folder){
         ClassLoader classLoader = clazz.getClassLoader();
         URI uri = null;
         try {
-            uri = Objects.requireNonNull(classLoader.getResource(folder)).toURI();
-        } catch (URISyntaxException | NullPointerException e) {
+            URL resource = classLoader.getResource(folder);
+            if(resource == null){
+                throw new RuntimeException("未找到文件夹["+folder+"]");
+            }else {
+                uri = resource.toURI();
+            }
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e.getMessage());
         }
 
