@@ -13,8 +13,14 @@ import java.util.List;
  */
 public interface ResourceService extends BaseService<ResourceBean> {
     List<ResourceBean> getMenusOfRole(long roleId);
+
     List<ResourceBean> getPrivilegeOfRole(long roleId);
+
     List<ResourceBean> getResourcesOfRoles(List<Long> roleIds);
 
     List<ResourceBean> getButtonsOfMenu(Long menuCode);
+
+    Object getList(Long id, String resourceName, Integer page, Integer pageSize);
+
+    ResourceBean saveOrUpdate(ResourceBean resourceBean);
 }

@@ -1,12 +1,6 @@
 package com.incarcloud.ics.ambito.controller;
 
-import com.incarcloud.ics.ambito.condition.Condition;
-import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
-import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.RoleBean;
-import com.incarcloud.ics.ambito.pojo.Page;
-import com.incarcloud.ics.ambito.service.ResourceService;
-import com.incarcloud.ics.ambito.service.RoleResourceService;
 import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.pojo.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +20,6 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    @Autowired
-    private RoleResourceService roleResourceService;
-
-    @Autowired
-    private ResourceService resourceService;
-
     /**
      * 查询角色列表信息
      * @param id id
@@ -44,15 +32,9 @@ public class RoleController {
                                    @RequestParam(required = false)String roleName,
                                    @RequestParam(required = false)Integer page,
                                    @RequestParam(required = false)Integer pageSize){
-        Condition cond = Condition.and(
-                new StringCondition("roleName", roleName, StringCondition.Handler.ALL_LIKE),
-                new NumberCondition("id", id)
-        );
-        if(page == null || pageSize == null){
-            return JsonMessage.success(roleService.query(cond));
-        }else {
-            return JsonMessage.success(roleService.queryPage(new Page(page, pageSize), cond));
-        }
+        Object res = roleService.getList(id, roleName, page, pageSize);
+        return JsonMessage.success(res);
+
     }
 
 
@@ -63,12 +45,8 @@ public class RoleController {
      */
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody RoleBean roleBean){
-        if(roleBean.getId() == null){
-            roleService.save(roleBean);
-        }else {
-            roleService.update(roleBean);
-        }
-        return JsonMessage.success();
+        RoleBean newRole = roleService.saveOrUpdate(roleBean);
+        return JsonMessage.success(newRole);
     }
 
 

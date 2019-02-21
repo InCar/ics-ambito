@@ -1,10 +1,6 @@
 package com.incarcloud.ics.ambito.controller;
 
-import com.incarcloud.ics.ambito.condition.Condition;
-import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
-import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.ResourceBean;
-import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.ResourceService;
 import com.incarcloud.ics.pojo.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +32,8 @@ public class ResourceController {
                                @RequestParam(required = false)String resourceName,
                                @RequestParam(required = false)Integer page,
                                @RequestParam(required = false)Integer pageSize){
-        Condition cond = Condition.and(
-                new StringCondition("resourceName", resourceName, StringCondition.Handler.ALL_LIKE),
-                new NumberCondition("id", id, NumberCondition.Handler.EQUAL)
-        );
-        if(page == null || pageSize == null){
-            return JsonMessage.success(resourceService.query(cond));
-        }else {
-            return JsonMessage.success(resourceService.queryPage(new Page(page, pageSize), cond));
-        }
+        Object res = resourceService.getList(id, resourceName, page, pageSize);
+        return JsonMessage.success(res);
     }
 
 
@@ -55,25 +44,9 @@ public class ResourceController {
      */
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody ResourceBean resourceBean){
-        if(resourceBean.getId() == null){
-            resourceService.save(preHandle(resourceBean));
-        }else {
-            resourceService.update(resourceBean);
-        }
-        return JsonMessage.success();
+        return JsonMessage.success(resourceService.saveOrUpdate(resourceBean));
     }
 
-
-    private ResourceBean preHandle(ResourceBean resourceBean) {
-        if(resourceBean.getParentId() == null || resourceBean.getParentId() == 0){
-            resourceBean.setParentId(0L);
-            resourceBean.setLevel((byte)0);
-        }else {
-            ResourceBean parent = resourceService.get(resourceBean.getParentId());
-            resourceBean.setLevel((byte) (parent.getLevel()+1));
-        }
-        return resourceBean;
-    }
 
 
     /**

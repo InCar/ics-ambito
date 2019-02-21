@@ -23,4 +23,10 @@ public interface SysOrgService extends BaseService<SysOrgBean> {
     Set<String> getUserBelongOrgCodes(String username);
 
     Set<String> getAllOrgCodes();
+
+    Object getList(Long id, String orgName, String parentId, Integer pageNum, Integer pageSize);
+
+    SysOrgBean saveOrUpdate(SysOrgBean sysOrgBean);
+
+    SysOrgBean getOrgTree(Long id);
 }

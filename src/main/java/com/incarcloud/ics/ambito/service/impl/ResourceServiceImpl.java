@@ -6,6 +6,7 @@ import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.ResourceBean;
 import com.incarcloud.ics.ambito.entity.RoleResourceBean;
 import com.incarcloud.ics.ambito.jdbc.BaseServiceImpl;
+import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.ResourceService;
 import com.incarcloud.ics.ambito.service.RoleResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +98,42 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceBean> implement
         );
         return btnBeans;
     }
+
+    @Override
+    public Object getList(Long id, String resourceName, Integer page, Integer pageSize) {
+        Condition cond = Condition.and(
+                new StringCondition("resourceName", resourceName, StringCondition.Handler.ALL_LIKE),
+                new NumberCondition("id", id, NumberCondition.Handler.EQUAL)
+        );
+        if(page == null || pageSize == null){
+            return this.query(cond);
+        }else {
+            return this.queryPage(new Page(page, pageSize), cond);
+        }
+    }
+
+    @Override
+    public ResourceBean saveOrUpdate(ResourceBean resourceBean) {
+        if(resourceBean.getId() == null){
+            this.save(preHandle(resourceBean));
+        }else {
+            this.update(resourceBean);
+        }
+        List<ResourceBean> newBeans = this.query(new StringCondition("resourceName", resourceBean.getResourceName()));
+        return newBeans.get(0);
+    }
+
+    private ResourceBean preHandle(ResourceBean resourceBean) {
+        if(resourceBean.getParentId() == null || resourceBean.getParentId() == 0){
+            resourceBean.setParentId(0L);
+            resourceBean.setLevel((byte)0);
+        }else {
+            ResourceBean parent = this.get(resourceBean.getParentId());
+            resourceBean.setLevel((byte) (parent.getLevel()+1));
+        }
+        return resourceBean;
+    }
+
 
     @Override
     @Transactional

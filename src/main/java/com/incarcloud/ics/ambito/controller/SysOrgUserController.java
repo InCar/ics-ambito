@@ -7,8 +7,6 @@ import com.incarcloud.ics.ambito.entity.SysOrgUserBean;
 import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.SysOrgUserService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
-import com.incarcloud.ics.log.Logger;
-import com.incarcloud.ics.log.LoggerFactory;
 import com.incarcloud.ics.pojo.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +23,6 @@ import java.util.List;
 @RestController
 public class SysOrgUserController {
 
-    Logger logger = LoggerFactory.getLogger(SysOrgUserController.class);
-
     @Autowired
     private SysOrgUserService sysOrgUserService;
 
@@ -35,10 +31,9 @@ public class SysOrgUserController {
                                @RequestParam(required = false) Long orgId,
                                @RequestParam(required = false) Integer pageNum,
                                @RequestParam(required = false) Integer pageSize) {
-
         Condition cond = Condition.and(
-                new StringCondition("orgId", orgId, StringCondition.Handler.EQUAL),
-                new StringCondition("userId", userId, StringCondition.Handler.EQUAL)
+                new StringCondition("orgId", orgId),
+                new StringCondition("userId", userId)
         );
         if (pageNum == null || pageSize == null) {
             return JsonMessage.success(sysOrgUserService.query(cond));
@@ -53,8 +48,8 @@ public class SysOrgUserController {
     public JsonMessage save(@RequestBody List<SysOrgUserBean> sysOrgUserBeans) {
         for(SysOrgUserBean sysOrgUserBean : sysOrgUserBeans) {
             List<SysOrgUserBean> existing = sysOrgUserService.query(Condition.and(
-                    new NumberCondition("orgId", sysOrgUserBean.getOrgId(), NumberCondition.Handler.EQUAL),
-                    new NumberCondition("userId", sysOrgUserBean.getUserId(), NumberCondition.Handler.EQUAL)
+                    new NumberCondition("orgId", sysOrgUserBean.getOrgId()),
+                    new NumberCondition("userId", sysOrgUserBean.getUserId())
             ));
             if(CollectionUtils.isNotEmpty(existing)){
                 continue;

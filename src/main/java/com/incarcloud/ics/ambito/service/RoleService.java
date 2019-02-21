@@ -13,4 +13,8 @@ import java.util.List;
  */
 public interface RoleService extends BaseService<RoleBean> {
     List<RoleBean> getRolesOfUser(Long userId);
+
+    RoleBean saveOrUpdate(RoleBean roleBean);
+
+    Object getList(Long id, String roleName, Integer page, Integer pageSize);
 }

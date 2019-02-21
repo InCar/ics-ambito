@@ -7,7 +7,10 @@ import com.incarcloud.ics.core.security.SecurityUtils;
 import com.incarcloud.ics.core.servlet.AmbitoHttpServletRequest;
 import com.incarcloud.ics.core.servlet.AmbitoHttpServletResponse;
 import com.incarcloud.ics.core.session.Session;
+import com.incarcloud.ics.core.subject.DefaultSubjectContext;
 import com.incarcloud.ics.core.subject.Subject;
+import com.incarcloud.ics.core.subject.SubjectContext;
+import com.incarcloud.ics.core.utils.ThreadContext;
 import com.incarcloud.ics.log.Logger;
 import com.incarcloud.ics.log.LoggerFactory;
 
@@ -129,7 +132,13 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
      * @since 1.0
      */
     protected Subject createSubject(ServletRequest request, ServletResponse response) {
-        return SecurityUtils.getSubject(request, response);
+        SubjectContext subjectContext = new DefaultSubjectContext();
+        subjectContext.setSecurityManager(getSecurityManager());
+        subjectContext.setServletRequest(request);
+        subjectContext.setServletResponse(response);
+        Subject subject = getSecurityManager().createSubject(subjectContext);
+        ThreadContext.bind(subject);
+        return subject;
     }
 
     /**

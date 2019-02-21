@@ -56,6 +56,7 @@ public class VehicleArchivesController {
         return JsonMessage.success();
     }
 
+    
     @DeleteMapping(value = "/delete/{id}")
     public JsonMessage deleteArchive(@PathVariable long id) {
         vehicleArchivesService.delete(id);

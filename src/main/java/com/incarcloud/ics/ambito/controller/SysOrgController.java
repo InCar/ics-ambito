@@ -1,21 +1,11 @@
 package com.incarcloud.ics.ambito.controller;
 
-import com.incarcloud.ics.ambito.condition.Condition;
-import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
-import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.SysOrgBean;
-import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.SysOrgService;
-import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.pojo.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 /**
@@ -36,26 +26,14 @@ public class SysOrgController {
                                @RequestParam(required = false)String parentId,
                                @RequestParam(required = false)Integer pageNum,
                                @RequestParam(required = false)Integer pageSize){
-        Condition cond = Condition.and(
-                new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
-                new StringCondition("orgName", orgName, StringCondition.Handler.ALL_LIKE),
-                new StringCondition("parentId", parentId, StringCondition.Handler.EQUAL)
-        );
-        if (pageNum == null || pageSize == null) {
-            return JsonMessage.success(sysOrgService.query(cond));
-        } else {
-            return JsonMessage.success(sysOrgService.queryPage(new Page(pageNum, pageSize), cond));
-        }
+        Object res = sysOrgService.getList(id, orgName, parentId, pageNum, pageSize);
+        return JsonMessage.success(res);
     }
 
     @PostMapping(value = "/save")
     public JsonMessage save(@RequestBody SysOrgBean sysOrgBean){
-        if(sysOrgBean.getId() == null){
-            sysOrgService.save(sysOrgBean);
-        }else {
-            sysOrgService.update(sysOrgBean);
-        }
-        return JsonMessage.success();
+        SysOrgBean orgBean = sysOrgService.saveOrUpdate(sysOrgBean);
+        return JsonMessage.success(orgBean);
     }
 
 
@@ -75,25 +53,8 @@ public class SysOrgController {
      */
     @GetMapping(value = "/orgTree")
     public JsonMessage getOrgTree(@RequestParam Long id){
-        SysOrgBean sysOrgBean = sysOrgService.get(id);
-        if(sysOrgBean == null){
-            return JsonMessage.success();
-        }
-        Map<String, SysOrgBean> sysOrgBeanMap = new HashMap<>();
-
-        sysOrgBeanMap.put(sysOrgBean.getOrgCode(), sysOrgBean);
-        List<SysOrgBean> sysOrgBeans = sysOrgService.query();
-        if(CollectionUtils.isNotEmpty(sysOrgBeans)){
-            sysOrgBeanMap.putAll(sysOrgBeans.stream().collect(Collectors.toMap(SysOrgBean::getOrgCode, e->e)));
-            for(SysOrgBean org : sysOrgBeans){
-                SysOrgBean parent = sysOrgBeanMap.get(org.getParentCode());
-                if(parent != null){
-                    parent.getChildren().add(org);
-                }
-            }
-        }
-
-        return JsonMessage.success(sysOrgBeanMap.get(sysOrgBean.getOrgCode()));
+        SysOrgBean orgTree = sysOrgService.getOrgTree(id);
+        return JsonMessage.success(orgTree);
     }
 
 

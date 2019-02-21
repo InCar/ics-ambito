@@ -135,6 +135,16 @@ public class UserController {
         return JsonMessage.success(userService.login(usernamePasswordToken));
     }
 
+    /**
+     * 登录
+     * @return
+     */
+    @GetMapping(value = "/loginTest")
+    public JsonMessage login(){
+        return JsonMessage.success(userService.login(new UsernamePasswordToken("admin","4QrcOUm6Wau+VuBX8g+IPg==")));
+    }
+
+
 
     /**
      * 登出

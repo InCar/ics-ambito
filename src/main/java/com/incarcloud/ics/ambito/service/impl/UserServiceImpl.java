@@ -86,7 +86,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         subject.login(usernamePasswordToken);
         Session session = subject.getSession();
         List<UserBean> userBeans = query(new StringCondition("username", usernamePasswordToken.getPrincipal(), StringCondition.Handler.EQUAL));
-        session.setAttribute("myInfo", userBeans.get(0));
+        UserBean userBean = userBeans.get(0);
+        userBean.setSalt(null);
+        userBean.setPassword(null);
+        session.setAttribute("myInfo", userBean);
         return userBeans.get(0);
     }
 

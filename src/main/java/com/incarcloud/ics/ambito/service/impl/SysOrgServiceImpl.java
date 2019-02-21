@@ -1,15 +1,18 @@
 package com.incarcloud.ics.ambito.service.impl;
 
+import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
 import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.SysOrgBean;
 import com.incarcloud.ics.ambito.entity.SysOrgUserBean;
 import com.incarcloud.ics.ambito.entity.UserBean;
 import com.incarcloud.ics.ambito.jdbc.BaseServiceImpl;
+import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.SysOrgService;
 import com.incarcloud.ics.ambito.service.SysOrgUserService;
 import com.incarcloud.ics.ambito.service.SysOrgVehicleService;
 import com.incarcloud.ics.ambito.service.UserService;
+import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.config.Config;
 import com.incarcloud.ics.exception.AmbitoException;
 import com.incarcloud.ics.log.Logger;
@@ -20,10 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -252,6 +252,53 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
     public Set<String> getAllOrgCodes() {
         List<SysOrgBean> sysOrgBeans = query(new NumberCondition("status", 0, NumberCondition.Handler.EQUAL));
         return sysOrgBeans.stream().map(SysOrgBean::getOrgCode).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Object getList(Long id, String orgName, String parentId, Integer pageNum, Integer pageSize) {
+        Condition cond = Condition.and(
+                new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
+                new StringCondition("orgName", orgName, StringCondition.Handler.ALL_LIKE),
+                new StringCondition("parentId", parentId, StringCondition.Handler.EQUAL)
+        );
+        if (pageNum == null || pageSize == null) {
+            return this.query(cond);
+        } else {
+            return this.queryPage(new Page(pageNum, pageSize), cond);
+        }
+    }
+
+    @Override
+    public SysOrgBean saveOrUpdate(SysOrgBean sysOrgBean) {
+        if(sysOrgBean.getId() == null){
+            this.save(sysOrgBean);
+        }else {
+            this.update(sysOrgBean);
+        }
+        List<SysOrgBean> sysOrgBeans = this.query(new StringCondition("orgCode",sysOrgBean.getOrgCode()));
+        return sysOrgBeans.get(0);
+    }
+
+    @Override
+    public SysOrgBean getOrgTree(Long id) {
+        SysOrgBean sysOrgBean = this.get(id);
+        if(sysOrgBean == null){
+            return null;
+        }
+        Map<String, SysOrgBean> sysOrgBeanMap = new HashMap<>();
+
+        sysOrgBeanMap.put(sysOrgBean.getOrgCode(), sysOrgBean);
+        List<SysOrgBean> sysOrgBeans = this.query();
+        if(CollectionUtils.isNotEmpty(sysOrgBeans)){
+            sysOrgBeanMap.putAll(sysOrgBeans.stream().collect(Collectors.toMap(SysOrgBean::getOrgCode, e->e)));
+            for(SysOrgBean org : sysOrgBeans){
+                SysOrgBean parent = sysOrgBeanMap.get(org.getParentCode());
+                if(parent != null){
+                    parent.getChildren().add(org);
+                }
+            }
+        }
+        return sysOrgBeanMap.get(sysOrgBean.getOrgCode());
     }
 
 }
