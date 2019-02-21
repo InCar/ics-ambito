@@ -24,6 +24,8 @@ public interface UserService extends BaseService<UserBean> {
 
     UserBean getMyInfo();
 
+    UserBean maskCredential(UserBean userBean);
+
     Object query(Long id, String username, String phone, String realName, String createUser, Integer pageNum, Integer pageSize);
 
 

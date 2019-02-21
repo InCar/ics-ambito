@@ -34,7 +34,6 @@ public class RoleController {
                                    @RequestParam(required = false)Integer pageSize){
         Object res = roleService.getList(id, roleName, page, pageSize);
         return JsonMessage.success(res);
-
     }
 
 

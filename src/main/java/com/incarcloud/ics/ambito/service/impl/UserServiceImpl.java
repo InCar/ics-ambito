@@ -7,6 +7,7 @@ import com.incarcloud.ics.ambito.dao.UserDao;
 import com.incarcloud.ics.ambito.entity.*;
 import com.incarcloud.ics.ambito.jdbc.BaseServiceImpl;
 import com.incarcloud.ics.ambito.pojo.Page;
+import com.incarcloud.ics.ambito.security.AuthUtils;
 import com.incarcloud.ics.ambito.service.ResourceService;
 import com.incarcloud.ics.ambito.service.RoleService;
 import com.incarcloud.ics.ambito.service.SysOrgUserService;
@@ -17,11 +18,9 @@ import com.incarcloud.ics.core.authc.UsernamePasswordToken;
 import com.incarcloud.ics.core.crypo.AbstractDigestHelper;
 import com.incarcloud.ics.core.crypo.DigestHelper;
 import com.incarcloud.ics.core.security.SecurityUtils;
-import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.subject.Subject;
 import com.incarcloud.ics.log.Logger;
 import com.incarcloud.ics.log.LoggerFactory;
-import com.incarcloud.ics.pojo.ErrorDefine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,9 +67,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
                 sysOrgUserService.save(new SysOrgUserBean(e, existing.getId()));
             });
         }
-        existing.setSalt(null);
-        existing.setPassword(null);
-        return existing;
+        return maskCredential(existing);
     }
 
     @Override
@@ -84,13 +81,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
     public UserBean login(UsernamePasswordToken usernamePasswordToken) {
         Subject subject = SecurityUtils.getSubject();
         subject.login(usernamePasswordToken);
-        Session session = subject.getSession();
         List<UserBean> userBeans = query(new StringCondition("username", usernamePasswordToken.getPrincipal(), StringCondition.Handler.EQUAL));
-        UserBean userBean = userBeans.get(0);
-        userBean.setSalt(null);
-        userBean.setPassword(null);
-        session.setAttribute("myInfo", userBean);
-        return userBeans.get(0);
+        UserBean userBean = AuthUtils.storeCurrentUser(userBeans.get(0));
+        return maskCredential(userBean);
     }
 
     @Override
@@ -101,13 +94,18 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
 
     @Override
     public UserBean getMyInfo() {
-        Subject subject = SecurityUtils.getSubject();
-        if(!subject.isAuthenticated()){
-            throw ErrorDefine.UN_AUTHENTICATED.toAmbitoException();
-        }
-        Session session = subject.getSession();
-        return (UserBean) session.getAttribute("myInfo");
+        UserBean currentUser = AuthUtils.getCurrentUser();
+        maskCredential(currentUser);
+        return currentUser;
     }
+
+    @Override
+    public UserBean maskCredential(UserBean userBean){
+        userBean.setSalt(null);
+        userBean.setPassword(null);
+        return userBean;
+    }
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -126,10 +124,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
             o = queryPage(new Page(pageNum, pageSize), cond);
         }
         if(o instanceof Collection){
-            ((Collection<UserBean>)o).forEach(e->{
-                e.setSalt(null);
-                e.setPassword(null);
-            });
+            ((Collection<UserBean>)o).forEach(this::maskCredential);
         }
         return o;
     }
