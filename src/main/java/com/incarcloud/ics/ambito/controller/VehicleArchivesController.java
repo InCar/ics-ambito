@@ -1,18 +1,10 @@
 package com.incarcloud.ics.ambito.controller;
 
-import com.incarcloud.ics.ambito.condition.Condition;
-import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
-import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.VehicleArchivesBean;
-import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.VehicleArchivesService;
-import com.incarcloud.ics.core.security.SecurityUtils;
-import com.incarcloud.ics.core.subject.Subject;
 import com.incarcloud.ics.pojo.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
 
 /**
  * Created by on 2018/12/26.
@@ -30,33 +22,17 @@ public class VehicleArchivesController {
                                       @RequestParam(required = false) String plateNo,
                                       @RequestParam(required = false) Integer pageNum,
                                       @RequestParam(required = false) Integer pageSize) {
-        Subject subject = SecurityUtils.getSubject();
-        Collection<String> accessibleOrgs = subject.getFilterCodes(VehicleArchivesBean.class);
-        Condition condition = Condition.and(
-                new NumberCondition("id", id, NumberCondition.Handler.EQUAL),
-                new StringCondition("vin_code", vinCode, StringCondition.Handler.ALL_LIKE),
-                new StringCondition("plate_no", plateNo, StringCondition.Handler.ALL_LIKE),
-                new StringCondition("org_code", accessibleOrgs, StringCondition.Handler.IN)
-        );
-
-        if (pageNum == null || pageSize == null) {
-            return JsonMessage.success(vehicleArchivesService.query(condition));
-        } else {
-            return JsonMessage.success(vehicleArchivesService.queryPage(new Page(pageNum, pageSize), condition));
-        }
+        Object res = vehicleArchivesService.getList(id,vinCode,plateNo,pageNum,pageSize);
+        return JsonMessage.success(res);
     }
 
     @PostMapping(value = "/save")
     public JsonMessage saveArchive(@RequestBody VehicleArchivesBean vehicleArchivesBean) {
-        if (vehicleArchivesBean.getId() == null) {
-            vehicleArchivesService.save(vehicleArchivesBean);
-        } else {
-            vehicleArchivesService.update(vehicleArchivesBean);
-        }
-        return JsonMessage.success();
+        VehicleArchivesBean newBean = vehicleArchivesService.saveOrUpdate(vehicleArchivesBean);
+        return JsonMessage.success(newBean);
     }
 
-    
+
     @DeleteMapping(value = "/delete/{id}")
     public JsonMessage deleteArchive(@PathVariable long id) {
         vehicleArchivesService.delete(id);

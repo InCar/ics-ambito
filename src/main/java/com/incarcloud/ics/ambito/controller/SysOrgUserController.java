@@ -2,9 +2,7 @@ package com.incarcloud.ics.ambito.controller;
 
 import com.incarcloud.ics.ambito.condition.Condition;
 import com.incarcloud.ics.ambito.condition.impl.NumberCondition;
-import com.incarcloud.ics.ambito.condition.impl.StringCondition;
 import com.incarcloud.ics.ambito.entity.SysOrgUserBean;
-import com.incarcloud.ics.ambito.pojo.Page;
 import com.incarcloud.ics.ambito.service.SysOrgUserService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.pojo.JsonMessage;
@@ -25,23 +23,6 @@ public class SysOrgUserController {
 
     @Autowired
     private SysOrgUserService sysOrgUserService;
-
-    @GetMapping(value = "/list")
-    public JsonMessage getList(@RequestParam(required = false) Long userId,
-                               @RequestParam(required = false) Long orgId,
-                               @RequestParam(required = false) Integer pageNum,
-                               @RequestParam(required = false) Integer pageSize) {
-        Condition cond = Condition.and(
-                new StringCondition("orgId", orgId),
-                new StringCondition("userId", userId)
-        );
-        if (pageNum == null || pageSize == null) {
-            return JsonMessage.success(sysOrgUserService.query(cond));
-        } else {
-            return JsonMessage.success(sysOrgUserService.queryPage(new Page(pageNum, pageSize), cond));
-        }
-    }
-
 
     @PostMapping(value = "/save")
     @Transactional
