@@ -68,7 +68,7 @@ public class JdbcRealm extends AccessRealm {
             throw new AccountNotExistsException("No account with username "+ authenticateToken.getPrincipal());
         }
         UserBean userBean = users.get(0);
-        if(userBean.getState().equals(1)){
+        if(userBean.getState().equals(UserBean.State.disabled)){
             throw new AccountLockedException("Account "+ authenticateToken.getPrincipal() +" is locked");
         }
         return new SimpleAuthenticateInfo(userBean.getUsername(), userBean.getPassword(), userBean.getSalt());

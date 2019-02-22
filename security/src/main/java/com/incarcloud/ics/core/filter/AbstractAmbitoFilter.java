@@ -87,7 +87,7 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
             updateSessionLastAccessTime(request, response);
             executeChain(request, response, chain);
         } catch (RuntimeException ex) {
-            t = ex.getCause();
+            t = ex.getCause() != null ? ex.getCause() : ex;
         } catch (Throwable throwable) {
             t = throwable;
         }
@@ -102,8 +102,6 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
             //otherwise it's not one of the two exceptions expected by the filter method signature - wrap it in one:
             String msg = "Filtered request failed.";
             throw new ServletException(msg, t);
-        }else {
-            logger.debug("Unca");
         }
     }
 

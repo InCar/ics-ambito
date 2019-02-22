@@ -28,7 +28,7 @@ public class SysOrgBean extends ExtendableBean{
     /**
      * 根组织编号
      */
-    public static final String ROOT_CODE = "0";
+    public static final String ROOT_CODE = "ics";
 
     /**
      * 机构编码分隔符
