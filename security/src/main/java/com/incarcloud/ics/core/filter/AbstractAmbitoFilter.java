@@ -87,7 +87,7 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
             updateSessionLastAccessTime(request, response);
             executeChain(request, response, chain);
         } catch (RuntimeException ex) {
-            t = ex.getCause();
+            t = ex.getCause() != null ? ex.getCause() : ex;
         } catch (Throwable throwable) {
             t = throwable;
         }

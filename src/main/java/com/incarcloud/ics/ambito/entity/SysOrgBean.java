@@ -23,17 +23,17 @@ public class SysOrgBean extends ExtendableBean{
     /**
      * 默认顺序
      */
-    public  static final int DEFAULT_SORT = 50;
+    public static final int DEFAULT_SORT = 50;
 
     /**
      * 根组织编号
      */
-    public  static final String ROOT_CODE = "0";
+    public static final String ROOT_CODE = "ics";
 
     /**
      * 机构编码分隔符
      */
-    public  static final String CODE_SPERATOR = ",";
+    public static final String CODE_SPERATOR = ",";
 
     // 机构名称
     @Unique(message = ErrorDefine.REPEATED_NAME)
@@ -43,10 +43,10 @@ public class SysOrgBean extends ExtendableBean{
     @Unique(message = ErrorDefine.REPEATED_CODE)
     private String orgCode;
 
-    //父级code
+    //上级code
     private String parentCode;
 
-    //所有父级code，以逗号拼接
+    //所有直系上级code，以逗号拼接
     private String parentCodes;
 
     // 0 系统默认不可操作，1 可操作

@@ -17,6 +17,7 @@ import com.incarcloud.ics.core.authc.AuthenticateInfo;
 import com.incarcloud.ics.core.authc.AuthenticateToken;
 import com.incarcloud.ics.core.authc.SimpleAuthenticateInfo;
 import com.incarcloud.ics.core.authz.AuthorizeInfo;
+import com.incarcloud.ics.core.exception.AccountLockedException;
 import com.incarcloud.ics.core.exception.AccountNotExistsException;
 import com.incarcloud.ics.core.exception.AuthenticationException;
 import com.incarcloud.ics.core.principal.Principal;
@@ -67,6 +68,9 @@ public class JdbcRealm extends AccessRealm {
             throw new AccountNotExistsException("No account with username "+ authenticateToken.getPrincipal());
         }
         UserBean userBean = users.get(0);
+        if(userBean.getState().equals(UserBean.State.disabled)){
+            throw new AccountLockedException("Account "+ authenticateToken.getPrincipal() +" is locked");
+        }
         return new SimpleAuthenticateInfo(userBean.getUsername(), userBean.getPassword(), userBean.getSalt());
     }
 

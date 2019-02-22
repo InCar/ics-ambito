@@ -14,6 +14,8 @@ import java.util.Set;
 public interface SysOrgService extends BaseService<SysOrgBean> {
     List<SysOrgBean> getChildrenOrgs(SysOrgBean sysOrgBean);
 
+    List<SysOrgBean> getDirectChildrenOrgs(SysOrgBean sysOrgBean);
+
     Set<SysOrgBean> getUserManageOrgs(Long userId);
 
     Set<SysOrgBean> getUserManageOrgs(String username);

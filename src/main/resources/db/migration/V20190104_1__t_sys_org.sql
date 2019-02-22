@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `t_sys_org` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id 自增',
   `org_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '组织名称',
   `org_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '组织code',
-  `parent_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '父组织code',
+  `parent_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NOT NULL COMMENT '父组织code',
   `parent_codes` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '所有父组织codes',
   `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' COMMENT '邮件',
   `operate_type` tinyint(4) DEFAULT '0' COMMENT '是否可操作 0=不可操作，1=可操作',

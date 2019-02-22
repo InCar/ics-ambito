@@ -33,11 +33,13 @@ public class UserBean  extends ExtendableBean{
 
     private String remark;
 
-    private Byte state;
+    private State state = State.enabled;
 
     private String salt;
 
     private List<Long> orgIds;
+
+    public enum State { enabled, disabled }
 
     public String getUsername() {
         return username;
@@ -95,11 +97,11 @@ public class UserBean  extends ExtendableBean{
         this.remark = remark;
     }
 
-    public Byte getState() {
+    public State getState() {
         return state;
     }
 
-    public void setState(Byte state) {
+    public void setState(State state) {
         this.state = state;
     }
 

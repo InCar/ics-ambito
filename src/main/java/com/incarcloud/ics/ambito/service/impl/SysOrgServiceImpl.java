@@ -47,11 +47,11 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
 
     @Override
     public int save(SysOrgBean sysOrgBean){
-        //顶级组织的parentCode设为"0"
+        //组织的parentCode设为默认顶级"0"
         if(sysOrgBean.getParentCode() == null){
             sysOrgBean.setParentCode(SysOrgBean.ROOT_CODE);
             sysOrgBean.setParentCodes(SysOrgBean.ROOT_CODE+SysOrgBean.CODE_SPERATOR);
-            sysOrgBean.setLevel((byte)0);
+            sysOrgBean.setLevel((byte)1);
             sysOrgBean.setIsLeaf((byte)1);
             return super.save(sysOrgBean);
         }
@@ -91,33 +91,15 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
         }
     }
 
-//    private void checkBeforeSave(SysOrgBean sysOrgBean){
-//        //判断名称是否重复
-//        List<SysOrgBean> nameExists = getOrgsByCode(sysOrgBean.getOrgCode());
-//        if(CollectionUtils.isNotEmpty(nameExists)){
-//            throw ErrorDefine.REPEATED_NAME.toAmbitoException();
-//        }
-//
-//        //判断code是否重复
-//        List<SysOrgBean> codeExists = getOrgsByCode(sysOrgBean.getOrgCode());
-//        if(CollectionUtils.isNotEmpty(codeExists)){
-//            throw ErrorDefine.REPEATED_CODE.toAmbitoException();
-//        }
-//    }
-
-
 
     @Override
     @Transactional
     public int delete(Serializable id) throws AmbitoException {
         SysOrgBean sysOrgBean = get(id);
 
-        //如果为顶级组织且下面有子组织，则不允许删除
+        //顶级组织不允许删除
         if(SysOrgBean.ROOT_CODE.equals(sysOrgBean.getOrgCode())){
-            List<SysOrgBean> childrenOrgs = getChildrenOrgs(sysOrgBean);
-            if(childrenOrgs.size() > 0){
-                throw ErrorDefine.UNDELETABLE.toAmbitoException();
-            }
+            throw ErrorDefine.UNDELETABLE.toAmbitoException();
         }
         //允许递归删除
         if(Config.getConfig().isDeleteOrgRecursion()){
@@ -167,8 +149,7 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
         children.forEach(child -> {
             //父组织不存在，说明被删除的组织是顶级组织
             if(parent == null){
-                child.setParentCode(SysOrgBean.ROOT_CODE);
-                child.setParentCodes(SysOrgBean.ROOT_CODE + SysOrgBean.CODE_SPERATOR);
+                logger.debug("Has no parent");
             }else {
                 child.setParentCode(parent.getOrgCode());
                 child.setParentCodes(buildParentsCode(parent));
@@ -190,6 +171,13 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
                         StringCondition.Handler.RIGHT_LIKE)
         );
     }
+
+
+    @Override
+    public List<SysOrgBean> getDirectChildrenOrgs(SysOrgBean sysOrgBean){
+        return this.query(new StringCondition("parentCode", sysOrgBean.getOrgCode()));
+    }
+
 
 
     private boolean isLeaf(SysOrgBean sysOrgBean){
@@ -269,15 +257,56 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public SysOrgBean saveOrUpdate(SysOrgBean sysOrgBean) {
         if(sysOrgBean.getId() == null){
+            //组织code不能包含分隔符
+            String code = sysOrgBean.getOrgCode();
+            if(code.contains(SysOrgBean.CODE_SPERATOR)){
+                throw ErrorDefine.INVALID_ORG_CODE.toAmbitoException();
+            }
+            sysOrgBean.setOrgCode(code.trim());
             this.save(sysOrgBean);
         }else {
+            preHandle(sysOrgBean);
             this.update(sysOrgBean);
         }
         List<SysOrgBean> sysOrgBeans = this.query(new StringCondition("orgCode",sysOrgBean.getOrgCode()));
         return sysOrgBeans.get(0);
     }
+
+
+    private void preHandle(SysOrgBean newBean) {
+        SysOrgBean oldBean = this.get(newBean.getId());
+        if(!oldBean.getOrgCode().equals(newBean.getOrgCode())){
+            if(oldBean.getOrgCode().equals(SysOrgBean.ROOT_CODE)){
+                throw ErrorDefine.UNMODIFIABLE_ORG_ROOT_CODE.toAmbitoException();
+            }
+            updateParentCodeOfChildren(oldBean, newBean);
+        }
+    }
+
+
+    private void updateParentCodeOfChildren(SysOrgBean oldParent, SysOrgBean newParent){
+        List<SysOrgBean> childrenOrgs = getChildrenOrgs(oldParent);
+        //修改所有子组织的parentCode及parentCodes
+        childrenOrgs.forEach(child -> {
+            if(child.getParentCode().equals(oldParent.getOrgCode())){
+                child.setParentCode(newParent.getOrgCode());
+            }
+            String codeRegex = getWrapCode(oldParent);
+            String codeReplace = getWrapCode(newParent);
+            child.setParentCodes(child.getParentCodes().replaceFirst(codeRegex, codeReplace));
+            super.update(child);
+        });
+    }
+
+
+
+    private String getWrapCode(SysOrgBean oldParent) {
+        return SysOrgBean.CODE_SPERATOR + oldParent.getOrgCode() + SysOrgBean.CODE_SPERATOR;
+    }
+
 
     @Override
     public SysOrgBean getOrgTree(Long id) {

@@ -28,6 +28,10 @@ public enum ErrorDefine {
 
     REPEATED_VIN_CODE("18","手机号重复"),
 
+    UNMODIFIABLE_ORG_ROOT_CODE("19","根组织code不能修改"),
+
+    INVALID_ORG_CODE("20","组织code格式错误"),
+
     ACCOUNT_NOT_EXISTS("51","账号不存在"),
 
     ACCOUNT_LOCKED("52","账号已锁定"),
