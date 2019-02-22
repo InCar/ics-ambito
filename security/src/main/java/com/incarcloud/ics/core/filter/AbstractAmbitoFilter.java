@@ -102,6 +102,8 @@ public abstract class AbstractAmbitoFilter extends OncePerRequestFilter{
             //otherwise it's not one of the two exceptions expected by the filter method signature - wrap it in one:
             String msg = "Filtered request failed.";
             throw new ServletException(msg, t);
+        }else {
+            logger.debug("Unca");
         }
     }
 
