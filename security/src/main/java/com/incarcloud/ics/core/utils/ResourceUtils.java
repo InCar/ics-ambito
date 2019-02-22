@@ -102,10 +102,10 @@ public class ResourceUtils {
     public static DirectoryStream<Path> getResourcesAsStreamOfJar(Class clazz, String folder){
         try{
             URL jar = clazz.getProtectionDomain().getCodeSource().getLocation();
-            Path jarFile = Paths.get(jar.toString().substring("file:".length()));
+            Path jarFile = Paths.get(jar.toURI());
             FileSystem fs = FileSystems.newFileSystem(jarFile, null);
             return Files.newDirectoryStream(fs.getPath(folder));
-        }catch(IOException e) {
+        }catch(IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
