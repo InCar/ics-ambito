@@ -1,7 +1,6 @@
 package com.incarcloud.ics.core.handler;
 
-import com.incarcloud.ics.core.exception.AuthenticationException;
-import com.incarcloud.ics.core.exception.AuthorizationException;
+import com.incarcloud.ics.core.exception.*;
 import com.incarcloud.ics.core.exception.SecurityException;
 
 /**
@@ -12,7 +11,11 @@ import com.incarcloud.ics.core.exception.SecurityException;
  */
 public enum SecurityExceptionMessage {
     UN_AUTHENTICATED(AuthenticationException.class, ErrorMessageConstants.UN_AUTHENTICATED),
-    UN_AUTHORIZED(AuthorizationException.class, ErrorMessageConstants.UN_AUTHORIZED);
+    UN_AUTHORIZED(AuthorizationException.class, ErrorMessageConstants.UN_AUTHORIZED),
+    CREDENTIAL_NOT_MATCH(CredentialNotMatchException.class, ErrorMessageConstants.CREDENTIAL_NOT_MATCH),
+    ACCOUNT_NOT_EXISTS(AccountNotExistsException.class, ErrorMessageConstants.ACCOUNT_NOT_EXISTS),
+    INVALID_SESSION(InvalidSessionException.class, ErrorMessageConstants.INVALID_SESSION),
+    ACCOUNT_LOCKED(AccountLockedException.class, ErrorMessageConstants.ACCOUNT_LOCKED);
 
     private ErrorMessage errorMessage;
     private Class<? extends SecurityException> exceptionClass;

@@ -192,6 +192,8 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
     }
 
 
+
+
     private boolean isLeaf(SysOrgBean sysOrgBean){
         return sysOrgBean.getIsLeaf() == 1;
     }
@@ -269,15 +271,58 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public SysOrgBean saveOrUpdate(SysOrgBean sysOrgBean) {
         if(sysOrgBean.getId() == null){
+            //组织code不能包含分隔符
+            if(sysOrgBean.getOrgCode().trim().contains(SysOrgBean.CODE_SPERATOR)){
+                throw ErrorDefine.INVALID_ORG_CODE.toAmbitoException();
+            }
             this.save(sysOrgBean);
         }else {
+            preModifyHandle(sysOrgBean);
             this.update(sysOrgBean);
         }
         List<SysOrgBean> sysOrgBeans = this.query(new StringCondition("orgCode",sysOrgBean.getOrgCode()));
         return sysOrgBeans.get(0);
     }
+
+    private void preModifyHandle(SysOrgBean sysOrgBean) {
+        SysOrgBean oldBean = this.get(sysOrgBean.getId());
+        if(!oldBean.getOrgCode().equals(sysOrgBean.getOrgCode())){
+            updateChildrenCode(oldBean, sysOrgBean);
+        }
+    }
+
+
+    private void updateChildrenCode(SysOrgBean oldBean, SysOrgBean newBean){
+        List<SysOrgBean> childrenOrgs = getChildrenOrgs(oldBean);
+        childrenOrgs.forEach(e->{
+            //直接子级
+            if(e.getParentCode().equals(oldBean.getOrgCode())){
+                e.setParentCode(newBean.getOrgCode());
+                e.setParentCodes(newBean.getParentCodes() + SysOrgBean.CODE_SPERATOR + newBean.getOrgCode());
+            }else {
+                String codeRegex = SysOrgBean.CODE_SPERATOR + oldBean.getOrgCode() + SysOrgBean.CODE_SPERATOR;
+                String codeReplace = SysOrgBean.CODE_SPERATOR + newBean.getOrgCode() + SysOrgBean.CODE_SPERATOR;
+                int index = e.getParentCodes().indexOf(codeRegex);
+                if(index != -1){
+                    e.setParentCodes(e.getParentCodes().replaceFirst(codeRegex, codeReplace));
+                }else {
+                    codeRegex = oldBean.getOrgCode() + SysOrgBean.CODE_SPERATOR;
+                    codeReplace = newBean.getOrgCode() + SysOrgBean.CODE_SPERATOR;
+                    index = e.getParentCodes().indexOf(codeRegex);
+                    if(index != -1){
+                        e.setParentCodes(e.getParentCodes().replaceFirst(codeRegex, codeReplace));
+                    }else {
+                        logger.warn(oldBean.getParentCodes() + " does not contains code " + oldBean.getOrgCode());
+                    }
+                }
+            }
+        });
+    }
+
+
 
     @Override
     public SysOrgBean getOrgTree(Long id) {
