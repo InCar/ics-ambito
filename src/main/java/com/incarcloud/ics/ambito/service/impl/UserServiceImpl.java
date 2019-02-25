@@ -95,7 +95,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
     @Override
     public UserBean getMyInfo() {
         UserBean currentUser = AuthUtils.getCurrentUser();
-        maskCredential(currentUser);
+        if(currentUser != null){
+            maskCredential(currentUser);
+        }
         return currentUser;
     }
 
