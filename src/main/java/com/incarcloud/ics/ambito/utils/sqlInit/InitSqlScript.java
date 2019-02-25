@@ -60,7 +60,7 @@ public class InitSqlScript {
         StringBuffer str = new StringBuffer();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(is));
+            reader = new BufferedReader(new InputStreamReader(is,"utf-8"));
             String temp = null;
             //一次读入一行，直到读入Null为文件结束
             while ((temp = reader.readLine()) != null) {
