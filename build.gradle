@@ -72,6 +72,13 @@ repositories {
     mavenLocal()
     maven { url ALI_MAVEN_URL}
     mavenCentral()
+    maven{
+        url "${MAVEN_URL_SNAPSHOTS}"
+        credentials {
+            username "${MAVEN_AUTH_USERNAME}"
+            password "${MAVEN_AUTH_PASSWORD}"
+        }
+    }
     dependencies{
         compile project("rdb")
         compile project("security")
