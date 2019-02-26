@@ -69,17 +69,17 @@ export default {
                 layer.alert(JSON.stringify(data.field), {
                     title: '最终的提交信息'
                 })
-                // tool.Ajax(`${this.par.apiUrl}/ics/user/login`, data.field, "post")
-                //     .then((data) => {
-                //         console.log(data);
-                //         if (data.code === "200") {
-                //            //
-                //         } else {
-                //             layer.confirm(data.message, {icon: 3, title:'提示'});
-                //         }
-                //     }, (re) => {
-                //         console.log(re);
-                //     })
+                tool.Ajax(`${this.par.apiUrl}/ics/user/login`, data.field, "post")
+                    .then((data) => {
+                        console.log(data);
+                        if (data.code === "200") {
+                           //
+                        } else {
+                            layer.confirm(data.message, {icon: 3, title:'提示'});
+                        }
+                    }, (re) => {
+                        console.log(re);
+                    })
                 return false;
             });
         });
