@@ -38,6 +38,8 @@ public enum ErrorDefine {
 
     PASSWORD_NOT_MATCH("53","密码错误"),
 
+    ORIGIN_PASSWORD_NOT_MATCH("54","原密码错误"),
+
     INVALID_SESSION("55","会话已失效"),
 
     UN_AUTHENTICATED("401","请先登录！"),

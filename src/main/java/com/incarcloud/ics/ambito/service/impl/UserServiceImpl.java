@@ -143,7 +143,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         String oldPassword = userInfo.get("password");
         MD5PasswordMatcher matcher = new MD5PasswordMatcher();
         if(!matcher.isMatch(userBean.getPassword(), oldPassword, userBean.getSalt().getBytes())){
-            throw ErrorDefine.PASSWORD_NOT_MATCH.toAmbitoException();
+            throw ErrorDefine.ORIGIN_PASSWORD_NOT_MATCH.toAmbitoException();
         }
         String newPassword = userInfo.get("newPassword");
         String newSalt = StringUtils.getRandomSecureSalt();
