@@ -131,4 +131,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         return o;
     }
 
+//    @Override
+//    public void updatePassword(Map<String, String> userInfo) {
+//        String username = userInfo.get("username");
+//        List<UserBean> userBeans = this.query(new StringCondition("username", username));
+//        UserBean userBean = userBeans.get(0);
+//        String oldPassword = userInfo.get("password");
+//        MD5PasswordMatcher matcher = new MD5PasswordMatcher();
+//        matcher.assertMatch();
+//        String oldEncrypePassword = AbstractDigestHelper.getMd5SaltHelper(oldPassword.getBytes(), userBean.getSalt().getBytes()).digestToHex();
+//    }
+
 }

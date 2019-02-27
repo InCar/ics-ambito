@@ -24,7 +24,6 @@ import java.util.Set;
 public class MvcConfig extends WebMvcConfigurationSupport {
 
     public static Set<Class<?>> controllers = ClassResolverUtils.findAnnotated(RestController.class, "com.incarcloud.ics.ambito.controller");
-//    public static Set<String> exculdeSuffix = new HashSet<>(Arrays.asList(".js",".css",".svg",".html"));
 
     @Override
     protected RequestMappingHandlerMapping createRequestMappingHandlerMapping() {
@@ -36,6 +35,7 @@ public class MvcConfig extends WebMvcConfigurationSupport {
         @Override
         protected void registerHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
             Class<?> beanType = method.getDeclaringClass();
+            //jar包中的controller需要加上前缀
             if(controllers.contains(beanType)){
                 PatternsRequestCondition apiPattern = new PatternsRequestCondition(Config.getConfig().getUrlPrefix())
                         .combine(mapping.getPatternsCondition());

@@ -115,6 +115,18 @@ public class UserController {
     }
 
     /**
+     * 更新用户信息
+     * @param userInfo
+     * @return
+     */
+    @PostMapping(value = "/updatePassword")
+    public JsonMessage updatePassword(@RequestBody Map<String,String> userInfo){
+//        userService.updatePassword(userInfo);
+        return JsonMessage.success();
+    }
+
+
+    /**
      * 删除用户
      * @param id
      * @return

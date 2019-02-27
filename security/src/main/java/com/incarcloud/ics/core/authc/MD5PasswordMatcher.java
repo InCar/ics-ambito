@@ -15,11 +15,12 @@ public class MD5PasswordMatcher implements CredentialMatcher {
 
     @Override
     public void assertMatch(AuthenticateInfo authenticateInfo, String credential) {
-        DigestHelper md5Helper = AbstractDigestHelper.getMd5SaltHelper(credential.getBytes(), authenticateInfo.getCredentialSalt());
-        if(md5Helper == null){
-            throw new CredentialNotMatchException("No digest helper configured");
-        }
-        if(!authenticateInfo.getCredential().equals(md5Helper.digestToBase64())){
+        assertMatch(authenticateInfo.getCredential(), credential, authenticateInfo.getCredentialSalt());
+    }
+
+    public void assertMatch(Object credential, String password, byte[] salt){
+        DigestHelper md5Helper = AbstractDigestHelper.getMd5SaltHelper(password.getBytes(), salt);
+        if(md5Helper == null || !credential.equals(md5Helper.digestToBase64())){
             throw new CredentialNotMatchException("Credential match failed!");
         }
     }
