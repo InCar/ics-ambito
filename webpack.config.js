@@ -5,7 +5,7 @@ module.exports = {
   // mode: "production",
   entry: ['@babel/polyfill', "./src/main/resources/static/js/index.js"],
   output: {
-    path: __dirname + "/src/main/resources/static/dist",
+    path: __dirname + "/src/main/resources/ics",
     filename: "testbundle.js"
   },
   resolve: {
