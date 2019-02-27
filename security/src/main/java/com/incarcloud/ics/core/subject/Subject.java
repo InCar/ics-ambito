@@ -40,5 +40,4 @@ public interface Subject {
     Principal getPrincipal();
     ServletRequest getServletRequest();
     ServletResponse getServletResponse();
-
 }

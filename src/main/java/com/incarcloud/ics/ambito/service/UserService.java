@@ -6,6 +6,7 @@ import com.incarcloud.ics.ambito.jdbc.BaseService;
 import com.incarcloud.ics.core.authc.UsernamePasswordToken;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ThomasChan
@@ -28,5 +29,5 @@ public interface UserService extends BaseService<UserBean> {
 
     Object query(Long id, String username, String phone, String realName, String createUser, Integer pageNum, Integer pageSize);
 
-//    void updatePassword(Map<String, String> passwords);
+    void updatePassword(Map<String, String> userInfo);
 }

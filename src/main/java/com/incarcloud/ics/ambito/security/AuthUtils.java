@@ -1,9 +1,14 @@
 package com.incarcloud.ics.ambito.security;
 
 import com.incarcloud.ics.ambito.entity.UserBean;
+import com.incarcloud.ics.core.principal.SimplePrincipal;
+import com.incarcloud.ics.core.realm.*;
+import com.incarcloud.ics.core.security.SecurityManager;
 import com.incarcloud.ics.core.security.SecurityUtils;
 import com.incarcloud.ics.core.session.Session;
 import com.incarcloud.ics.core.subject.Subject;
+
+import java.util.List;
 
 /**
  * @author ThomasChan
@@ -44,4 +49,32 @@ public final class AuthUtils {
         session.setAttribute("myInfo", userBean);
         return userBean;
     }
+
+
+    public static void clearAuthCache(){
+        SecurityManager securityManager = SecurityUtils.getSecurityManager();
+        List<Realm> realms = securityManager.getRealms();
+        realms.forEach(realm -> {
+            if(realm instanceof AuthenticateRealm){
+                ((AuthenticateRealm) realm).clearAuthenticateCache();
+            }
+            if(realm instanceof AuthorizeRealm){
+                ((AuthorizeRealm) realm).clearAuthorizeCache();
+            }
+            if(realm instanceof AccessRealm){
+                ((AccessRealm) realm).clearAccessCache();
+            }
+        });
+    }
+
+    public static void clearUserAuthCache(SimplePrincipal simplePrincipal){
+        SecurityManager securityManager = SecurityUtils.getSecurityManager();
+        List<Realm> realms = securityManager.getRealms();
+        realms.forEach(realm -> {
+            if(realm instanceof CacheRealm){
+                ((CacheRealm) realm).doClearCache(simplePrincipal);
+            }
+        });
+    }
+
 }

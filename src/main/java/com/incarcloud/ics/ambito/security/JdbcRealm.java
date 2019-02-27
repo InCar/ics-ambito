@@ -154,4 +154,10 @@ public class JdbcRealm extends AccessRealm {
         DataFilter accessTable = aEntityClass.getAnnotation(DataFilter.class);
         return accessTable.tableName();
     }
+
+    public void clearAllAuthCache(){
+        clearAuthenticateCache();
+        clearAuthorizeCache();
+        clearAuthenticateCache();
+    }
 }

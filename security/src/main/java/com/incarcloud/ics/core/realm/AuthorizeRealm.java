@@ -70,11 +70,18 @@ public abstract class AuthorizeRealm extends AuthenticateRealm{
         return null;
     }
 
-    protected void doClearCache(Principal principal){
+    public void doClearCache(Principal principal){
         super.doClearCache(principal);
         Cache<String, Object> authorizeInfoCache = doGetCache(AUTHORIZE_CACHE_NAME);
         if (authorizeInfoCache != null) {
             authorizeInfoCache.remove(principal.getUserIdentity());
+        }
+    }
+
+    public void clearAuthorizeCache(){
+        Cache<String, Object> authorizeInfoCache = doGetCache(AUTHORIZE_CACHE_NAME);
+        if(authorizeInfoCache != null){
+            authorizeInfoCache.clear();
         }
     }
 }

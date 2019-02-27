@@ -94,7 +94,7 @@ public abstract class AuthenticateRealm extends CacheRealm {
     protected abstract AuthenticateInfo doGetAuthenticateInfo(AuthenticateToken authenticateToken) throws AuthenticationException;
 
     @Override
-    protected void doClearCache(Principal principal){
+    public void doClearCache(Principal principal){
         super.doClearCache(principal);
         Cache<String, Object> authenticateInfoCache = doGetCache(AUTHENTICATE_CACHE_NAME);
         if(authenticateInfoCache != null){
@@ -102,4 +102,10 @@ public abstract class AuthenticateRealm extends CacheRealm {
         }
     }
 
+    public void clearAuthenticateCache(){
+        Cache<String, Object> authenticateCache = doGetCache(AUTHENTICATE_CACHE_NAME);
+        if(authenticateCache != null){
+            authenticateCache.clear();
+        }
+    }
 }

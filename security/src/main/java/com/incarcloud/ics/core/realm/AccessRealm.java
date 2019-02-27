@@ -98,7 +98,7 @@ public abstract class AccessRealm extends AuthorizeRealm {
         return null;
     }
 
-    protected void doClearCache(Principal principal){
+    public void doClearCache(Principal principal){
         super.doClearCache(principal);
         Cache<String, Object> accessInfoCache = doGetCache(ACCESS_INFO_CACHE_NAME);
         if (accessInfoCache != null) {
@@ -120,6 +120,14 @@ public abstract class AccessRealm extends AuthorizeRealm {
                 return false;
             }
         }
-
     }
+
+    public void clearAccessCache(){
+        Cache<String, Object> accessCache = doGetCache(ACCESS_INFO_CACHE_NAME);
+        if(accessCache != null){
+            accessCache.clear();
+        }
+    }
+
+
 }

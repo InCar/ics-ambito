@@ -72,6 +72,6 @@ public abstract class CacheRealm implements Realm, LogoutAware {
         doClearCache(principal);
     }
 
-    protected void doClearCache(Principal principal){
+    public void doClearCache(Principal principal){
     }
 }

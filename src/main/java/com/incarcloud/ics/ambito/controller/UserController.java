@@ -121,7 +121,7 @@ public class UserController {
      */
     @PostMapping(value = "/updatePassword")
     public JsonMessage updatePassword(@RequestBody Map<String,String> userInfo){
-//        userService.updatePassword(userInfo);
+        userService.updatePassword(userInfo);
         return JsonMessage.success();
     }
 

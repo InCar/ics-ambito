@@ -127,10 +127,10 @@ public abstract class AbstractDigestHelper implements DigestHelper {
         return newInstance(algorithm, source, salt, DEFAULT_ITERATION);
     }
 
-//    public static void main(String[] args) {
-//        DigestHelper digestHelper = AbstractDigestHelper.newInstance(Algorithm.MD5, "123456".getBytes(), null, 1);
-//        System.out.println(digestHelper.digestToHex());
-//        DigestHelper digestHelper1 = AbstractDigestHelper.newInstance(Algorithm.MD5, "e10adc3949ba59abbe56e057f20f883e".getBytes(), "Sk3rMg==".getBytes(), 2);
-//        System.out.println(digestHelper1.digestToBase64());
-//    }
+    public static void main(String[] args) {
+        DigestHelper digestHelper = AbstractDigestHelper.newInstance(Algorithm.MD5, "12345".getBytes(), null, 1);
+        System.out.println(digestHelper.digestToHex());
+        DigestHelper digestHelper1 = AbstractDigestHelper.newInstance(Algorithm.MD5, "e10adc3949ba59abbe56e057f20f883e".getBytes(), "Sk3rMg==".getBytes(), 2);
+        System.out.println(digestHelper1.digestToBase64());
+    }
 }

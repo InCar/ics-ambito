@@ -14,18 +14,22 @@ import com.incarcloud.ics.ambito.service.SysOrgUserService;
 import com.incarcloud.ics.ambito.service.UserService;
 import com.incarcloud.ics.ambito.utils.CollectionUtils;
 import com.incarcloud.ics.ambito.utils.StringUtils;
+import com.incarcloud.ics.core.authc.MD5PasswordMatcher;
 import com.incarcloud.ics.core.authc.UsernamePasswordToken;
 import com.incarcloud.ics.core.crypo.AbstractDigestHelper;
 import com.incarcloud.ics.core.crypo.DigestHelper;
+import com.incarcloud.ics.core.principal.SimplePrincipal;
 import com.incarcloud.ics.core.security.SecurityUtils;
 import com.incarcloud.ics.core.subject.Subject;
 import com.incarcloud.ics.log.Logger;
 import com.incarcloud.ics.log.LoggerFactory;
+import com.incarcloud.ics.pojo.ErrorDefine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -131,15 +135,24 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         return o;
     }
 
-//    @Override
-//    public void updatePassword(Map<String, String> userInfo) {
-//        String username = userInfo.get("username");
-//        List<UserBean> userBeans = this.query(new StringCondition("username", username));
-//        UserBean userBean = userBeans.get(0);
-//        String oldPassword = userInfo.get("password");
-//        MD5PasswordMatcher matcher = new MD5PasswordMatcher();
-//        matcher.assertMatch();
-//        String oldEncrypePassword = AbstractDigestHelper.getMd5SaltHelper(oldPassword.getBytes(), userBean.getSalt().getBytes()).digestToHex();
-//    }
+    @Override
+    public void updatePassword(Map<String, String> userInfo) {
+        String username = userInfo.get("username");
+        List<UserBean> userBeans = this.query(new StringCondition("username", username));
+        UserBean userBean = userBeans.get(0);
+        String oldPassword = userInfo.get("password");
+        MD5PasswordMatcher matcher = new MD5PasswordMatcher();
+        if(!matcher.isMatch(userBean.getPassword(), oldPassword, userBean.getSalt().getBytes())){
+            throw ErrorDefine.PASSWORD_NOT_MATCH.toAmbitoException();
+        }
+        String newPassword = userInfo.get("newPassword");
+        String newSalt = StringUtils.getRandomSecureSalt();
+        DigestHelper digestHelper = AbstractDigestHelper.getMd5SaltHelper(newPassword.getBytes(),newSalt.getBytes());
+        userBean.setPassword(digestHelper.digestToBase64());
+        userBean.setSalt(newSalt);
+        this.update(userBean);
+        AuthUtils.clearUserAuthCache(new SimplePrincipal(username));
+        //hhDT8lNj7jRew1PcvVPRvQ==
+    }
 
 }
