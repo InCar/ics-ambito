@@ -133,11 +133,15 @@ public class ResourceUtils {
         List<InputStream> inputStreamList = new ArrayList<>();
         if(uri.getScheme().contains("jar")){
             /** jar case */
-            DirectoryStream<Path> directoryStream = getResourcesAsStreamOfJar(clazz, folder);
-            for(Path p: directoryStream){
-                InputStream is = clazz.getResourceAsStream(p.toString());
-                inputStreamList.add(is);
+            try(DirectoryStream<Path> directoryStream = getResourcesAsStreamOfJar(clazz, folder)){
+                for(Path p: directoryStream){
+                    InputStream is = clazz.getResourceAsStream(p.toString());
+                    inputStreamList.add(is);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
             }
+
         }else {
             /** IDE case */
             Path path = Paths.get(uri);
