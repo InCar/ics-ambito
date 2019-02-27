@@ -18,13 +18,13 @@ var PermissionInfo = {
 	Tree: function(options) {
 		this._initial(options);
 	},
-	Login: function(options) {
-		this._initial(options);
+	Login: function(options,cb) {
+		this._initial(options, cb);
 	},
 	Vehicle: function(options) {
 		this._initial(options);
 	}
-}
+};
 PermissionInfo.Table.prototype = table;
 PermissionInfo.Tree.prototype = tree;
 PermissionInfo.Login.prototype = login;

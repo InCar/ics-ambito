@@ -1,8 +1,9 @@
 import * as tool from "./tool.js";
-import layui from "./config"
+import layui from "./config";
+import md5 from 'md5';
 export default {
     constructor: this,
-    _initial: function(options) {
+    _initial: function(options, cb) {
         var par = {
             elem: '',
             apiUrl: "",
@@ -20,9 +21,9 @@ export default {
         this.listeners = []; //自定义事件，用于监听插件的用户交互
         this.handlers = {};
         this.dom = document.getElementById(this.par.elem);
-        this.init(this.par);
+        this.init(this.par, cb);
     },
-    init: function(obj) {
+    init: function(obj, cb) {
         let str = `<form class="layui-form" action="" lay-filter="example">
     <div class="layui-form-item">
       <label class="layui-form-label">${obj.config.nameLabel}</label>
@@ -43,9 +44,10 @@ export default {
     </div>
   </form>`
         this.dom.innerHTML = str;
-        this.formSubmit();
+        this.formSubmit(cb);
     },
-    formSubmit: function(){
+    formSubmit: function(cb){
+        let _this = this;
         layui.use(['form'], function() {
             var form = layui.form
 
@@ -66,22 +68,29 @@ export default {
             });
             //监听提交
             form.on('submit(formDemo)', function(data){
-                layer.alert(JSON.stringify(data.field), {
-                    title: '最终的提交信息'
-                })
-                tool.Ajax(`${this.par.apiUrl}/ics/user/login`, data.field, "post")
-                    .then((data) => {
-                        console.log(data);
-                        if (data.code === "200") {
-                           //
-                        } else {
-                            layer.confirm(data.message, {icon: 3, title:'提示'});
-                        }
-                    }, (re) => {
-                        console.log(re);
-                    })
+                _this.loginSubmit(data,cb);
                 return false;
             });
         });
-    }
+    },
+    /**
+     * 登录 api
+     */
+    loginSubmit: function (data,cb) {
+        let params = tool.extend({}, data.field, true);
+        params.password = md5(params.password);
+        tool.Ajax(`${this.par.apiUrl}/ics/user/login`, params, "post")
+            .then((data) => {
+                if (data.result) {
+                    // transfer.onsuccess(data.data);
+                    cb(data);
+                } else {
+                    cb(data);
+                    layer.confirm(data.message, {icon: 3, title:'提示'});
+                }
+            }, (re) => {
+                console.log(re);
+                cb(re);
+            });
+    },
 };

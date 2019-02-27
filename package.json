@@ -4,7 +4,8 @@
   "description": "权限",
   "main": "index.js",
   "dependencies": {
-    "layui-src": "^2.4.5"
+    "layui-src": "^2.4.5",
+    "md5": "^2.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
