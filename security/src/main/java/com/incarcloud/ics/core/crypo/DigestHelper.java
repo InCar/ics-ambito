@@ -8,6 +8,7 @@ package com.incarcloud.ics.core.crypo;
  */
 public interface DigestHelper {
     String digestToBase64();
+    String digestToHex();
 
     enum Algorithm{
         MD5("MD5"),

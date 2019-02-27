@@ -141,8 +141,7 @@ public class ResourceUtils {
         }else {
             /** IDE case */
             Path path = Paths.get(uri);
-            try {
-                DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
+            try(DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);) {
                 for(Path p : directoryStream){
                     InputStream is = new FileInputStream(p.toFile());
                     inputStreamList.add(is);

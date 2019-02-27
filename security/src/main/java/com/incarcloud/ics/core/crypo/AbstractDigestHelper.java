@@ -1,6 +1,7 @@
 package com.incarcloud.ics.core.crypo;
 
 import com.incarcloud.ics.core.exception.SecurityException;
+import com.incarcloud.ics.core.utils.StringUtils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -65,6 +66,15 @@ public abstract class AbstractDigestHelper implements DigestHelper {
         return base64Encode;
     }
 
+    @Override
+    public String digestToHex() {
+        if(base64Encode == null){
+            base64Encode = StringUtils.bytesToHexString(getBytes());
+        }
+        return base64Encode;
+    }
+
+
 
     protected byte[] hash(byte[] source, byte[] salt, int iteration) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance(getAlgorithmName());
@@ -117,4 +127,11 @@ public abstract class AbstractDigestHelper implements DigestHelper {
     public static DigestHelper newInstance(DigestHelper.Algorithm algorithm, byte[] source, byte[] salt)  {
         return newInstance(algorithm, source, salt, DEFAULT_ITERATION);
     }
+
+//    public static void main(String[] args) {
+//        DigestHelper digestHelper = AbstractDigestHelper.newInstance(Algorithm.MD5, "123456".getBytes(), null, 1);
+//        System.out.println(digestHelper.digestToHex());
+//        DigestHelper digestHelper1 = AbstractDigestHelper.newInstance(Algorithm.MD5, "e10adc3949ba59abbe56e057f20f883e".getBytes(), "Sk3rMg==".getBytes(), 2);
+//        System.out.println(digestHelper1.digestToBase64());
+//    }
 }

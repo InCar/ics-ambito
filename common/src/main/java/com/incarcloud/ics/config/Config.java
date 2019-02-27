@@ -24,6 +24,11 @@ public class Config {
     private boolean deleteOrgRecursion;
 
     /**
+     * url前缀
+     */
+    private String urlPrefix;
+
+    /**
      * 缓存配置
      */
     private Map<String,CacheConfig> cacheConfigMap;
@@ -45,6 +50,7 @@ public class Config {
         this.logConfig = builder.logConfig;
         this.organizationType = builder.organizationType;
         this.cacheConfigMap = builder.cacheConfigMap;
+        this.urlPrefix = builder.urlPrefix;
     }
 
     public static Config getConfig(){
@@ -61,6 +67,10 @@ public class Config {
 
     static LogConfig getDefaultLogConfig() {
         return new LogConfig();
+    }
+
+    public String getUrlPrefix() {
+        return urlPrefix;
     }
 
     public boolean isDeleteOrgRecursion() {
@@ -91,6 +101,7 @@ public class Config {
     }
 
     public static class ConfigBuilder{
+        public String urlPrefix;
         private boolean deleteOrgRecursion;
         private LogConfig logConfig;
         private OrganizationType organizationType;
@@ -100,6 +111,7 @@ public class Config {
             this.deleteOrgRecursion = false;
             this.logConfig = Config.getDefaultLogConfig();
             this.organizationType = OrganizationType.STANDARD;
+            this.urlPrefix = "ics";
             this.cacheConfigMap = Arrays.stream(
                     new CacheConfig[]{
                     CacheConfig.getDefaultConfigOfCache("authorizingCache"),
@@ -126,6 +138,11 @@ public class Config {
 
         public ConfigBuilder setOrganizationType(OrganizationType organizationType) {
             this.organizationType = organizationType;
+            return this;
+        }
+
+        public ConfigBuilder setUrlPrefix(String urlPrefix) {
+            this.urlPrefix = urlPrefix;
             return this;
         }
 

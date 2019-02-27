@@ -17,7 +17,7 @@ import java.util.List;
  * @version 1.0
  * @create_date 2018/12/26
  */
-@RequestMapping(value = "/ics/orgUser")
+@RequestMapping(value = "/orgUser")
 @RestController
 public class SysOrgUserController {
 

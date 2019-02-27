@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * @description
  * @date 2018/12/24
  */
-@RequestMapping(value = "/ics/user")
+@RequestMapping(value = "/user")
 @RestController
 public class UserController {
 

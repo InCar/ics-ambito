@@ -62,7 +62,7 @@ allprojects {
     ext{
         servletVersion="4.0.1"
         mysqlJdbcVersion="8.0.11"
-        springVersion="5.1.3.RELEASE"
+        springVersion="4.3.22.RELEASE"
         skeletonVersion="3.6-SNAPSHOT"
     }
 }

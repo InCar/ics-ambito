@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * @version 1.0
  * @create_date 2018/12/26
  */
-@RequestMapping(value = "/ics/sysorg")
+@RequestMapping(value = "/sysorg")
 @RestController
 public class SysOrgController {
 

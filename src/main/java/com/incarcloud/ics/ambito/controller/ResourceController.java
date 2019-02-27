@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * @description
  * @date 2018/12/24
  */
-@RequestMapping(value = "/ics/resource")
+@RequestMapping(value = "/resource")
 @RestController
 public class ResourceController {
 

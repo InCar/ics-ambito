@@ -101,6 +101,7 @@ public class PropertiesLoader {
                         .withLevel(parseLevel(properties)))
                 .setDeleteOrgRecursion(Boolean.parseBoolean(properties.getProperty("deleteOrgRecursion")))
                 .setOrganizationType(parseOrganizationType(properties))
+                .setUrlPrefix(properties.getProperty("urlPrefix"))
                 .build();
     }
 
