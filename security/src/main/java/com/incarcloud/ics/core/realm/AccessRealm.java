@@ -122,7 +122,8 @@ public abstract class AccessRealm extends AuthorizeRealm {
         }
     }
 
-    public void clearAccessCache(){
+    public void clearCachedInfo(){
+        super.clearCachedInfo();
         Cache<String, Object> accessCache = doGetCache(ACCESS_INFO_CACHE_NAME);
         if(accessCache != null){
             accessCache.clear();

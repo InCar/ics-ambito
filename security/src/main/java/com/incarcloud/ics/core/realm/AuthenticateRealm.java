@@ -102,7 +102,7 @@ public abstract class AuthenticateRealm extends CacheRealm {
         }
     }
 
-    public void clearAuthenticateCache(){
+    public void clearCachedInfo(){
         Cache<String, Object> authenticateCache = doGetCache(AUTHENTICATE_CACHE_NAME);
         if(authenticateCache != null){
             authenticateCache.clear();

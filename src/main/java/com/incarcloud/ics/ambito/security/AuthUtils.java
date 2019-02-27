@@ -54,27 +54,23 @@ public final class AuthUtils {
     public static void clearAuthCache(){
         SecurityManager securityManager = SecurityUtils.getSecurityManager();
         List<Realm> realms = securityManager.getRealms();
-        realms.forEach(realm -> {
-            if(realm instanceof AuthenticateRealm){
-                ((AuthenticateRealm) realm).clearAuthenticateCache();
-            }
-            if(realm instanceof AuthorizeRealm){
-                ((AuthorizeRealm) realm).clearAuthorizeCache();
-            }
+        if(!realms.isEmpty()){
+            Realm realm = realms.get(0);
             if(realm instanceof AccessRealm){
-                ((AccessRealm) realm).clearAccessCache();
+                ((AccessRealm) realm).clearCachedInfo();
             }
-        });
+        }
     }
 
     public static void clearUserAuthCache(SimplePrincipal simplePrincipal){
         SecurityManager securityManager = SecurityUtils.getSecurityManager();
         List<Realm> realms = securityManager.getRealms();
-        realms.forEach(realm -> {
+        if(!realms.isEmpty()){
+            Realm realm = realms.get(0);
             if(realm instanceof CacheRealm){
                 ((CacheRealm) realm).doClearCache(simplePrincipal);
             }
-        });
+        }
     }
 
 }

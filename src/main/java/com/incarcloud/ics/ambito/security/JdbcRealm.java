@@ -155,9 +155,4 @@ public class JdbcRealm extends AccessRealm {
         return accessTable.tableName();
     }
 
-    public void clearAllAuthCache(){
-        clearAuthenticateCache();
-        clearAuthorizeCache();
-        clearAuthenticateCache();
-    }
 }
