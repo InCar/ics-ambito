@@ -1,8 +1,13 @@
-import 'layui-src';
-import 'layui-src/dist/css/layui.css';
-console.log(window.location.host);
-layui.config({
-  dir: 'http://' + window.location.host + '/dist/'
-})
+// import 'layui-src';
+// import 'layui-src/dist/css/layui.css';
+// console.log(window.location.host);
+// layui.config({
+//   dir: 'http://' + window.location.host + '/dist/'
+// })
+//
+// export default layui
 
-export default layui
+require('../../ics/layui');
+require('../../ics/css/layui.css');
+
+export default layui;
