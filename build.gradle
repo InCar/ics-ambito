@@ -1,6 +1,6 @@
 allprojects {
     group 'com.incarcloud.ics'
-    version '2.8.6-SNAPSHOT'
+    version '2.8.9-SNAPSHOT'
 
     apply plugin: 'java'
     apply plugin: 'maven-publish'
@@ -62,7 +62,7 @@ allprojects {
     ext{
         servletVersion="4.0.1"
         mysqlJdbcVersion="8.0.11"
-        springVersion="4.3.22.RELEASE"
+        springVersion="5.0.7.RELEASE"
         skeletonVersion="3.6-SNAPSHOT"
     }
 }
