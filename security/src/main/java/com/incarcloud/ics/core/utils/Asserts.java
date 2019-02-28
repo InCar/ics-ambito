@@ -36,4 +36,10 @@ public class Asserts {
             throw new IllegalArgumentException("This argument [ "+argName +" ] can't be null!");
         }
     }
+
+    public static void assertTrue(boolean b, String s) {
+        if(!b){
+            throw new IllegalArgumentException(s);
+        }
+    }
 }

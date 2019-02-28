@@ -1,7 +1,12 @@
 package com.incarcloud.ics.core.cache;
 
+import com.incarcloud.ics.core.utils.Asserts;
+
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -25,6 +30,7 @@ public class LRUCache<K,V> implements Cache<K,V> ,Serializable {
     }
 
     public LRUCache(int maxSize) {
+        Asserts.assertTrue(maxSize >= 1, "maxSize must bigger than 0");
         this.backingMap = new LinkedHashMap<K,V>(maxSize, DEFAULT_LOAD_FACTOR, true){
             private static final long serialVersionUID = -6685883371757818096L;
             @Override
@@ -57,6 +63,17 @@ public class LRUCache<K,V> implements Cache<K,V> ,Serializable {
             lock.unlock();
         }
     }
+
+    @Override
+    public boolean hasKey(K key){
+        try {
+            lock.lock();
+            return this.backingMap.containsKey(key);
+        } finally {
+            lock.unlock();
+        }
+    }
+
 
     protected V doPut(K key, V value){
         return backingMap.put(key, value);

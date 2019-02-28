@@ -9,6 +9,8 @@ public interface Cache<K,V> {
 
     V put(K k, V v);
 
+    boolean hasKey(K key);
+
     V remove(K k);
 
     int size();

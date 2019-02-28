@@ -101,6 +101,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         UserBean currentUser = AuthUtils.getCurrentUser();
         if(currentUser != null){
             maskCredential(currentUser);
+        }else {
+            throw ErrorDefine.UN_AUTHENTICATED.toAmbitoException();
         }
         return currentUser;
     }

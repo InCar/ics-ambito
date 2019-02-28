@@ -29,9 +29,9 @@ public class ValidatingLRUCache<K,V> extends NamedLRUCache<K,V> {
     private long timeToLiveSeconds;
 
     /**
-     * 保存缓存的开始时间戳，用于判断缓存是否失效
+     * 保存缓存的最后访问时间戳，用于判断缓存是否失效
      */
-    private final Map<K,Long> startTimestampMap;
+    private final Map<K,Long> lastAccessTimestampMap;
 
     public ValidatingLRUCache(String name, int maxSize, long timeToLiveSeconds) {
         this(IS_EXTERNAL, name, maxSize, timeToLiveSeconds);
@@ -45,7 +45,7 @@ public class ValidatingLRUCache<K,V> extends NamedLRUCache<K,V> {
         super(maxSize, name);
         this.eternal = external;
         this.timeToLiveSeconds = timeToLiveSeconds;
-        this.startTimestampMap = startTimestampMap;
+        this.lastAccessTimestampMap = startTimestampMap;
     }
 
 
@@ -63,15 +63,24 @@ public class ValidatingLRUCache<K,V> extends NamedLRUCache<K,V> {
         if(timeToLiveSeconds <= 0){
             return true;
         }
+
         //没有开始时间，表明该key没有进行缓存
-        if(getStartTimestamp(key) == null){
+        if(getLastAccessTimestamp(key) == null){
             return false;
         }
-        return getTimeToLiveSeconds() > getAlreadyLiveSeconds(key);
+        //没有缓存的key
+        if(!hasKey(key)){
+            return false;
+        }
+        //已存在时间大于最大存在时间
+        if(getLiveSecondsAfterLastAccess(key) > getTimeToLiveSeconds()){
+            return false;
+        }
+        return true;
     }
 
-    private long getAlreadyLiveSeconds(K key){
-        return (new Date().getTime() - getStartTimestamp(key))/1000;
+    private long getLiveSecondsAfterLastAccess(K key){
+        return (new Date().getTime() - getLastAccessTimestamp(key))/1000;
     }
 
     public long getTimeToLiveSeconds() {
@@ -82,8 +91,8 @@ public class ValidatingLRUCache<K,V> extends NamedLRUCache<K,V> {
         this.timeToLiveSeconds = timeToLiveSeconds;
     }
 
-    public Long getStartTimestamp(K k){
-        return startTimestampMap.get(k);
+    public Long getLastAccessTimestamp(K k){
+        return lastAccessTimestampMap.get(k);
     }
 
     public boolean isEternal() {
@@ -96,23 +105,26 @@ public class ValidatingLRUCache<K,V> extends NamedLRUCache<K,V> {
 
 
     /**
-     * 每次查询缓存之前先判断缓存是否已失效，如果已经失效则移除该缓存并返回null
+     * 每次查询缓存之前先判断缓存是否已失效，如果已经失效则移除该缓存并返回null,并将访问时间移除
+     * 如果未失效则更新最后访问时间，并返回缓存
      * @param key
      * @return
      */
     @Override
     protected V doGet(K key) {
         if(isValid(key)){
+            lastAccessTimestampMap.put(key, new Date().getTime());
             return super.doGet(key);
         }else {
             super.remove(key);
+            lastAccessTimestampMap.remove(key);
             return null;
         }
     }
 
 
     /**
-     * 每次put后更新缓存的开始时间戳
+     * 每次put后更新缓存的最后访问时间戳
      * @param key
      * @param value
      * @return
@@ -120,7 +132,7 @@ public class ValidatingLRUCache<K,V> extends NamedLRUCache<K,V> {
     @Override
     protected V doPut(K key, V value) {
         V v = super.doPut(key, value);
-        startTimestampMap.put(key, new Date().getTime());
+        lastAccessTimestampMap.put(key, new Date().getTime());
         return v;
     }
 
