@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2013-Now http://jeesite.com All rights reserved.
  */
-package com.incarcloud.ics.core.utils;
+package com.incarcloud.ics.utils;
 
 import com.incarcloud.ics.log.Logger;
 import com.incarcloud.ics.log.LoggerFactory;

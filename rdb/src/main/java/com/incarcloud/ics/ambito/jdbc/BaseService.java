@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public interface BaseService<T> {
+public interface BaseService<T> extends AuthDataClearable {
 
      T get(Serializable id);
 
@@ -58,4 +58,5 @@ public interface BaseService<T> {
      int deleteBatch(Serializable[] ids);
 
      int delete(Condition condition);
+
 }

@@ -18,7 +18,6 @@ import com.incarcloud.ics.core.authc.MD5PasswordMatcher;
 import com.incarcloud.ics.core.authc.UsernamePasswordToken;
 import com.incarcloud.ics.core.crypo.AbstractDigestHelper;
 import com.incarcloud.ics.core.crypo.DigestHelper;
-import com.incarcloud.ics.core.principal.SimplePrincipal;
 import com.incarcloud.ics.core.security.SecurityUtils;
 import com.incarcloud.ics.core.subject.Subject;
 import com.incarcloud.ics.log.Logger;
@@ -153,8 +152,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserBean> implements UserSe
         userBean.setPassword(digestHelper.digestToBase64());
         userBean.setSalt(newSalt);
         this.update(userBean);
-        AuthUtils.clearUserAuthCache(new SimplePrincipal(username));
-        //hhDT8lNj7jRew1PcvVPRvQ==
     }
 
+    @Override
+    protected void doClearCachedAuthData() {
+        AuthUtils.clearAuthCache();
+    }
 }

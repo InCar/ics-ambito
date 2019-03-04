@@ -22,8 +22,8 @@ public class BaseServiceImpl<T> implements BaseService<T> {
 
     @Autowired
     BaseDao<T> baseDao;
-      
-    /** 
+
+    /**
      * 获取实体 
      * @param id 对象的id(Serializable) 
      * @return T 对象
@@ -210,8 +210,10 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      * @return int 更新的数量
      */  
     @Override  
-    public int update(String sql, List<Object> params) {  
-        return baseDao.update(sql, params);  
+    public int update(String sql, List<Object> params) {
+        baseDao.update(sql, params);
+        clearCachedAuthData();
+        return 1;
     }  
   
     /** 
@@ -221,7 +223,9 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      */  
     @Override  
     public int update(T t) {
-        return baseDao.update(t);  
+        baseDao.update(t);
+        clearCachedAuthData();
+        return 1;
     }  
       
     /** 
@@ -231,7 +235,9 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      */  
     @Override  
     public int update(T value,T template) {
-        return baseDao.update(value,template);  
+        baseDao.update(value,template);
+        clearCachedAuthData();
+        return 1;
     }  
   
     /** 
@@ -241,7 +247,9 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      */  
     @Override  
     public int save(T t) {
-        return baseDao.save(t);  
+        baseDao.save(t);
+        clearCachedAuthData();
+        return 1;
     }
 
 
@@ -253,6 +261,7 @@ public class BaseServiceImpl<T> implements BaseService<T> {
     @Override
     public int saveBatch(Collection<T> ts) {
         ts.forEach(this::save);
+        clearCachedAuthData();
         return ts.size();
     }
 
@@ -265,7 +274,9 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      */  
     @Override  
     public int save(String sql, List<Object> params) {  
-        return baseDao.save(sql, params);  
+         int n = baseDao.save(sql, params);
+         clearCachedAuthData();
+         return n;
     }  
   
     /** 
@@ -275,7 +286,9 @@ public class BaseServiceImpl<T> implements BaseService<T> {
      */  
     @Override
     public int delete(Serializable id) {  
-        return baseDao.delete(id);  
+        baseDao.delete(id);
+        clearCachedAuthData();
+        return 1;
     }
 
 
@@ -290,13 +303,30 @@ public class BaseServiceImpl<T> implements BaseService<T> {
         for(Serializable id : ids){
             delete(id);
         }
+        clearCachedAuthData();
         return ids.length;
     }
 
 
     @Override
     public int delete(Condition condition) {
-        return baseDao.delete(condition);
+        int n = baseDao.delete(condition);
+        clearCachedAuthData();
+        return n;
     }
 
+
+    public void clearCachedAuthData(){
+        if(isClearRequired()){
+            doClearCachedAuthData();
+        }
+    }
+
+    protected void doClearCachedAuthData(){
+    }
+
+    @Override
+    public boolean isClearRequired(){
+        return true;
+    }
 }  

@@ -5,7 +5,7 @@ import com.incarcloud.ics.core.access.DataFilter;
 import com.incarcloud.ics.core.cache.Cache;
 import com.incarcloud.ics.core.principal.Principal;
 import com.incarcloud.ics.core.utils.Asserts;
-import com.incarcloud.ics.core.utils.ClassResolverUtils;
+import com.incarcloud.ics.utils.ClassResolverUtils;
 import com.incarcloud.ics.core.utils.StringUtils;
 
 import java.util.Set;

@@ -2,7 +2,7 @@ package com.incarcloud.ics.ambito.config;
 
 
 import com.incarcloud.ics.config.Config;
-import com.incarcloud.ics.core.utils.ClassResolverUtils;
+import com.incarcloud.ics.utils.ClassResolverUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
