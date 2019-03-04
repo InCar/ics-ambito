@@ -10,43 +10,74 @@
     <link rel="stylesheet" type="text/css" href="../ics/index.css" />
     <style>
         .tableStyle {
-            width: 800px;
-            margin: auto
+            width: auto;
+            margin: auto;
+            padding: 10px;
         }
     </style>
 </head>
 <body>
 <div class="tableStyle">
-    <span style="cursor:pointer" id="btn">导出</span>
-    <span style="cursor:pointer" id="searchData">搜索</span>
-    <span style="cursor:pointer" id="add">新增</span>
-    <table id="demo" lay-even lay-filter="test" >
-    </table>
+    <div>
+        账号：
+        <div class="layui-inline">
+            <input class="layui-input" name="id" id="demoReload" autocomplete="off" value="admin">
+        </div>
+        <button class="layui-btn layui-btn-norma" id="searchData">搜索</button>
+        <button class="layui-btn layui-btn-norma" id="add">新增</button>
+        <button class="layui-btn layui-btn-norma" id="btn">导出</button>
+    </div>
+    <table id="demo" lay-even lay-filter="test"></table>
 </div>
 <script src="../ics/testbundle.js">
 </script>
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-</script>
+<!--<script type="text/html" id="barDemo">-->
+    <!--<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
+    <!--<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+    <!--<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="disable">禁用</a>-->
+    <!--<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="enable">启用</a>-->
+    <!--<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+<!--</script>-->
 <script>
     let tableDemo = new PermissionInfo.Table({
         tableName: "#demo",
         id: "teste", // 表格唯一标识符
-        url: '',   // 请求路径
+        apiUrl: '',   // 请求路径
         title: '用户表', // 导出表头
         limits: [10,20,30],
         headList: [ //表头
-            {type: 'numbers', title: '序号'}
-            ,{field: 'username', align:'center',title: '账户名'}
-            ,{field: 'realName', align:'center',title: '姓名'}
-            ,{field: 'email', align:'center',title: '邮箱'}
-            ,{field: 'createTimeLong', align:'center',minWidth: 160, title: '创建时间'
-                ,templet: function(d) {
-                    return DateFormat(new Date(d.createTimeLong), "yyyy-MM-dd hh:mm:ss")
-                }}
-            ,{fixed: 'right', align:'center',minWidth: 180, toolbar: '#barDemo', title: '操作'}
+            {type: 'numbers', title: '序号'},
+            {field: 'username', align:'center',title: '账号'},
+            {field: 'realName', align:'center',title: '真实姓名'},
+            {field: 'gender', align:'center',title: '性别',
+                templet: (d) => {
+                    return Number(d.gender) === 0 ? '男' : '女'
+                }
+            },
+            {field: 'phone', align:'center',title: '手机号'},
+            {field: 'email', align:'center',title: '邮箱'},
+            {field: 'state', align:'center',title: '状态',
+                templet: (d) => {
+                    return d.state === 'enabled' ? '正常' : '禁用'
+                }
+            },
+            {field: 'createTime', align:'center',minWidth: 160, title: '创建时间',
+                templet: function(d) {
+                    return DateFormat(new Date(d.createTime), "yyyy-MM-dd hh:mm:ss")
+                }},
+            {fixed: 'right', align:'center',minWidth: 180, title: '操作',
+                templet: function(d){
+                    let disableBtn = '';
+                    if (d.state === 'enabled') {
+                        disableBtn = '<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="disable">禁用</a>';
+                    } else {
+                        disableBtn = '<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="enable">启用</a>';
+                    }
+
+                    let delBtn = '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';
+                    return disableBtn+delBtn;
+                }
+            }
         ],
         page: true, //开启分页
         cellMinWidth: 60, // 单元格的最小宽度
@@ -64,31 +95,37 @@
     });
     //  tableDemo.init();
     tableDemo.init((table, tableIns, data) => {// 参数一：table对象  参数二：render后的table
-        ///默认导出 csv，也可以为：xls table.exportFile(id, data, type)
+        // 默认导出 csv，也可以为：xls table.exportFile(id, data, type)
         btn.onclick=function(){
             table.exportFile(tableIns.config.id, data, 'xls');
-        }
+        };
+        // 筛选
         searchData.onclick=function(){
-            table.reload(tableIns.config.id, {
-                where: { //其他搜索条件参数，任意设
-                    username: 'admin'
-                }
-                ,page: {
-                    curr: 1 //重新从第 1 页开始
-                }
-            });
+            let params = {
+                username: 'admin'
+            };
+            tableDemo.tableReload(params);
+        };
+        // 新增
+        add.onclick = function () {
+            tableDemo.checkAdd()
         }
-    })
+    });
     // 按钮扩展事件
     tableDemo.on('detail',function(ev){
         console.log('you click detail!', ev);
-
     });
     tableDemo.on('edit',function(ev){
         console.log('you click edit!', ev);
     });
     tableDemo.on('del',function(ev){
-        console.log('you click del!');
+        console.log('you click del!', ev);
+    });
+    tableDemo.on('disable',function(ev){
+        console.log('you click disable!', ev);
+    });
+    tableDemo.on('enable',function(ev){
+        console.log('you click enable!', ev);
     });
     // 毫秒转年月日
     const DateFormat = (str, fmt) => {
