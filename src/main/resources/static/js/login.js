@@ -81,17 +81,16 @@ export default {
         params.password = md5(params.password);
         tool.Ajax(`${this.par.apiUrl}/ics/user/login`, params, "post")
             .then((data) => {
-                console.log(data);
                 if (data.result) {
                     // transfer.onsuccess(data.data);
-                    cb(JSON.stringify(data));
+                    cb(data);
                 } else {
-                    cb(JSON.stringify(data));
+                    cb(data);
                     layer.confirm(data.message, {icon: 3, title:'提示'});
                 }
             }, (re) => {
                 console.log(re);
-                cb(JSON.stringify(data));
+                cb(data);
             });
     },
 };
