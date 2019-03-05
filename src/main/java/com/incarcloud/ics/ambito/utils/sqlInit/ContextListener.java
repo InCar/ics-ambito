@@ -8,7 +8,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 
-//@Component
+@Component
 public class ContextListener implements ServletContextListener {
     @Autowired
     private InitSqlScript initSqlScript;

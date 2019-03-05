@@ -5,6 +5,8 @@ import com.incarcloud.ics.ambito.jdbc.Table;
 import com.incarcloud.ics.ambito.jdbc.Unique;
 import com.incarcloud.ics.pojo.ErrorDefine;
 
+import java.util.Set;
+
 /**
  * @author ThomasChan
  * @version 1.0
@@ -23,6 +25,10 @@ public class RoleBean extends BaseBean{
 
     @Unique(message = ErrorDefine.REPEATED_CODE)
     private String roleCode;
+
+    private Set<Long> userIds;
+
+    private Set<Long> resourceIds;
 
     public String getRoleName() {
         return roleName;
@@ -46,5 +52,21 @@ public class RoleBean extends BaseBean{
 
     public void setRoleCode(String roleCode) {
         this.roleCode = roleCode;
+    }
+
+    public Set<Long> getUserIds() {
+        return userIds;
+    }
+
+    public void setUserIds(Set<Long> userIds) {
+        this.userIds = userIds;
+    }
+
+    public Set<Long> getResourceIds() {
+        return resourceIds;
+    }
+
+    public void setResourceIds(Set<Long> resourceIds) {
+        this.resourceIds = resourceIds;
     }
 }

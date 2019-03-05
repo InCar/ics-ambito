@@ -37,18 +37,25 @@ public class InitSqlScript {
                 if (split.length > 2) {
                     for (String s : split) {
                         if (!StringUtils.isEmpty(s) && !s.equals(" ")) {
-                            jdbcTemplate.execute(s);
+                            execute(s);
                         }
                     }
                 } else {
-                    jdbcTemplate.execute(sqlStr);
+                    execute(sqlStr);
                 }
             }
 
         }
-
-
     }
+
+    private void execute(String sql){
+        try {
+            jdbcTemplate.execute(sql);
+        }catch (Exception e){
+            logger.warn("Execute sql failed !", e);
+        }
+    }
+
 
     /**
      * 以行为单位读取文件，常用于读面向行的格式化文件

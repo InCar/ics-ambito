@@ -261,7 +261,6 @@ public class BaseServiceImpl<T> implements BaseService<T> {
     @Override
     public int saveBatch(Collection<T> ts) {
         ts.forEach(this::save);
-        clearCachedAuthData();
         return ts.size();
     }
 
@@ -303,7 +302,6 @@ public class BaseServiceImpl<T> implements BaseService<T> {
         for(Serializable id : ids){
             delete(id);
         }
-        clearCachedAuthData();
         return ids.length;
     }
 
