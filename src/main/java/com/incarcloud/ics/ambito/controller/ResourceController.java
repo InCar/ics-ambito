@@ -23,7 +23,7 @@ public class ResourceController {
     /**
      * 查询资源信息
      * @param id id
-     * @param page 当前页数
+     * @param pageNum 当前页数
      * @param pageSize 每页记录数
      * @return
      */
