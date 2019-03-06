@@ -131,10 +131,10 @@ export default {
                     this.checkAddAndEdit(obj.data);
                     break;
                 case 'resource':
-                    this.checkEdit(obj.data);
+                    this.checkResource(obj.data);
                     break;
                 case 'user':
-                    this.checkEdit(obj.data);
+                    this.checkUser(obj.data);
                     break;
             }
         });
@@ -201,7 +201,10 @@ export default {
         });
         // todo 更新服务器信息
     },
-    // 新增
+    /**
+     * 新增
+     * @param data
+     */
     checkAddAndEdit: function (data) {
         console.log(data);
         // let psr = this.par;
@@ -239,10 +242,12 @@ export default {
             maxWidth: '500',
             content: str
         });
-        this.formAddSubmit(index, data);
+        this.formSubmit(index, data);
     },
-    // add submit
-    formAddSubmit: function(index, data){
+    /**
+     *  add edit submit
+     */
+    formSubmit: function(index, data){
         let _this = this;
         layui.use(['form'], function() {
             let form = layui.form;
@@ -275,15 +280,15 @@ export default {
             });
             //监听提交
             form.on('submit(submitForm)', function(formData){
-                _this.addSubmit(formData, index, data);
+                _this.submitForm(formData, index, data);
                 return false;
             });
         });
     },
     /**
-     * 新增 api
+     * add edit api
      */
-    addSubmit: function (formData, index, data) {
+    submitForm: function (formData, index, data) {
         let _this = this;
         let params = tool.extend({}, formData.field, true);
         if (data) {  // 编辑
@@ -317,5 +322,84 @@ export default {
                 curr: curr //重新从第 1 页开始
             }
         });
+    },
+    /**
+     *
+     * @param data
+     */
+    checkResource: function (data) {
+        this.getAllResource();
+        console.log(this.allResources);
+        let resourceIds = data.resourceIds;
+        let str = `<form class="layui-form" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">复选框</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="like[write]" title="写作">
+                            <input type="checkbox" name="like[read]" title="阅读">
+                            <input type="checkbox" name="like[dai]" title="发呆">
+                        </div>
+                    </div>
+                </form>`;
+        for (let id of resourceIds) {
+            
+        }
+        let index = layer.open({
+            type: 1,
+            title: '新增',
+            area: '500px',
+            maxWidth: '500',
+            content: str
+        });
+        this.formResourceSubmit(index, data);
+    },
+    formResourceSubmit: function (index, data) {
+        let _this = this;
+        layui.use(['form'], function() {
+            let form = layui.form;
+            form.render();
+            //表单初始赋值
+            if (data) {
+                form.val('addForm', {
+                    'roleName': data.roleName,    // 'name': 'value'
+                    'roleCode': data.roleCode,
+                    'remark': data.remark
+                });
+            }
+            //监听提交
+            form.on('submit(submitForm)', function(formData){
+                _this.submitForm(formData, index, data);
+                return false;
+            });
+        });
+    },
+    checkUser: function () {
+        //
+    },
+    getAllResource: function () {
+        let _this = this;
+        tool.Ajax(`${this.par.apiUrl}/ics/role/resources`, null, 'get')
+            .then((data) => {
+                if (data.result) {
+                    _this.allResources = data.data;
+                } else {
+                    layer.confirm(data.message, {icon: 3, title:'提示'});
+                }
+            }, (re) => {
+                console.log(re);
+            });
+    },
+    getAllUser: function () {
+        let _this = this;
+        tool.Ajax(`${this.par.apiUrl}/ics/role/users`, null, 'get')
+            .then((data) => {
+                if (data.result) {
+                    _this.users = data.data;
+                } else {
+                    layer.confirm(data.message, {icon: 3, title:'提示'});
+                }
+            }, (re) => {
+                console.log(re);
+            });
     }
 };
