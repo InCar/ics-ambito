@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,5 +79,14 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleBean> implements RoleSe
         }else {
             return this.queryPage(new Page(page, pageSize), cond);
         }
+    }
+
+    @Override
+    @Transactional
+    public int delete(Serializable id) {
+        int i = super.delete(id);
+        roleResourceService.delete(new NumberCondition("roleId", id));
+        userRoleService.delete(new NumberCondition("roleId",id));
+        return i;
     }
 }
