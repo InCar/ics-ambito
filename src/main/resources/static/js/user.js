@@ -72,7 +72,6 @@ export default {
 			//执行一个 table 实例
 			this.tableIns = this.table.render({
 				elem: obj.tableName,
-				limits: obj.limits,
 				url: `${obj.apiUrl}/ics/user/list`, //数据接口
 				request: obj.request,
 				parseData: function(res){ //res 即为原始返回的数据

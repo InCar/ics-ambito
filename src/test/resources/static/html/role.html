@@ -5,7 +5,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Cache-Control" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>用户</title>
+    <title>角色</title>
     <link rel="stylesheet" type="text/css" href="../css/reset.css" />
     <link rel="stylesheet" type="text/css" href="../ics/index.css" />
     <style>
@@ -21,51 +21,36 @@
     <div>
         账号：
         <div class="layui-inline">
-            <input class="layui-input" name="id" id="demoReload" autocomplete="off" value="admin">
+            <input class="layui-input" name="id" id="demoReload" autocomplete="off" value="">
         </div>
         <button class="layui-btn layui-btn-norma" id="searchData">搜索</button>
         <button class="layui-btn layui-btn-norma" id="add">新增</button>
         <button class="layui-btn layui-btn-norma" id="btn">导出</button>
     </div>
-    <table id="demo" lay-even lay-filter="roleTable"></table>
+    <table id="demo" lay-even lay-filter="test"></table>
 </div>
 <script src="../ics/testbundle.js">
 </script>
 <!--<script type="text/html" id="barDemo">-->
-    <!--<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
-    <!--<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
-    <!--<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="disable">禁用</a>-->
-    <!--<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="enable">启用</a>-->
-    <!--<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+<!--<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
+<!--<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+<!--<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="disable">禁用</a>-->
+<!--<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="enable">启用</a>-->
+<!--<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
 <!--</script>-->
 <script>
-    let tableDemo = new PermissionInfo.User({
+    let tableDemo = new PermissionInfo.Role({
         tableName: "#demo",
         id: "teste", // 表格唯一标识符
         apiUrl: '',   // 请求路径
-        title: '用户表', // 导出表头
+        title: '角色表', // 导出表头
         limits: [10,20,30],
         headList: [ //表头
-            {type: 'numbers', title: '序号'},
-            {field: 'username', align:'center',title: '账号'},
-            {field: 'realName', align:'center',title: '真实姓名'},
-            {field: 'gender', align:'center',title: '性别',
-                templet: (d) => {
-                    return Number(d.gender) === 0 ? '男' : '女'
-                }
-            },
-            {field: 'phone', align:'center',title: '手机号'},
-            {field: 'email', align:'center',title: '邮箱'},
-            {field: 'state', align:'center',title: '状态',
-                templet: (d) => {
-                    return d.state === 'enabled' ? '正常' : '禁用'
-                }
-            },
-            {field: 'createTime', align:'center',minWidth: 160, title: '创建时间',
-                templet: function(d) {
-                    return DateFormat(new Date(d.createTime), "yyyy-MM-dd hh:mm:ss")
-                }},
-            {fixed: 'right', align:'center',minWidth: 180, title: '操作',
+            { type: 'numbers', title: '序号' },
+            { field: 'roleName', align: 'center', title: '角色名称' },
+            { field: 'roleCode', align: 'center', title: '角色编码' },
+            { field: 'remark', align: 'center', title: '备注' },
+            { fixed: 'right', align:'center',minWidth: 180, title: '操作',
                 templet: function(d){
                     let disableBtn = '';
                     if (d.state === 'enabled') {
@@ -102,7 +87,7 @@
         // 筛选
         searchData.onclick=function(){
             let params = {
-                username: 'admin'
+                // username: 'admin'
             };
             tableDemo.tableReload(params);
         };
@@ -127,25 +112,6 @@
     tableDemo.on('enable',function(ev){
         console.log('you click enable!', ev);
     });
-    // 毫秒转年月日
-    const DateFormat = (str, fmt) => {
-        let o = {
-            'M+': str.getMonth() + 1,
-            'd+': str.getDate(),
-            'h+': str.getHours(),
-            'm+': str.getMinutes(),
-            's+': str.getSeconds(),
-            'q+': Math.floor((str.getMonth() + 3) / 3),
-            'S': str.getMilliseconds()
-        };
-        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (str.getFullYear() + '').substr(4 - RegExp.$1.length));
-        for (let k in o) {
-            if (new RegExp('(' + k + ')').test(fmt)) {
-                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
-            }
-        }
-        return fmt;
-    }
 </script>
 </body>
 </html>

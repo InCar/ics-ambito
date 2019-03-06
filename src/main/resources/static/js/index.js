@@ -1,8 +1,9 @@
 
-import table from "./user"
+import user from "./user"
 import tree from "./tree"
 import login from "./login"
 import vehicle from "./vehicle"
+import role from "./role"
 
 // plugin.js
 ;(function(undefined) {
@@ -12,7 +13,7 @@ import vehicle from "./vehicle"
 // 插件构造函数 - 返回数组结构
 
 var PermissionInfo = {
-	Table: function(options) {
+	User: function(options) {
 		this._initial(options);
 	},
 	Tree: function(options) {
@@ -23,12 +24,16 @@ var PermissionInfo = {
 	},
 	Vehicle: function(options) {
 		this._initial(options);
+	},
+	Role: function(options) {
+		this._initial(options);
 	}
 };
-PermissionInfo.Table.prototype = table;
+PermissionInfo.User.prototype = user;
 PermissionInfo.Tree.prototype = tree;
 PermissionInfo.Login.prototype = login;
 PermissionInfo.Vehicle.prototype = vehicle;
+PermissionInfo.Role.prototype = role;
 
  // 将插件对象暴露给全局对象
  _global = (function(){ return this || (0, eval)('this'); }());
