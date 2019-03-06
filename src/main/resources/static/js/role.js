@@ -15,19 +15,15 @@ export default {
                     minWidth: 180,
                     title: '操作',
                     templet: function(d){
-                        let disableBtn = '';
-                        if (d.state === 'enabled') {
-                            disableBtn = '<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="disable">禁用</a>';
-                        } else {
-                            disableBtn = '<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="enable">启用</a>';
-                        }
-
+                        let editBtn = '<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">编辑</a>';
+                        let resourceBtn = '<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="resource">资源配置</a>';
+                        let userBtn = '<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="user">用户配置</a>';
                         let delBtn = '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';
-                        return disableBtn+delBtn;
+                        return editBtn + resourceBtn + userBtn +delBtn;
                     }
                 }
             ],
-            id: "", // 表格唯一标识符
+            id: '', // 表格唯一标识符
             apiUrl: '',   // 请求路径
             title: '', // 导出表头
             page: true, //开启分页
@@ -62,10 +58,10 @@ export default {
                 request: obj.request,
                 parseData: function(res){ //res 即为原始返回的数据
                     return {
-                        "code": res.code, //解析接口状态
-                        "msg": res.message, //解析提示文本
-                        "count": res.data.totalElements, //解析数据长度
-                        "data": res.data //解析数据列表
+                        'code': res.code, //解析接口状态
+                        'msg': res.message, //解析提示文本
+                        'count': res.data.totalElements, //解析数据长度
+                        'data': res.data.content //解析数据列表
                     };
                 },
                 id: obj.id,
@@ -132,13 +128,13 @@ export default {
                     this.checkDel(obj);
                     break;
                 case 'edit':
+                    this.checkAddAndEdit(obj.data);
+                    break;
+                case 'resource':
                     this.checkEdit(obj.data);
                     break;
-                case 'disable':
-                    this.checkEnable(obj, 'disabled');
-                    break;
-                case 'enable':
-                    this.checkEnable(obj, 'enabled');
+                case 'user':
+                    this.checkEdit(obj.data);
                     break;
             }
         });
@@ -178,7 +174,7 @@ export default {
         }
         layer.confirm('确定要删除吗？', function(index){
             // 向服务端发送删除指令
-            tool.Ajax(`${_this.par.apiUrl}/ics/user/delete/${data.id}`, null, "delete")
+            tool.Ajax(`${_this.par.apiUrl}/ics/role/delete/${data.id}`, null, "delete")
                 .then((data) => {
                     if (data.result) {
                         // transfer.onsuccess(data.data);
@@ -206,49 +202,31 @@ export default {
         // todo 更新服务器信息
     },
     // 新增
-    checkAdd: function(){
+    checkAddAndEdit: function (data) {
+        console.log(data);
         // let psr = this.par;
-        let str = '<form class="layui-form" style="padding: 10px 20px 1px 1px" action="">\n' +
+        let str = '<form class="layui-form" style="padding: 10px 20px 1px 1px" action="" lay-filter="addForm">\n' +
             '    <div class="layui-form-item">\n' +
-            '        <label class="layui-form-label" style="width: 100px;">账号</label>\n' +
+            '        <label class="layui-form-label" style="width: 100px;">角色名称</label>\n' +
             '        <div class="layui-input-block">\n' +
-            '            <input type="text" name="username" lay-verify="username" placeholder="请输入用户名" autocomplete="off" class="layui-input">\n' +
+            '            <input type="text" name="roleName" lay-verify="roleName" placeholder="请输入角色名称" autocomplete="off" class="layui-input">\n' +
             '        </div>\n' +
             '    </div>\n' +
             '    <div class="layui-form-item">\n' +
-            '        <label class="layui-form-label" style="width: 100px;">密码</label>\n' +
+            '        <label class="layui-form-label" style="width: 100px;">角色编码</label>\n' +
             '        <div class="layui-input-block">\n' +
-            '            <input type="password" name="password" lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input">\n' +
+            '            <input type="text" name="roleCode" lay-verify="roleCode" placeholder="请输入角色编码" autocomplete="off" class="layui-input">\n' +
             '        </div>\n' +
             '    </div>\n' +
             '    <div class="layui-form-item">\n' +
-            '        <label class="layui-form-label" style="width: 100px;">真实姓名</label>\n' +
+            '        <label class="layui-form-label" style="width: 100px;">备注</label>\n' +
             '        <div class="layui-input-block">\n' +
-            '            <input type="text" name="realName" lay-verify="realName" placeholder="请输入真实姓名" autocomplete="off" class="layui-input">\n' +
-            '        </div>\n' +
-            '    </div>\n' +
-            '    <div class="layui-form-item">\n' +
-            '        <label class="layui-form-label" style="width: 100px;">性别</label>\n' +
-            '        <div class="layui-input-block">\n' +
-            '            <input type="radio" name="gender" value="0" title="男">\n' +
-            '            <input type="radio" name="gender" value="1" title="女" checked>\n' +
-            '        </div>\n' +
-            '    </div>\n' +
-            '    <div class="layui-form-item">\n' +
-            '        <label class="layui-form-label" style="width: 100px;">手机号</label>\n' +
-            '        <div class="layui-input-block">\n' +
-            '            <input type="text" name="phone" lay-verify="phoneStr" placeholder="请输入手机号" autocomplete="off" class="layui-input">\n' +
-            '        </div>\n' +
-            '    </div>\n' +
-            '    <div class="layui-form-item">\n' +
-            '        <label class="layui-form-label" style="width: 100px;">邮箱</label>\n' +
-            '        <div class="layui-input-block">\n' +
-            '            <input type="text" name="email" lay-verify="emailStr" placeholder="请输入邮箱" autocomplete="off" class="layui-input">\n' +
+            '             <textarea name="remark" lay-verify="remark" placeholder="请输入备注" class="layui-textarea"></textarea>\n' +
             '        </div>\n' +
             '    </div>\n' +
             '    <div class="layui-form-item">\n' +
             '        <div class="layui-input-block">\n' +
-            '            <button class="layui-btn" lay-submit lay-filter="formAdd">立即提交</button>\n' +
+            '            <button class="layui-btn" lay-submit lay-filter="submitForm">立即提交</button>\n' +
             '            <button type="reset" class="layui-btn layui-btn-primary">重置</button>\n' +
             '        </div>\n' +
             '    </div>\n' +
@@ -261,58 +239,43 @@ export default {
             maxWidth: '500',
             content: str
         });
-        this.formAddSubmit(index);
+        this.formAddSubmit(index, data);
     },
     // add submit
-    formAddSubmit: function(index){
+    formAddSubmit: function(index, data){
         let _this = this;
         layui.use(['form'], function() {
             let form = layui.form;
             form.render();
+            //表单初始赋值
+            if (data) {
+                form.val('addForm', {
+                    'roleName': data.roleName,    // 'name': 'value'
+                    'roleCode': data.roleCode,
+                    'remark': data.remark
+                });
+            }
             //自定义验证规则
             form.verify({
-                username: function(value){
-                    if(value.length < 5){
-                        return '用户名至少得5个字符';
+                roleName: function(value){
+                    if(value.length < 1){
+                        return '角色名称不能为空';
                     }
                 },
-                password: [
-                    /^[\S]{6,12}$/,
-                    '密码必须6到12位，且不能出现空格'
-                ],
-                realName: function(value){
-                    if(value.length > 10){
-                        return '用户名不能大于10个字符';
+                roleCode: function(value){
+                    if(value.length < 1){
+                        return '角色编码不能为空';
                     }
                 },
-                emailStr: function(value){
-                    if(value.length > 0){
-                        let reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
-                        if (!(reg.test(value))) {
-                            return '邮箱格式不正确';
-                        }
+                remark: function(value){
+                    if(value.length > 255){
+                        return '备注不能大于255个字符';
                     }
-                },
-                // phoneStr: function(value){
-                //     if(value.length > 0){
-                //         let reg = /^(13[0-9]|14[0-9]|15[0-9]|17[0-9]|18[0-9])\d{8}$/;
-                //         if (!(reg.test(value))) {
-                //             return '手机号格式不正确';
-                //         }
-                //     }
-                // },
-                // emailStr: [
-                // 	/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/,
-                // 	'邮箱格式不正确'
-                // ],
-                phoneStr: [
-                    /^(13[0-9]|14[0-9]|15[0-9]|17[0-9]|18[0-9])\d{8}$/,
-                    '手机号格式不正确'
-                ],
+                }
             });
             //监听提交
-            form.on('submit(formAdd)', function(data){
-                _this.addSubmit(data, index);
+            form.on('submit(submitForm)', function(formData){
+                _this.addSubmit(formData, index, data);
                 return false;
             });
         });
@@ -320,11 +283,16 @@ export default {
     /**
      * 新增 api
      */
-    addSubmit: function (data, index) {
+    addSubmit: function (formData, index, data) {
         let _this = this;
-        let params = tool.extend({}, data.field, true);
-        params.password = md5(params.password);
-        tool.Ajax(`${this.par.apiUrl}/ics/user/rigister`, params, "post")
+        let params = tool.extend({}, formData.field, true);
+        if (data) {  // 编辑
+            params.id = data.id;
+        } else {  // 新增
+            params.resourceIds = [];  // 资源
+            params.userIds = [];  // 用户
+        }
+        tool.Ajax(`${this.par.apiUrl}/ics/role/save`, params, 'post')
             .then((data) => {
                 if (data.result) {
                     layer.close(index);
@@ -335,34 +303,6 @@ export default {
             }, (re) => {
                 console.log(re);
             });
-    },
-    // 启用/禁用
-    checkEnable: function (obj, name) {
-        let _this = this;
-        let data = obj.data;
-        if(this.listeners.indexOf(name) > -1) {
-            this.emit({type: name,target: this, data: data});
-        }
-        let str = '';
-        if (name === 'disabled') str = '禁用';
-        else str = '启用';
-        layer.confirm(`确定要${str}吗？`, function(index){
-            layer.close(index);
-            // 向服务端发送启用指令
-            let params = tool.extend({}, data, true);
-            params.state = name;
-            tool.Ajax(`${_this.par.apiUrl}/ics/user/update`, params, "post")
-                .then((data) => {
-                    if (data.result) {
-                        layer.close(index);
-                        _this.tableReload();
-                    } else {
-                        layer.confirm(data.message, {icon: 3, title:'提示'});
-                    }
-                }, (re) => {
-                    console.log(re);
-                });
-        });
     },
     // table reload
     tableReload: function(params) {

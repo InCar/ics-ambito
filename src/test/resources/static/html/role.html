@@ -19,7 +19,7 @@
 <body>
 <div class="tableStyle">
     <div>
-        账号：
+        角色名称：
         <div class="layui-inline">
             <input class="layui-input" name="id" id="demoReload" autocomplete="off" value="">
         </div>
@@ -27,7 +27,7 @@
         <button class="layui-btn layui-btn-norma" id="add">新增</button>
         <button class="layui-btn layui-btn-norma" id="btn">导出</button>
     </div>
-    <table id="demo" lay-even lay-filter="test"></table>
+    <table id="demo" lay-even lay-filter="roleTable"></table>
 </div>
 <script src="../ics/testbundle.js">
 </script>
@@ -50,17 +50,16 @@
             { field: 'roleName', align: 'center', title: '角色名称' },
             { field: 'roleCode', align: 'center', title: '角色编码' },
             { field: 'remark', align: 'center', title: '备注' },
-            { fixed: 'right', align:'center',minWidth: 180, title: '操作',
+            { fixed: 'right',
+                align: 'center',
+                minWidth: 180,
+                title: '操作',
                 templet: function(d){
-                    let disableBtn = '';
-                    if (d.state === 'enabled') {
-                        disableBtn = '<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="disable">禁用</a>';
-                    } else {
-                        disableBtn = '<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="enable">启用</a>';
-                    }
-
+                    let editBtn = '<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">编辑</a>';
+                    let resourceBtn = '<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="resource">资源配置</a>';
+                    let userBtn = '<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="user">用户配置</a>';
                     let delBtn = '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';
-                    return disableBtn+delBtn;
+                    return editBtn + resourceBtn + userBtn +delBtn;
                 }
             }
         ],
@@ -87,13 +86,13 @@
         // 筛选
         searchData.onclick=function(){
             let params = {
-                // username: 'admin'
+                // roleName: 'admin'
             };
             tableDemo.tableReload(params);
         };
         // 新增
         add.onclick = function () {
-            tableDemo.checkAdd()
+            tableDemo.checkAddAndEdit()
         }
     });
     // 按钮扩展事件
@@ -106,11 +105,11 @@
     tableDemo.on('del',function(ev){
         console.log('you click del!', ev);
     });
-    tableDemo.on('disable',function(ev){
-        console.log('you click disable!', ev);
+    tableDemo.on('resource',function(ev){
+        console.log('you click resource!', ev);
     });
-    tableDemo.on('enable',function(ev){
-        console.log('you click enable!', ev);
+    tableDemo.on('user',function(ev){
+        console.log('you click user!', ev);
     });
 </script>
 </body>
