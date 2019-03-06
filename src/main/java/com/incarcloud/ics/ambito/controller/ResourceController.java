@@ -30,9 +30,9 @@ public class ResourceController {
     @GetMapping(value = "/list")
     public JsonMessage getList(@RequestParam(required = false)Long id,
                                @RequestParam(required = false)String resourceName,
-                               @RequestParam(required = false)Integer page,
+                               @RequestParam(required = false)Integer pageNum,
                                @RequestParam(required = false)Integer pageSize){
-        Object res = resourceService.getList(id, resourceName, page, pageSize);
+        Object res = resourceService.getList(id, resourceName, pageNum, pageSize);
         return JsonMessage.success(res);
     }
 

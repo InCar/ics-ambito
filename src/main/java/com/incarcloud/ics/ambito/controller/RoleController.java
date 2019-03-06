@@ -47,9 +47,9 @@ public class RoleController {
     @GetMapping(value = "/list")
     public JsonMessage getList(@RequestParam(required = false)Long id,
                                    @RequestParam(required = false)String roleName,
-                                   @RequestParam(required = false)Integer page,
+                                   @RequestParam(required = false)Integer pageNum,
                                    @RequestParam(required = false)Integer pageSize){
-        Object res = roleService.getList(id, roleName, page, pageSize);
+        Object res = roleService.getList(id, roleName, pageNum, pageSize);
         return JsonMessage.success(res);
     }
 
