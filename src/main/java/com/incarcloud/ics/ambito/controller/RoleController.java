@@ -71,8 +71,8 @@ public class RoleController {
      * @param id
      * @return
      */
-    @DeleteMapping(value = "/delete/{id}")
-    public JsonMessage delete(@PathVariable long id){
+    @DeleteMapping(value = "/delete")
+    public JsonMessage delete(@RequestParam long id){
         roleService.delete(id);
         return JsonMessage.success();
     }
