@@ -81,10 +81,8 @@ export default {
                     obj.headList
                 ],
                 done: function(res, curr, count){
-                    // console.log(res, curr, count);
                     _this.tableData = res.data;
                     //得到当前页码
-                    //	console.log(curr);
                     _this.curr = curr;
                     //得到数据总量
                     //	console.log(count);
@@ -206,8 +204,6 @@ export default {
      * @param data
      */
     checkAddAndEdit: function (data) {
-        console.log(data);
-        // let psr = this.par;
         let str = '<form class="layui-form" style="padding: 10px 20px 1px 1px" action="" lay-filter="addForm">\n' +
             '    <div class="layui-form-item">\n' +
             '        <label class="layui-form-label" style="width: 100px;">角色名称</label>\n' +
@@ -280,19 +276,45 @@ export default {
             });
             //监听提交
             form.on('submit(submitForm)', function(formData){
-                _this.submitForm(formData, index, data);
+                _this.submitForm(formData, index, data, 1);
                 return false;
             });
         });
     },
     /**
      * add edit api
+     * @param formData 表单数据
+     * @param index 弹出框index
+     * @param data 要编辑的数据
+     * @param flag 1：编辑  2：资源配置 3：用户配置
      */
-    submitForm: function (formData, index, data) {
+    submitForm: function (formData, index, data, flag) {
         let _this = this;
         let params = tool.extend({}, formData.field, true);
         if (data) {  // 编辑
-            params.id = data.id;
+            if (flag === 1) {
+                params = tool.extend(data, params, true);
+            } else if (flag === 2) {
+                let resourceIds = [];
+                for (let prop in params) {
+                    if (prop.indexOf('resource-') > -1) {
+                        let val = prop.split('-')[1];
+                        resourceIds.push(Number(val));
+                    }
+                }
+                data.resourceIds = resourceIds;
+                params = data;
+            } else if (flag === 3) {
+                let userIds = [];
+                for (let prop in params) {
+                    if (prop.indexOf('user-') > -1) {
+                        let val = prop.split('-')[1];
+                        userIds.push(Number(val));
+                    }
+                }
+                data.userIds = userIds;
+                params = data;
+            }
         } else {  // 新增
             params.resourceIds = [];  // 资源
             params.userIds = [];  // 用户
@@ -327,79 +349,186 @@ export default {
      *
      * @param data
      */
-    checkResource: function (data) {
-        this.getAllResource();
-        console.log(this.allResources);
-        let resourceIds = data.resourceIds;
-        let str = `<form class="layui-form" action="">
+    checkResource: async function (data) {
+        let allResources = await this.getAllResource();
+        let st = '';
+        for (let reso of allResources) {
+            st += `<input type="checkbox" name="resource-${reso.id}" title=${reso.resourceName}>`
+        }
+        let str = `<form class="layui-form" action="" lay-filter="resourceForm">
                     <div class="layui-form-item">
                         <label class="layui-form-label">复选框</label>
                         <div class="layui-input-block">
-                            <input type="checkbox" name="like[write]" title="写作">
-                            <input type="checkbox" name="like[read]" title="阅读">
-                            <input type="checkbox" name="like[dai]" title="发呆">
+                            ${st}
                         </div>
                     </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="submitResForm">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
                 </form>`;
-        for (let id of resourceIds) {
-            
-        }
         let index = layer.open({
             type: 1,
-            title: '新增',
+            title: '资源配置',
             area: '500px',
             maxWidth: '500',
             content: str
         });
         this.formResourceSubmit(index, data);
     },
-    formResourceSubmit: function (index, data) {
+    formResourceSubmit: async function (index, data) {
+        data.resourceIds = await this.getResourceById(data.id);
+        let resourceIds = data.resourceIds;
         let _this = this;
         layui.use(['form'], function() {
             let form = layui.form;
             form.render();
-            //表单初始赋值
-            if (data) {
-                form.val('addForm', {
-                    'roleName': data.roleName,    // 'name': 'value'
-                    'roleCode': data.roleCode,
-                    'remark': data.remark
-                });
+            let formVal = {};
+            for (let res of resourceIds) {
+                formVal['resource-' + res.id] = 'on';
             }
+            //表单初始赋值
+            form.val('resourceForm', formVal);
             //监听提交
-            form.on('submit(submitForm)', function(formData){
-                _this.submitForm(formData, index, data);
+            form.on('submit(submitResForm)', function(formData){
+                _this.submitForm(formData, index, data, 2);
                 return false;
             });
         });
     },
-    checkUser: function () {
-        //
+    checkUser: async function (data) {
+        let allUser = await this.getAllUser();
+        let st = '';
+        for (let user of allUser) {
+            st += `<input type="checkbox" name="user-${user.id}" title=${user.username}>`
+        }
+        let str = `<form class="layui-form" action="" lay-filter="userForm">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"></label>
+                        <div class="layui-input-block">
+                            ${st}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="submitUserForm">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+                </form>`;
+        let index = layer.open({
+            type: 1,
+            title: '用户配置',
+            area: '500px',
+            maxWidth: '500',
+            content: str
+        });
+        this.formUserSubmit(index, data);
     },
+    formUserSubmit: async function (index, data) {
+        data.userIds = await this.getUserById(data.id);
+        let userIds = data.userIds;
+        let _this = this;
+        layui.use(['form'], function() {
+            let form = layui.form;
+            form.render();
+            let formVal = {};
+            for (let res of userIds) {
+                formVal['user-' + res.id] = 'on';
+            }
+            //表单初始赋值
+            form.val('userForm', formVal);
+            //监听提交
+            form.on('submit(submitUserForm)', function(formData){
+                _this.submitForm(formData, index, data, 3);
+                return false;
+            });
+        });
+    },
+    /**
+     * 获取所有资源列表
+     * @returns {Promise<any>}
+     */
     getAllResource: function () {
         let _this = this;
-        tool.Ajax(`${this.par.apiUrl}/ics/role/resources`, null, 'get')
-            .then((data) => {
-                if (data.result) {
-                    _this.allResources = data.data;
-                } else {
-                    layer.confirm(data.message, {icon: 3, title:'提示'});
-                }
-            }, (re) => {
-                console.log(re);
-            });
+        return new Promise(function (resolve, reject) {
+            tool.Ajax(`${_this.par.apiUrl}/ics/resource/list`, null, 'get')
+                .then((data) => {
+                    if (data.result) {
+                        resolve(data.data);
+                    } else {
+                        layer.confirm(data.message, {icon: 3, title:'提示'});
+                        resolve([]);
+                    }
+                }, (re) => {
+                    console.log(re);
+                    resolve([]);
+                });
+        });
     },
+    /**
+     * 获取所有用户列表
+     * @returns {Promise<any>}
+     */
     getAllUser: function () {
         let _this = this;
-        tool.Ajax(`${this.par.apiUrl}/ics/role/users`, null, 'get')
-            .then((data) => {
-                if (data.result) {
-                    _this.users = data.data;
-                } else {
-                    layer.confirm(data.message, {icon: 3, title:'提示'});
-                }
-            }, (re) => {
-                console.log(re);
-            });
-    }
+        return new Promise(function (resolve, reject) {
+            tool.Ajax(`${_this.par.apiUrl}/ics/user/list`, null, 'get')
+                .then((data) => {
+                    if (data.result) {
+                        resolve(data.data);
+                    } else {
+                        layer.confirm(data.message, {icon: 3, title:'提示'});
+                        resolve([]);
+                    }
+                }, (re) => {
+                    console.log(re);
+                    resolve([]);
+                });
+        });
+    },
+    /**
+     * 获取角色的资源
+     * @returns {Promise<any>}
+     */
+    getResourceById: function (id) {
+        let _this = this;
+        return new Promise(function (resolve, reject) {
+            tool.Ajax(`${_this.par.apiUrl}/ics/role/resources`, {roleId: id}, 'get')
+                .then((data) => {
+                    if (data.result) {
+                        resolve(data.data);
+                    } else {
+                        layer.confirm(data.message, {icon: 3, title:'提示'});
+                        resolve([]);
+                    }
+                }, (re) => {
+                    console.log(re);
+                    resolve([]);
+                });
+        });
+    },
+    /**
+     * 获取角色的用户
+     * @returns {Promise<any>}
+     */
+    getUserById: function (id) {
+        let _this = this;
+        return new Promise(function (resolve, reject) {
+            tool.Ajax(`${_this.par.apiUrl}/ics/role/users`, {roleId: id}, 'get')
+                .then((data) => {
+                    if (data.result) {
+                        resolve(data.data);
+                    } else {
+                        layer.confirm(data.message, {icon: 3, title:'提示'});
+                        resolve([]);
+                    }
+                }, (re) => {
+                    console.log(re);
+                    resolve([]);
+                });
+        });
+    },
 };
