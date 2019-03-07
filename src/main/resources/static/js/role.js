@@ -288,12 +288,22 @@ export default {
      * @param data 要编辑的数据
      * @param flag 1：编辑  2：资源配置 3：用户配置
      */
-    submitForm: function (formData, index, data, flag) {
+    submitForm: async function (formData, index, data, flag) {
         let _this = this;
         let params = tool.extend({}, formData.field, true);
         if (data) {  // 编辑
             if (flag === 1) {
                 params = tool.extend(data, params, true);
+                params.resourceIds = [];
+                params.userIds = [];
+                let resourceIds = await this.getResourceById(data.id);
+                let userIds = await this.getUserById(data.id);
+                for (let res of resourceIds) {
+                    params.resourceIds.push(res.id);
+                }
+                for (let us of userIds) {
+                    params.userIds.push(us.id);
+                }
             } else if (flag === 2) {
                 let resourceIds = [];
                 for (let prop in params) {
@@ -303,6 +313,11 @@ export default {
                     }
                 }
                 data.resourceIds = resourceIds;
+                data.userIds = [];
+                let userIds = await this.getUserById(data.id);
+                for (let us of userIds) {
+                    data.userIds.push(us.id);
+                }
                 params = data;
             } else if (flag === 3) {
                 let userIds = [];
@@ -313,6 +328,11 @@ export default {
                     }
                 }
                 data.userIds = userIds;
+                data.resourceIds = [];
+                let resourceIds = await this.getResourceById(data.id);
+                for (let res of resourceIds) {
+                    data.resourceIds.push(res.id);
+                }
                 params = data;
             }
         } else {  // 新增
@@ -346,18 +366,18 @@ export default {
         });
     },
     /**
-     *
-     * @param data
+     * 资源配置
+     * @param data 当前操作的数据
      */
     checkResource: async function (data) {
         let allResources = await this.getAllResource();
         let st = '';
         for (let reso of allResources) {
-            st += `<input type="checkbox" name="resource-${reso.id}" title=${reso.resourceName}>`
+            st += `<div style="width: 50%;float: left;"><input type="checkbox" name="resource-${reso.id}" title=${reso.resourceName}></div>`
         }
         let str = `<form class="layui-form" action="" lay-filter="resourceForm">
                     <div class="layui-form-item">
-                        <label class="layui-form-label">复选框</label>
+                        <label class="layui-form-label"></label>
                         <div class="layui-input-block">
                             ${st}
                         </div>
