@@ -199,6 +199,9 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
     public Set<SysOrgBean> getUserManageOrgs(Long userId) {
         List<SysOrgUserBean> orgUserBeans = sysOrgUserService.query(new NumberCondition("userId", userId, NumberCondition.Handler.EQUAL));
         List<Long> orgIds = orgUserBeans.stream().map(SysOrgUserBean::getOrgId).collect(Collectors.toList());
+        if(orgIds.isEmpty()){
+            return Collections.emptySet();
+        }
         List<SysOrgBean> orgBeans = this.query(new NumberCondition("id", orgIds, NumberCondition.Handler.IN));
         Set<SysOrgBean> collect = new HashSet<>();
         for(SysOrgBean sysOrgBean : orgBeans){
@@ -232,7 +235,10 @@ public class SysOrgServiceImpl  extends BaseServiceImpl<SysOrgBean> implements S
         }
         List<SysOrgUserBean> orgUserBeans = sysOrgUserService.query(new NumberCondition("userId", users.get(0).getId(), NumberCondition.Handler.EQUAL));
         List<Long> orgIds = orgUserBeans.stream().map(SysOrgUserBean::getOrgId).collect(Collectors.toList());
-        List<SysOrgBean> orgBeans = this.query(new NumberCondition("id", orgIds, NumberCondition.Handler.IN));;
+        if(orgIds.isEmpty()){
+            return Collections.emptySet();
+        }
+        List<SysOrgBean> orgBeans = this.query(new NumberCondition("id", orgIds, NumberCondition.Handler.IN));
         return orgBeans.stream().map(SysOrgBean::getOrgCode).collect(Collectors.toSet());
     }
 

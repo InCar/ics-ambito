@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleBean> implements RoleSe
     public List<RoleBean> getRolesOfUser(Long userId) {
         List<UserRoleBean> userRoles = userRoleService.query(new NumberCondition("userId", userId));
         List<Long> roleIds = userRoles.stream().map(UserRoleBean::getRoleId).collect(Collectors.toList());
+        if(roleIds.isEmpty()){
+            return Collections.emptyList();
+        }
         return this.query(new NumberCondition("id", roleIds, NumberCondition.Handler.IN));
     }
 

@@ -40,6 +40,9 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceBean> implement
     public List<ResourceBean> getMenusOfRole(long roleId) {
         List<RoleResourceBean> roleResourceBeans = roleResourceService.query(new NumberCondition("roleId", roleId, NumberCondition.Handler.EQUAL));
         List<Long> resources = roleResourceBeans.stream().map(RoleResourceBean::getResourceId).collect(Collectors.toList());
+        if(resources.isEmpty()){
+            return Collections.emptyList();
+        }
         List<ResourceBean> menus = this.query(Condition.and(
                 new NumberCondition("id", resources, NumberCondition.Handler.IN),
                 new NumberCondition("resourceType", 0, NumberCondition.Handler.EQUAL)
@@ -57,11 +60,15 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceBean> implement
     public List<ResourceBean> getPrivilegeOfRole(long roleId) {
         List<RoleResourceBean> roleResourceBeans = roleResourceService.query(new NumberCondition("roleId", roleId, NumberCondition.Handler.EQUAL));
         List<Long> resources = roleResourceBeans.stream().map(RoleResourceBean::getResourceId).collect(Collectors.toList());
+        if(resources.isEmpty()) {
+            return Collections.emptyList();
+        }
         List<ResourceBean> privleges = this.query(Condition.and(
                 new NumberCondition("id", resources, NumberCondition.Handler.IN),
                 new NumberCondition("type", 1, NumberCondition.Handler.EQUAL)
         ));
         return privleges;
+
     }
 
 
@@ -72,6 +79,9 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceBean> implement
      */
     @Override
     public List<ResourceBean> getResourcesOfRoles(List<Long> roleIds) {
+        if(roleIds.isEmpty()){
+            return Collections.emptyList();
+        }
         List<RoleResourceBean> roleResourceBeans = roleResourceService.query(new NumberCondition("roleId", roleIds, NumberCondition.Handler.IN));
         List<Long> resources = roleResourceBeans.stream().map(RoleResourceBean::getResourceId).collect(Collectors.toList());
         return this.query(Condition.and(

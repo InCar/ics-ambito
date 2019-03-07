@@ -8,6 +8,7 @@ import com.incarcloud.ics.pojo.JsonMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -87,6 +88,9 @@ public class RoleController {
     public JsonMessage getAllUsersOfRole(@RequestParam long roleId){
         List<UserRoleBean> userRoleBeanList = userRoleService.query(new NumberCondition("roleId", roleId));
         Set<Long> userIds = userRoleBeanList.stream().map(UserRoleBean::getUserId).collect(Collectors.toSet());
+        if(userIds.isEmpty()){
+            return JsonMessage.success(Collections.emptyList());
+        }
         List<UserBean> userBeans = userService.query(new NumberCondition("id",userIds, NumberCondition.Handler.IN));
         return JsonMessage.success(userBeans);
     }
@@ -101,12 +105,12 @@ public class RoleController {
     public JsonMessage getAllResourcesOfRole(@RequestParam long roleId){
         List<RoleResourceBean> roleResourceBeans = roleResourceService.query(new NumberCondition("roleId", roleId));
         Set<Long> resIds = roleResourceBeans.stream().map(RoleResourceBean::getResourceId).collect(Collectors.toSet());
+        if(resIds.isEmpty()) {
+            return JsonMessage.success(Collections.emptyList());
+        }
         List<ResourceBean> resourceBeans = resourceService.query(Condition.and(
                 new NumberCondition("id", resIds, NumberCondition.Handler.IN)
         ));
         return JsonMessage.success(resourceBeans);
     }
-
-
-
 }
