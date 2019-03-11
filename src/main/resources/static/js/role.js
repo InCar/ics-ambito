@@ -422,7 +422,7 @@ export default {
         let allUser = await this.getAllUser();
         let st = '';
         for (let user of allUser) {
-            st += `<input type="checkbox" name="user-${user.id}" title=${user.username}>`
+            st += `<div style="width: 50%;float: left;"><input type="checkbox" name="user-${user.id}" title=${user.username}></div>`
         }
         let str = `<form class="layui-form" action="" lay-filter="userForm">
                     <div class="layui-form-item">
