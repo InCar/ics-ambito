@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>资源</title>
+    <link rel="stylesheet" type="text/css" href="../css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="../ics/index.css" />
+    <style>
+        .tableStyle {
+            width: auto;
+            margin: auto;
+            padding: 10px;
+        }
+        .btn-left {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="tableStyle">
+    <div>
+        资源名称：
+        <div class="layui-inline">
+            <input class="layui-input" name="id" id="demoReload" autocomplete="off" value="">
+        </div>
+        <button class="layui-btn layui-btn-norma btn-left" id="searchData">搜索</button>
+        <button class="layui-btn layui-btn-norma" id="add">新增</button>
+        <button class="layui-btn layui-btn-norma" id="btn">导出</button>
+    </div>
+    <table id="demo" lay-even lay-filter="resourceTable"></table>
+</div>
+<script src="../ics/testbundle.js">
+</script>
+<script>
+    let tableDemo = new PermissionInfo.Resource({
+        tableName: "#demo",
+        id: "teste", // 表格唯一标识符
+        apiUrl: '',   // 请求路径
+        title: '资源表', // 导出表头
+        limits: [10,20,30],
+        headList: [ //表头
+            {type: 'numbers', title: '序号'},
+            {field: 'resourceName', align:'center', title: '资源名称'},
+            {field:'type',
+                align:'center',
+                title: '资源类型',
+                templet: (d) => {
+                    return d.type === 'menu' ? '菜单' : '按钮'
+                }
+            },
+            {field: 'url', align:'center',title: '资源路径'},
+            {field: 'icon', align:'center',title: '资源图标'},
+            {field: 'isDisplay',
+                align:'center',
+                title: '显示',
+                templet: (d) => {
+                    return d.isDisplay ? '显示' : '隐藏'
+                }
+            },
+            {field: 'level', align:'center',title: '等级'},
+            {fixed: 'right',
+                align:'center',
+                minWidth: 180,
+                title: '操作',
+                templet: function(d){
+                    let editBtn = '<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">编辑</a>';
+                    let delBtn = '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';
+                    return editBtn + delBtn;
+                }
+            }
+        ],
+        page: true, //开启分页
+        cellMinWidth: 60, // 单元格的最小宽度
+        limit: 10, // 每页显示的条数 值务必对应 limits 参数的选项
+        // limits: [10,20,30,40,50,60,70,80,90],
+        loading: true, // 是否显示加载条
+        text: {
+            none: '暂无相关数据' //默认：无数据
+        },
+        request: {
+            pageName: 'pageNum' //页码的参数名称，默认：page
+            ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+        },
+        isLayer: true
+    });
+    //  tableDemo.init();
+    tableDemo.init((table, tableIns, data) => {// 参数一：table对象  参数二：render后的table
+        // 默认导出 csv，也可以为：xls table.exportFile(id, data, type)
+        btn.onclick = function () {
+            table.exportFile(tableIns.config.id, data, 'xls');
+        };
+        // 筛选
+        searchData.onclick = function () {
+            let params = {
+                resourceName: '管理'
+            };
+            tableDemo.tableReload(params);
+        };
+        // 新增
+        add.onclick = function () {
+            tableDemo.checkAddAndEdit()
+        }
+    });
+</script>
+</body>
+</html>

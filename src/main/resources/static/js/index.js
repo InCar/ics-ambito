@@ -4,6 +4,7 @@ import tree from "./tree"
 import login from "./login"
 import vehicle from "./vehicle"
 import role from "./role"
+import resource from "./resource"
 
 // plugin.js
 ;(function(undefined) {
@@ -27,6 +28,9 @@ var PermissionInfo = {
 	},
 	Role: function(options) {
 		this._initial(options);
+	},
+	Resource: function (options) {
+		this._initial(options);
 	}
 };
 PermissionInfo.User.prototype = user;
@@ -34,6 +38,7 @@ PermissionInfo.Tree.prototype = tree;
 PermissionInfo.Login.prototype = login;
 PermissionInfo.Vehicle.prototype = vehicle;
 PermissionInfo.Role.prototype = role;
+PermissionInfo.Resource.prototype = resource;
 
  // 将插件对象暴露给全局对象
  _global = (function(){ return this || (0, eval)('this'); }());
